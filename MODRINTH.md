@@ -37,7 +37,7 @@
 |---------|-------------|------------|
 | `/onlysleep` | Show help | `onlysleep.command` |
 | `/onlysleep reload` | Reload config | `onlysleep.reload` |
-| `/onlysleep info` | Plugin info | `onlysleep.command` |
+| `/onlysleep info` | Plugin info | `onlysleep.info` |
 | `/onlysleep status` | Status overview | `onlysleep.status` |
 
 **Aliases:** `/os`, `/sleep`
@@ -48,6 +48,7 @@
 |------------|---------|-------------|
 | `onlysleep.*` | OP | All permissions |
 | `onlysleep.command` | Everyone | Use commands |
+| `onlysleep.info` | OP | View plugin info |
 | `onlysleep.reload` | OP | Reload config |
 | `onlysleep.status` | OP | View status |
 | `onlysleep.exempt` | OP | Excluded from sleep |
@@ -55,7 +56,7 @@
 
 ## 📊 bStats
 
-[![bStats](https://bstats.org/signatures/bukkit/OnlySleep/31415.svg)](https://bstats.org/plugin/bukkit/OnlySleep/31415)
+[![bStats](https://bstats.org/signatures/bukkit/31415.svg)](https://bstats.org/plugin/bukkit/OnlySleep/31415)
 
 [View statistics](https://bstats.org/plugin/bukkit/OnlySleep/31415)
 

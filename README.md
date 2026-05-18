@@ -87,7 +87,7 @@ All messages are fully customizable with color codes (`&0`-`&f`) and placeholder
 |---------|-------------|------------|
 | `/onlysleep` | Show help | `onlysleep.command` |
 | `/onlysleep help` | Show help page | `onlysleep.command` |
-| `/onlysleep info` | Plugin information | `onlysleep.command` |
+| `/onlysleep info` | Plugin information | `onlysleep.info` |
 | `/onlysleep status` | Detailed status | `onlysleep.status` |
 | `/onlysleep reload` | Reload configuration | `onlysleep.reload` |
 
@@ -101,6 +101,7 @@ All messages are fully customizable with color codes (`&0`-`&f`) and placeholder
 |------------|---------|-------------|
 | `onlysleep.*` | OP | All permissions |
 | `onlysleep.command` | Everyone | Use `/onlysleep` command |
+| `onlysleep.info` | OP | View plugin information |
 | `onlysleep.reload` | OP | Reload configuration |
 | `onlysleep.status` | OP | View plugin status |
 | `onlysleep.exempt` | OP | Excluded from sleep calculations |
@@ -192,7 +193,7 @@ This plugin uses [bStats](https://bstats.org/plugin/bukkit/OnlySleep/31415) to c
 
 ### Live Statistics
 
-[![bStats Servers](https://bstats.org/signatures/bukkit/OnlySleep/31415.svg)](https://bstats.org/plugin/bukkit/OnlySleep/31415)
+[![bStats Servers](https://bstats.org/signatures/bukkit/31415.svg)](https://bstats.org/plugin/bukkit/OnlySleep/31415)
 
 ---
 
