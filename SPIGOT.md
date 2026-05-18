@@ -72,7 +72,7 @@ Onlysleep is a lightweight, highly configurable sleep plugin that lets you skip 
 [HR]
 
 [size=5][color=#ffaa00]📊 bStats[/color][/size]
-[IMG]https://bstats.org/signatures/bukkit/OnlySleep/31415.svg[/IMG]
+[IMG]https://bstats.org/signatures/bukkit/31415.svg[/IMG]
 
 [URL=https://bstats.org/plugin/bukkit/OnlySleep/31415]View live statistics[/URL] | [URL=https://modrinth.com/plugin/onlysleep]Download on Modrinth[/URL] | [URL=https://github.com/DemonZ-Development/Onlysleep/issues]Report Issues[/URL]
 
