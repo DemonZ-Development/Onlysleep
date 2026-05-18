@@ -1,7 +1,5 @@
 # 📋 Changelog
 
-> For the complete changelog, see [CHANGELOG.md](https://github.com/DemonZ-Development/Onlysleep/blob/main/CHANGELOG.md) on GitHub.
-
 ---
 
 ## [1.0.0] - 2025-06-01
@@ -13,15 +11,21 @@
 - **Platform detection** — Auto-detects Bukkit, Spigot, Paper, Folia
 
 ### ✨ New Features
+- **One-Player Sleep** — Default mode, or configure any percentage
 - **Custom skip types** — Support for `instant`, `speed`, and `gradual` night skips
+- **Per-World Sleep** — Per-world or global sleep counting
+- **Weather Skip** — Automatically clear storms and thunderstorms
 - **Title/subtitle support** — Configurable titles when night is skipped
 - **Sound system** — Fully configurable sounds for skip events
+- **Visual Feedback** — Boss bar, action bar, progress bar, and title support
 - **AFK detection** — EssentialsX and CMI integration
 - **Disabled worlds** — Per-world sleep disabling
-- **Advanced player filtering** — Creative mode, flying, and spectator controls
-- **Better command system** — `/onlysleep status`, tab completion improvements
-- **Update checker** — Automatic update checks via Modrinth API
+- **Advanced player filtering** — Creative mode, flying, spectator, and exempt controls
+- **Better command system** — `/onlysleep status`, `/onlysleep update`, tab completion
+- **Update checker** — Automatic update checks via Modrinth API with `/onlysleep update`
+- **PlaceholderAPI** — 19+ placeholders for integrations
 - **Progress bar customization** — Configurable symbols and length
+- **Smart Player Filtering** — Ignores AFK, spectators, exempt players, and more
 
 ### 🛠️ Technical Improvements
 - **SchedulerAdapter** — Folia-compatible task scheduling with fallback
@@ -30,20 +34,21 @@
 - **Command package** — Clean command separation
 - **Listener package** — Event handling in dedicated package
 - **Manager package** — Core logic separation
-- **Utility classes** — PlatformAdapter, SchedulerAdapter, UpdateChecker
-- **Maven Shade Plugin** — Proper bStats shading with relocation
+- **Utility classes** — PlatformAdapter, SchedulerAdapter, UpdateChecker, AfkTracker
+- **bStats shading** — Proper bStats relocation to avoid conflicts
 - **Resource filtering** — Dynamic version in plugin.yml
 
 ### 📝 Documentation
-- Comprehensive README.md
+- Comprehensive README.md with banner image
 - Modrinth description (MODRINTH.md)
-- Spigot description (SPIGOT.md)
+- Spigot BBCode listing (SPIGOT.md)
 - Hangar description (HANGAR.md)
+- Full GitHub Wiki with 12 pages
 - CHANGELOG.md
 
 ---
 
-## [1.0.0] - Initial Release
+## Initial Release
 
 - Basic one-player sleep functionality
 - Configurable sleep percentage
