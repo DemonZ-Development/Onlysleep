@@ -56,7 +56,7 @@
 
 ## 📊 bStats
 
-[![bStats](https://bstats.org/signatures/bukkit/31415.svg)](https://bstats.org/plugin/bukkit/OnlySleep/31415)
+[![bStats](https://bstats.org/signatures/bukkit/OnlySleep.svg)](https://bstats.org/plugin/bukkit/OnlySleep/31415)
 
 [View statistics](https://bstats.org/plugin/bukkit/OnlySleep/31415)
 

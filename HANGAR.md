@@ -38,7 +38,7 @@ Onlysleep is a highly configurable sleep plugin that lets you skip the night wit
 
 ### bStats
 
-[![bStats](https://bstats.org/signatures/bukkit/31415.svg)](https://bstats.org/plugin/bukkit/OnlySleep/31415)
+[![bStats](https://bstats.org/signatures/bukkit/OnlySleep.svg)](https://bstats.org/plugin/bukkit/OnlySleep/31415)
 
 [Modrinth](https://modrinth.com/plugin/onlysleep) | [bStats](https://bstats.org/plugin/bukkit/OnlySleep/31415) | [GitHub](https://github.com/DemonZ-Development/Onlysleep) | [Report Issues](https://github.com/DemonZ-Development/Onlysleep/issues) | [Discord](https://discord.gg/qkvkEaPryF) | [Website](https://demonzdevelopment.online)
 
