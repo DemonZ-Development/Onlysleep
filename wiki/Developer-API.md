@@ -8,7 +8,7 @@ Onlysleep provides a public API for other plugins to integrate with. This allows
 
 ### Add Onlysleep as a Dependency
 
-> **Note:** Onlysleep does not currently publish artifacts to Maven Central or JitPack. The dependency information below is a template for when publication is configured. For now, add the compiled JAR from [Modrinth](https://modrinth.com/plugin/onlysleep) or [GitHub Releases](https://github.com/DemonzDevelopment/Onlysleep/releases) to your project's `libs/` directory and depend on it locally.
+> **Note:** Onlysleep does not currently publish artifacts to Maven Central or JitPack. The dependency information below is a template for when publication is configured. For now, add the compiled JAR from [Modrinth](https://modrinth.com/plugin/onlysleep) or [GitHub Releases](https://github.com/DemonZ-Development/Onlysleep/releases) to your project's `libs/` directory and depend on it locally.
 
 #### Using Gradle
 

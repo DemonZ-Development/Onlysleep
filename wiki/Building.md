@@ -12,7 +12,7 @@
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/DemonzDevelopment/Onlysleep.git
+git clone https://github.com/DemonZ-Development/Onlysleep.git
 cd Onlysleep
 ```
 
@@ -43,7 +43,7 @@ Copy the JAR to your server's `plugins/` folder and restart.
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/DemonzDevelopment/Onlysleep.git
+git clone https://github.com/DemonZ-Development/Onlysleep.git
 cd Onlysleep
 ```
 

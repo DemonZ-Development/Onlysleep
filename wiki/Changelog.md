@@ -1,6 +1,6 @@
 # 📋 Changelog
 
-> For the complete changelog, see [CHANGELOG.md](https://github.com/DemonzDevelopment/Onlysleep/blob/main/CHANGELOG.md) on GitHub.
+> For the complete changelog, see [CHANGELOG.md](https://github.com/DemonZ-Development/Onlysleep/blob/main/CHANGELOG.md) on GitHub.
 
 ---
 

@@ -1,42 +1,79 @@
-# 🌙 Onlysleep
+[CENTER][size=6][color=#00d875]🌙 Onlysleep[/color][/size]
+[size=4][i]Skip the night with just one player sleeping[/i][/size]
+[size=3]— or configure it your way![/size][/CENTER]
 
-**Skip the night with just one player sleeping** — or configure it your way!
+[HR]
 
-Onlysleep is a lightweight, highly configurable sleep plugin that lets you skip the night with just one player sleeping (or any percentage you choose). It works on **Bukkit, Spigot, Paper, Purpur, Folia, and all Paper forks** out of the box.
+[size=5][color=#ffaa00]✳ Description[/color][/size]
+Onlysleep is a lightweight, highly configurable sleep plugin that lets you skip the night with just one player sleeping (or any percentage you choose). It works on [b]Bukkit, Spigot, Paper, Purpur, Folia, and all Paper forks[/b] out of the box.
 
-## Features
-- **One-Player Sleep** — Default mode, or set any percentage (50%, 75%, 100%)
-- **Folia Support** — Fully compatible with Folia's regionized scheduler
-- **Per-World Sleep** — Per-world or global sleep counting
-- **Weather Skip** — Automatically clear storms when sleeping
-- **Visual Feedback** — Boss bar, action bar, progress bar, and titles
-- **Sound Effects** — Fully configurable sounds for night skip
-- **Smart Filtering** — AFK detection (EssentialsX, CMI), spectator ignore, exempt permissions
-- **PlaceholderAPI** — 12+ placeholders for integrations
-- **Disabled Worlds** — Disable sleep in specific worlds
-- **Update Checker** — Automatic update notifications
-- **bStats** — Anonymous usage statistics (opt-out available)
+[HR]
 
-## Commands
-- `/onlysleep` — Show help
-- `/onlysleep reload` — Reload config (requires `onlysleep.reload`)
-- `/onlysleep info` — Plugin information
-- `/onlysleep status` — Detailed status overview
-- Aliases: `/os`, `/sleep`
+[size=5][color=#ffaa00]✨ Features[/color][/size]
+[LIST]
+[*][b]One-Player Sleep[/b] — Default mode, or set any percentage (50%, 75%, 100%)
+[*][b]Folia Support[/b] — Fully compatible with Folia's regionized scheduler
+[*][b]Per-World Sleep[/b] — Per-world or global sleep counting
+[*][b]Weather Skip[/b] — Automatically clear storms when sleeping
+[*][b]Visual Feedback[/b] — Boss bar, action bar, progress bar, and titles
+[*][b]Sound Effects[/b] — Fully configurable sounds for night skip
+[*][b]Smart Filtering[/b] — AFK detection (EssentialsX, CMI), spectator ignore, exempt permissions
+[*][b]PlaceholderAPI[/b] — 12+ placeholders for integrations
+[*][b]Disabled Worlds[/b] — Disable sleep in specific worlds
+[*][b]Update Checker[/b] — Automatic update notifications
+[*][b]bStats[/b] — Anonymous usage statistics (opt-out available)
+[/LIST]
 
-## Installation
-1. Download the JAR
-2. Place in your `plugins/` folder
-3. Restart your server
-4. Configure `plugins/Onlysleep/config.yml` to your liking
-5. Run `/onlysleep reload` to apply changes
+[HR]
 
-## Requirements
-- Java 8+ (Java 16+ recommended)
-- Minecraft 1.16.5+
-- Works standalone — no dependencies required!
+[size=5][color=#ffaa00]🎮 Commands[/color][/size]
+[LIST]
+[*][b]/onlysleep[/b] — Show help
+[*][b]/onlysleep reload[/b] — Reload config ([i]requires onlysleep.reload[/i])
+[*][b]/onlysleep info[/b] — Plugin information
+[*][b]/onlysleep status[/b] — Detailed status overview
+[*][b]Aliases:[/b] /os, /sleep
+[/LIST]
 
-## bStats
-[![bStats](https://bstats.org/signatures/bukkit/OnlySleep/31415.svg)](https://bstats.org/plugin/bukkit/OnlySleep/31415)
+[HR]
 
-[View on Modrinth](https://modrinth.com/plugin/onlysleep) | [bStats](https://bstats.org/plugin/bukkit/OnlySleep/31415) | [Report Issues](https://github.com/DemonzDevelopment/Onlysleep/issues)
+[size=5][color=#ffaa00]📥 Installation[/color][/size]
+[LIST=1]
+[*]Download the JAR
+[*]Place in your [b]plugins/[/b] folder
+[*]Restart your server
+[*]Configure [b]plugins/Onlysleep/config.yml[/b] to your liking
+[*]Run [b]/onlysleep reload[/b] to apply changes
+[/LIST]
+
+[HR]
+
+[size=5][color=#ffaa00]⚙ Requirements[/color][/size]
+[LIST]
+[*]Java 8+ (Java 16+ recommended)
+[*]Minecraft 1.16.5+
+[*]Works standalone — [b]no dependencies required![/b]
+[/LIST]
+
+[HR]
+
+[size=5][color=#ffaa00]🔐 Permissions[/color][/size]
+[LIST]
+[*][b]onlysleep.*[/b] — All permissions (OP)
+[*][b]onlysleep.command[/b] — Use commands (Everyone)
+[*][b]onlysleep.reload[/b] — Reload config (OP)
+[*][b]onlysleep.status[/b] — View status (OP)
+[*][b]onlysleep.exempt[/b] — Excluded from sleep (OP)
+[*][b]onlysleep.update[/b] — Update alerts (OP)
+[/LIST]
+
+[HR]
+
+[size=5][color=#ffaa00]📊 bStats[/color][/size]
+[IMG]https://bstats.org/signatures/bukkit/OnlySleep/31415.svg[/IMG]
+
+[URL=https://bstats.org/plugin/bukkit/OnlySleep/31415]View live statistics[/URL] | [URL=https://modrinth.com/plugin/onlysleep]Download on Modrinth[/URL] | [URL=https://github.com/DemonZ-Development/Onlysleep/issues]Report Issues[/URL]
+
+[HR]
+
+[center][size=3][color=#888888]Developed by Demonz Development with ❤️ for the Minecraft community.[/color][/size][/center]

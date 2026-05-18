@@ -79,7 +79,7 @@ This plugin uses [bStats](https://bstats.org/plugin/bukkit/OnlySleep/31415) to c
 
 ## 🤝 Support
 
-- **Issues:** [GitHub Issues](https://github.com/DemonzDevelopment/Onlysleep/issues)
+- **Issues:** [GitHub Issues](https://github.com/DemonZ-Development/Onlysleep/issues)
 - **Discord:** [Join our Discord](https://discord.gg/demonzdevelopment)
 
 ---
@@ -88,4 +88,4 @@ This plugin uses [bStats](https://bstats.org/plugin/bukkit/OnlySleep/31415) to c
 
 Developed by **Demonz Development** with love for the Minecraft community.
 
-Licensed under the [MIT License](https://github.com/DemonzDevelopment/Onlysleep/blob/main/LICENSE).
+Licensed under the [MIT License](https://github.com/DemonZ-Development/Onlysleep/blob/main/LICENSE).

@@ -8,8 +8,8 @@
 [![Hangar](https://img.shields.io/badge/Hangar-Download-blue?logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgdmlld0JveD0iMCAwIDE2IDE2Ij48cGF0aCBmaWxsPSIjZmZmIiBkPSJNOCAwQTMuNTggMy41OCAwIDAgMCA0LjUgMy41djQuNUgzdjguNWgxMFY4aC0xLjVWMy41QTMuNTggMy41OCAwIDAgMCA4IDB6bTAgMWEyLjUgMi41IDAgMCAxIDIuNSAyLjV2NC41aC01VjMuNUEyLjUgMi41IDAgMCAxIDggMXoiLz48L3N2Zz4=)](https://hangar.papermc.io/DemonzDevelopment/Onlysleep)
 [![Spigot](https://img.shields.io/badge/Spigot-Resource-orange?logo=spigotmc)](https://www.spigotmc.org/resources/onlysleep.12345/)
 [![bStats](https://img.shields.io/badge/bStats-31415-ff69b4)](https://bstats.org/plugin/bukkit/OnlySleep/31415)
-[![Build](https://github.com/DemonzDevelopment/Onlysleep/actions/workflows/build.yml/badge.svg)](https://github.com/DemonzDevelopment/Onlysleep/actions/workflows/build.yml)
-[![CodeQL](https://github.com/DemonzDevelopment/Onlysleep/actions/workflows/codeql.yml/badge.svg)](https://github.com/DemonzDevelopment/Onlysleep/actions/workflows/codeql.yml)
+[![Build](https://github.com/DemonZ-Development/Onlysleep/actions/workflows/build.yml/badge.svg)](https://github.com/DemonZ-Development/Onlysleep/actions/workflows/build.yml)
+[![CodeQL](https://github.com/DemonZ-Development/Onlysleep/actions/workflows/codeql.yml/badge.svg)](https://github.com/DemonZ-Development/Onlysleep/actions/workflows/codeql.yml)
 ![Java](https://img.shields.io/badge/Java-21%2B-orange)
 [![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
@@ -139,7 +139,7 @@ Onlysleep provides **12+ placeholders** when [PlaceholderAPI](https://placeholde
 ### Gradle (Recommended)
 
 ```bash
-git clone https://github.com/DemonzDevelopment/Onlysleep.git
+git clone https://github.com/DemonZ-Development/Onlysleep.git
 cd Onlysleep
 ./gradlew clean build
 ```
@@ -149,7 +149,7 @@ The compiled JAR will be in `build/libs/`.
 ### Maven (Alternative)
 
 ```bash
-git clone https://github.com/DemonzDevelopment/Onlysleep.git
+git clone https://github.com/DemonZ-Development/Onlysleep.git
 cd Onlysleep
 mvn clean package
 ```
@@ -196,7 +196,7 @@ This plugin uses [bStats](https://bstats.org/plugin/bukkit/OnlySleep/31415) to c
 
 ## 🤝 Support
 
-- **Issues:** [GitHub Issues](https://github.com/DemonzDevelopment/Onlysleep/issues)
+- **Issues:** [GitHub Issues](https://github.com/DemonZ-Development/Onlysleep/issues)
 - **Discord:** [Join our Discord](https://discord.gg/demonzdevelopment)
 
 ---
