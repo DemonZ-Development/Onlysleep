@@ -46,12 +46,19 @@ command:
     status-enabled: "&7Status: &aEnabled &7| &b%platform%"
     sleep-pct: "&7Sleep Required: &b%percent%%"
     platform: "&7Platform: &b%platform%"
+    links-header: "&8--- &bLinks &8---"
+    link-modrinth: "&8» &7Modrinth: &bhttps://modrinth.com/plugin/onlysleep"
+    link-github: "&8» &7GitHub: &bhttps://github.com/DemonZ-Development/Onlysleep"
+    link-website: "&8» &7Website: &bhttps://demonzdevelopment.online"
+    link-discord: "&8» &7Discord: &bhttps://discord.gg/qkvkEaPryF"
     footer: "&8============================"
 
 # --- Update Checker ---
 
 update:
-  available: "&e✨ A new version is available: &b%new% &e(Current: &7%current%&e) &f- &b/modrinth download"
+  checking: "&eChecking for updates..."
+  available: "&e✨ A new version is available: &b%new% &e(Current: &7%current%&e)"
+  available-links: "&8» &7Download: &bhttps://modrinth.com/plugin/onlysleep"
   current: "&aYou are running the latest version."
   check-fail: "&cFailed to check for updates."
 
@@ -63,5 +70,6 @@ help:
   reload: "&7/%cmd% reload &8- &bReload configuration"
   info: "&7/%cmd% info &8- &bShow plugin information"
   status: "&7/%cmd% status &8- &bShow plugin status"
+  update: "&7/%cmd% update &8- &bCheck for updates"
   help: "&7/%cmd% help &8- &bShow this help"
   footer: "&8========================"
