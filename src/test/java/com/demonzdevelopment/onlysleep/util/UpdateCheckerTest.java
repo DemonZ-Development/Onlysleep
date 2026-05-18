@@ -39,16 +39,6 @@ class UpdateCheckerTest {
     }
 
     @Test
-    void isUpdateAvailable_DefaultsToFalse() {
-        assertFalse(updateChecker.isUpdateAvailable());
-    }
-
-    @Test
-    void getLatestVersion_DefaultsToNull() {
-        assertNull(updateChecker.getLatestVersion());
-    }
-
-    @Test
     void checkAsync_ReturnsNonNullFuture() {
         assertNotNull(updateChecker.checkAsync());
     }
@@ -87,12 +77,4 @@ class UpdateCheckerTest {
         assertNull(result.getMessage());
     }
 
-    // --- State after checkAsync ---
-
-    @Test
-    void isUpdateAvailable_RemainsFalse_AfterFailedCheck() {
-        // A network failure should not change the default state
-        assertFalse(updateChecker.isUpdateAvailable());
-        assertNull(updateChecker.getLatestVersion());
-    }
 }

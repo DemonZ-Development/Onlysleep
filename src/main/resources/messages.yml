@@ -26,7 +26,6 @@ sleep:
 
 weather:
   clearing: "&a☀ The storm has been cleared by &b%player%"
-  already-clear: "&eWeather is already clear."
 
 # --- Boss Bar ---
 

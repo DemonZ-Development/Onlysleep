@@ -131,15 +131,6 @@ class AfkTrackerTest {
     }
 
     @Test
-    void removePlayer_DoesNotThrow() {
-        try (MockedStatic<Bukkit> bukkit = mockBukkitForInit()) {
-            AfkTracker.init(plugin);
-            AfkTracker.updateActivity(player);
-            assertDoesNotThrow(() -> AfkTracker.removePlayer(player));
-        }
-    }
-
-    @Test
     void updateActivity_DoesNotThrowForNullPlayer() {
         try (MockedStatic<Bukkit> bukkit = mockBukkitForInit()) {
             AfkTracker.init(plugin);

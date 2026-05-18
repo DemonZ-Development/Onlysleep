@@ -5,7 +5,6 @@ import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
@@ -27,19 +26,6 @@ public final class SchedulerAdapter {
             foliaChecked = true;
         }
         return isFolia;
-    }
-
-    /**
-     * Runs a task on the next tick for a specific world.
-     * On Folia, this uses the region scheduler for the world.
-     * On Bukkit/Spigot/Paper, this uses BukkitScheduler.
-     */
-    public static ScheduledTask runTask(JavaPlugin plugin, Runnable task, World world) {
-        if (isFolia()) {
-            return runFoliaTask(plugin, world, task, 0, 0);
-        }
-        BukkitTask bt = Bukkit.getScheduler().runTask(plugin, task);
-        return new BukkitScheduledTask(bt);
     }
 
     /**
@@ -81,17 +67,6 @@ public final class SchedulerAdapter {
             return runFoliaGlobalTask(plugin, task, 0, 0);
         }
         BukkitTask bt = Bukkit.getScheduler().runTask(plugin, task);
-        return new BukkitScheduledTask(bt);
-    }
-
-    /**
-     * Runs a global task after a delay.
-     */
-    public static ScheduledTask runGlobalTaskLater(JavaPlugin plugin, Runnable task, long delay) {
-        if (isFolia()) {
-            return runFoliaGlobalTask(plugin, task, delay, 0);
-        }
-        BukkitTask bt = Bukkit.getScheduler().runTaskLater(plugin, task, delay);
         return new BukkitScheduledTask(bt);
     }
 
