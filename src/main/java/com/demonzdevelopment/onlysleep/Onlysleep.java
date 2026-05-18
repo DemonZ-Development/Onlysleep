@@ -125,6 +125,7 @@ public final class Onlysleep extends JavaPlugin {
                 getLogger().info("Update available: " + result.getLatestVersion() +
                     " (Current: " + getDescription().getVersion() + ")");
                 getLogger().info("Download at: https://modrinth.com/plugin/onlysleep");
+                getLogger().info("GitHub: https://github.com/DemonZ-Development/Onlysleep");
 
                 // Notify online ops
                 Map<String, String> placeholders = new HashMap<>();
@@ -132,9 +133,13 @@ public final class Onlysleep extends JavaPlugin {
                 placeholders.put("current", getDescription().getVersion());
 
                 String msg = configManager.getMessage("update.available", placeholders);
+                String links = configManager.getMessage("update.available-links");
                 Bukkit.getOnlinePlayers().stream()
                     .filter(p -> p.hasPermission("onlysleep.update"))
-                    .forEach(p -> p.sendMessage(msg));
+                    .forEach(p -> {
+                        p.sendMessage(msg);
+                        p.sendMessage(links);
+                    });
             } else {
                 getLogger().info(result.getMessage());
             }

@@ -2,6 +2,8 @@
 
 <div align="center">
 
+![Onlysleep Banner](https://raw.githubusercontent.com/DemonZ-Development/Onlysleep/master/assets/banner.png)
+
 **Skip the night with just one player sleeping** — or configure it your way.
 
 **Supports:** Bukkit · Spigot · Paper · Purpur · Folia · Any Paper fork  

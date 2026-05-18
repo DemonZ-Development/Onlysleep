@@ -1,4 +1,6 @@
-[CENTER][size=6][color=#00d875]🌙 Onlysleep[/color][/size]
+[CENTER][IMG]https://raw.githubusercontent.com/DemonZ-Development/Onlysleep/master/assets/banner.png[/IMG]
+
+[size=6][color=#00d875]🌙 Onlysleep[/color][/size]
 [size=4][i]Skip the night with just one player sleeping[/i][/size]
 [size=3]— or configure it your way![/size][/CENTER]
 
@@ -76,4 +78,18 @@ Onlysleep is a lightweight, highly configurable sleep plugin that lets you skip 
 
 [HR]
 
-[center][size=3][color=#888888]Developed by Demonz Development with ❤️ for the Minecraft community.[/color][/size][/center]
+[size=5][color=#ffaa00]🔗 Links[/color][/size]
+[LIST]
+[*][URL=https://demonzdevelopment.online]🌐 Website[/URL]
+[*][URL=https://github.com/DemonZ-Development]💻 GitHub[/URL]
+[*][URL=https://modrinth.com/organization/DemonZDevelopment]🎮 Modrinth[/URL]
+[*][URL=https://x.com/DemonZ_Dev]🐦 Twitter / X[/URL]
+[*][URL=https://www.youtube.com/@DemonzDevelopment]🎥 YouTube[/URL]
+[*][URL=https://www.instagram.com/demonzdevelopement]📸 Instagram[/URL]
+[*][URL=https://discord.gg/qkvkEaPryF]🔑 Discord[/URL]
+[*][URL=https://www.reddit.com/r/DemonZDevelopment/]📋 Reddit[/URL]
+[/LIST]
+
+[HR]
+
+[center][size=3][color=#888888]Developed by Demonz Development with ❤️ for the Minecraft community. | [EMAIL]demonzdevelopment@gmail.com[/EMAIL][/color][/size][/center]

@@ -28,7 +28,7 @@ public final class UpdateChecker {
     }
 
     /**
-     * Checks for updates asynchronously.
+     * Checks for updates asynchronously against Modrinth API.
      */
     public CompletableFuture<UpdateResult> checkAsync() {
         return CompletableFuture.supplyAsync(() -> {
@@ -52,9 +52,7 @@ public final class UpdateChecker {
                         response.append(line);
                     }
 
-                    // Parse JSON response to get the latest version number
                     String json = response.toString();
-                    // Simple JSON parsing - find the first version_number field
                     String versionField = "\"version_number\":\"";
                     int startIdx = json.indexOf(versionField);
                     if (startIdx != -1) {

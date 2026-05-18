@@ -20,7 +20,7 @@ public class OnlysleepCommand implements CommandExecutor, TabCompleter {
 
     private final Onlysleep plugin;
     private final ConfigManager configManager;
-    private static final List<String> SUBCOMMANDS = Arrays.asList("reload", "info", "status", "help");
+    private static final List<String> SUBCOMMANDS = Arrays.asList("reload", "info", "status", "help", "update");
 
     public OnlysleepCommand(Onlysleep plugin, ConfigManager configManager) {
         this.plugin = plugin;
@@ -47,7 +47,10 @@ public class OnlysleepCommand implements CommandExecutor, TabCompleter {
             case "help":
                 sendHelp(sender);
                 break;
-    
+            case "update":
+                handleUpdate(sender);
+                break;
+     
             default:
                 sendHelp(sender);
                 break;
@@ -102,6 +105,11 @@ public class OnlysleepCommand implements CommandExecutor, TabCompleter {
         sender.sendMessage(configManager.getMessage("command.info.status-enabled", placeholders));
         sender.sendMessage(configManager.getMessage("command.info.sleep-pct", placeholders));
         sender.sendMessage(configManager.getMessage("command.info.platform", Map.of("platform", plugin.getPlatform().getDisplayName())));
+        sender.sendMessage(configManager.getMessage("command.info.links-header"));
+        sender.sendMessage(configManager.getMessage("command.info.link-modrinth"));
+        sender.sendMessage(configManager.getMessage("command.info.link-github"));
+        sender.sendMessage(configManager.getMessage("command.info.link-website"));
+        sender.sendMessage(configManager.getMessage("command.info.link-discord"));
         sender.sendMessage(configManager.getMessage("command.info.footer", placeholders));
     }
 
@@ -130,6 +138,28 @@ public class OnlysleepCommand implements CommandExecutor, TabCompleter {
             "&8========================"));
     }
 
+    private void handleUpdate(CommandSender sender) {
+        if (!sender.hasPermission("onlysleep.update")) {
+            sender.sendMessage(configManager.getMessage("command.no-permission"));
+            return;
+        }
+
+        sender.sendMessage(configManager.getMessage("update.checking"));
+        plugin.getUpdateChecker().checkAsync().thenAccept(result -> {
+            if (result.isUpdateAvailable()) {
+                Map<String, String> placeholders = new HashMap<>();
+                placeholders.put("new", result.getLatestVersion());
+                placeholders.put("current", plugin.getDescription().getVersion());
+                sender.sendMessage(configManager.getMessage("update.available", placeholders));
+            } else {
+                sender.sendMessage(configManager.getMessage("update.current"));
+            }
+        }).exceptionally(throwable -> {
+            sender.sendMessage(configManager.getMessage("update.check-fail"));
+            return null;
+        });
+    }
+
     private void sendHelp(CommandSender sender) {
         String cmd = "onlysleep";
         Map<String, String> placeholders = Map.of("cmd", cmd);
@@ -137,6 +167,7 @@ public class OnlysleepCommand implements CommandExecutor, TabCompleter {
         sender.sendMessage(configManager.getMessage("help.reload", placeholders));
         sender.sendMessage(configManager.getMessage("help.info", placeholders));
         sender.sendMessage(configManager.getMessage("help.status", placeholders));
+        sender.sendMessage(configManager.getMessage("help.update", placeholders));
         sender.sendMessage(configManager.getMessage("help.help", placeholders));
         sender.sendMessage(configManager.getMessage("help.footer", placeholders));
     }

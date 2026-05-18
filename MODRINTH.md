@@ -1,3 +1,5 @@
+<img src="https://raw.githubusercontent.com/DemonZ-Development/Onlysleep/master/assets/banner.png" alt="Onlysleep Banner" width="100%">
+
 # 🌙 Onlysleep
 
 **Skip the night with just one player sleeping** — fully configurable, lightweight, and compatible with **every major Minecraft server platform**.
@@ -59,5 +61,11 @@
 
 ## 🔗 Links
 
-- [GitHub](https://github.com/DemonZ-Development/Onlysleep)
-- [Report Issues](https://github.com/DemonZ-Development/Onlysleep/issues)
+- 🌐 [Website](https://demonzdevelopment.online)
+- 💻 [GitHub](https://github.com/DemonZ-Development/Onlysleep)
+- 🐦 [Twitter / X](https://x.com/DemonZ_Dev)
+- 🎥 [YouTube](https://www.youtube.com/@DemonzDevelopment)
+- 📸 [Instagram](https://www.instagram.com/demonzdevelopement)
+- 🔑 [Discord](https://discord.gg/qkvkEaPryF)
+- 📋 [Reddit](https://www.reddit.com/r/DemonZDevelopment/)
+- 📧 demonzdevelopment@gmail.com

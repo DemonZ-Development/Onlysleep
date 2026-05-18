@@ -1,5 +1,7 @@
 <div align="center">
 
+![Onlysleep Banner](https://raw.githubusercontent.com/DemonZ-Development/Onlysleep/master/assets/banner.png)
+
 # 🌙 Onlysleep
 
 **Skip the night with just one player sleeping** — or configure it your way.
@@ -194,10 +196,17 @@ This plugin uses [bStats](https://bstats.org/plugin/bukkit/OnlySleep/31415) to c
 
 ---
 
-## 🤝 Support
+## 🤝 Support & Links
 
-- **Issues:** [GitHub Issues](https://github.com/DemonZ-Development/Onlysleep/issues)
-- **Discord:** [Join our Discord](https://discord.gg/demonzdevelopment)
+- 🌐 [Website](https://demonzdevelopment.online)
+- 💻 [GitHub](https://github.com/DemonZ-Development/Onlysleep)
+- 🎮 [Modrinth](https://modrinth.com/plugin/onlysleep)
+- 🐦 [Twitter / X](https://x.com/DemonZ_Dev)
+- 🎥 [YouTube](https://www.youtube.com/@DemonzDevelopment)
+- 📸 [Instagram](https://www.instagram.com/demonzdevelopement)
+- 🔑 [Discord](https://discord.gg/qkvkEaPryF)
+- 📋 [Reddit](https://www.reddit.com/r/DemonZDevelopment/)
+- 📧 demonzdevelopment@gmail.com
 
 ---
 
