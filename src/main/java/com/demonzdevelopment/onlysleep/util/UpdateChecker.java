@@ -108,14 +108,6 @@ public final class UpdateChecker {
         }
     }
 
-    public boolean isUpdateAvailable() {
-        return updateAvailable;
-    }
-
-    public String getLatestVersion() {
-        return latestVersion;
-    }
-
     public static class UpdateResult {
         private final boolean updateAvailable;
         private final String latestVersion;

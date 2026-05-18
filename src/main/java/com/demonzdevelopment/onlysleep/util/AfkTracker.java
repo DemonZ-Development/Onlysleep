@@ -70,14 +70,6 @@ public class AfkTracker implements Listener {
     }
 
     /**
-     * Removes a player from the tracker (e.g., on quit).
-     */
-    public static void removePlayer(Player player) {
-        if (player == null) return;
-        lastActivity.remove(player.getUniqueId());
-    }
-
-    /**
      * Checks whether a player is currently AFK based on inactivity timeout.
      *
      * @param player the player to check

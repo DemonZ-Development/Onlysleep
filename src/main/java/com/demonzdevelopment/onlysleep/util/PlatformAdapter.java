@@ -67,20 +67,6 @@ public final class PlatformAdapter {
     }
 
     /**
-     * Gets the server software name.
-     */
-    public static String getServerSoftware() {
-        return Bukkit.getVersion();
-    }
-
-    /**
-     * Gets the Bukkit API version.
-     */
-    public static String getAPIVersion() {
-        return Bukkit.getBukkitVersion();
-    }
-
-    /**
      * Gets the Minecraft version (e.g., "1.21.4").
      */
     public static String getMinecraftVersion() {
@@ -89,21 +75,6 @@ public final class PlatformAdapter {
             version = version.substring(0, version.indexOf('-'));
         }
         return version;
-    }
-
-    /**
-     * Gets the major Minecraft version number (e.g., 21 for 1.21.4).
-     */
-    public static int getMinecraftMajorVersion() {
-        try {
-            String full = getMinecraftVersion();
-            // Format: 1.XX or 1.XX.Y
-            String[] parts = full.split("\\.");
-            if (parts.length >= 2) {
-                return Integer.parseInt(parts[1]);
-            }
-        } catch (NumberFormatException ignored) {}
-        return -1;
     }
 
     private static void detect() {
