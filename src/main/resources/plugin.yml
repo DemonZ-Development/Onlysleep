@@ -21,10 +21,14 @@ permissions:
     default: op
     children:
       onlysleep.command: true
+      onlysleep.info: true
       onlysleep.reload: true
       onlysleep.status: true
       onlysleep.exempt: true
       onlysleep.update: true
+  onlysleep.info:
+    description: Allows viewing plugin information via /onlysleep info
+    default: op
   onlysleep.command:
     description: Allows use of /onlysleep command
     default: true

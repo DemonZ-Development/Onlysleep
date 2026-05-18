@@ -392,11 +392,14 @@ public class SleepManager {
 
         int count = 0;
 
-        // Count actual players in bed
+        // Count actual players in bed.
+        // Player.isSleeping() is NOT checked here because PlayerBedEnterEvent fires
+        // before the sleeping state is set by the server. The sleepingPlayers set
+        // is the authoritative source of who has entered a bed.
         if (sleeping != null) {
             for (UUID uuid : sleeping) {
                 Player player = Bukkit.getPlayer(uuid);
-                if (player != null && player.isOnline() && player.isSleeping()) {
+                if (player != null && player.isOnline()) {
                     count++;
                 }
             }
