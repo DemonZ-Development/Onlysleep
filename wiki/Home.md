@@ -75,7 +75,7 @@
 
 This plugin uses [bStats](https://bstats.org/plugin/bukkit/OnlySleep/31415) to collect anonymous usage statistics. No personal data is collected. You can opt-out in `plugins/bstats/config.yml`.
 
-[![bStats Servers](https://bstats.org/signatures/bukkit/31415.svg)](https://bstats.org/plugin/bukkit/OnlySleep/31415)
+[![bStats Servers](https://bstats.org/signatures/bukkit/OnlySleep.svg)](https://bstats.org/plugin/bukkit/OnlySleep/31415)
 
 ---
 
