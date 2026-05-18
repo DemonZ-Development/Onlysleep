@@ -1,0 +1,67 @@
+# ============================================
+#  Onlysleep v${project.version} - Messages
+#  by Demonz Development
+# ============================================
+# Color codes: &0-&f, &l (bold), &o (italic),
+# &n (underline), &m (strikethrough), &k (magic)
+# Placeholders: %player%, %count%, %required%,
+# %bar%, %version%, %author%, %percent%, %platform%
+# ============================================
+
+prefix: "&8[&bOnlysleep&8] &r"
+
+# --- Sleep Messages ---
+
+sleep:
+  start-sleep: "&a%player% &eis sleeping... &7(&b%count%&7/&b%required%&7)"
+  enough-sleeping: "&a✅ Good morning! Night skipped by &b%player%"
+  already-day: "&cYou can only sleep during the night or a thunderstorm."
+  not-safe: "&cYou cannot sleep now - monsters are nearby."
+  not-required: "&eNo one needs to sleep right now."
+  cancelled: "&c%player% &ehas stopped sleeping."
+  progress-bar: "&bSleeping... &7%bar% &7(&b%count%&7/&b%required%&7)"
+  world-disabled: "&cSleep skipping is disabled in this world."
+
+# --- Weather Messages ---
+
+weather:
+  clearing: "&a☀ The storm has been cleared by &b%player%"
+  already-clear: "&eWeather is already clear."
+
+# --- Boss Bar ---
+
+boss-bar:
+  title: "&b🌙 Night is being skipped by &f%player%"
+
+# --- Command Messages ---
+
+command:
+  no-permission: "&cYou don't have permission to use this command."
+  reload-success: "&aConfiguration reloaded successfully!"
+  reload-fail: "&cFailed to reload configuration. Check console for errors."
+  info:
+    header: "&8=== &bOnlysleep v%version% &8==="
+    version: "&7Version: &b%version%"
+    author: "&7Author: &b%author%"
+    status-enabled: "&7Status: &aEnabled &7| &b%platform%"
+    sleep-pct: "&7Sleep Required: &b%percent%%"
+    platform: "&7Platform: &b%platform%"
+    footer: "&8============================"
+
+# --- Update Checker ---
+
+update:
+  available: "&e✨ A new version is available: &b%new% &e(Current: &7%current%&e) &f- &b/modrinth download"
+  current: "&aYou are running the latest version."
+  check-fail: "&cFailed to check for updates."
+
+# --- Help Messages ---
+# %cmd% is replaced with the command name (e.g., "onlysleep")
+
+help:
+  header: "&8=== &bOnlysleep Commands &8==="
+  reload: "&7/%cmd% reload &8- &bReload configuration"
+  info: "&7/%cmd% info &8- &bShow plugin information"
+  status: "&7/%cmd% status &8- &bShow plugin status"
+  help: "&7/%cmd% help &8- &bShow this help"
+  footer: "&8========================"

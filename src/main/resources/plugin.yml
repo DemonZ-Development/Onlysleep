@@ -1,0 +1,42 @@
+name: Onlysleep
+version: '${project.version}'
+main: com.demonzdevelopment.onlysleep.Onlysleep
+api-version: '1.16'
+folia-supported: true
+author: Demonz Development
+description: One player sleep plugin - Skip the night with just one player sleeping
+website: https://modrinth.com/plugin/onlysleep
+softdepend: [PlaceholderAPI]
+
+commands:
+  onlysleep:
+    description: Main Onlysleep command
+    usage: /<command> <reload|info|status|help>
+    aliases: [os, sleep]
+    permission: onlysleep.command
+
+permissions:
+  onlysleep.*:
+    description: Grants all Onlysleep permissions
+    default: op
+    children:
+      onlysleep.command: true
+      onlysleep.reload: true
+      onlysleep.status: true
+      onlysleep.exempt: true
+      onlysleep.update: true
+  onlysleep.command:
+    description: Allows use of /onlysleep command
+    default: true
+  onlysleep.reload:
+    description: Allows reloading the plugin configuration
+    default: op
+  onlysleep.status:
+    description: Allows viewing detailed plugin status
+    default: op
+  onlysleep.exempt:
+    description: Exempts player from sleep calculations entirely
+    default: false
+  onlysleep.update:
+    description: Receives update notifications
+    default: op

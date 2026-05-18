@@ -1,0 +1,155 @@
+# ============================================
+#  Onlysleep v${project.version} by Demonz Development
+#  https://modrinth.com/plugin/onlysleep
+# ============================================
+# One player sleep plugin - Skip the night with
+# just one player sleeping. Supports Bukkit,
+# Spigot, Paper, and Folia servers.
+# ============================================
+
+# --- Sleep Settings ---
+
+# Percentage of eligible players that need to sleep to skip the night.
+# Set to 0 for one-player-sleep, 50 for half, 100 for all.
+sleep-percentage: 50
+
+# Delay in ticks before the night is skipped after enough players sleep.
+# 20 ticks = 1 second. Default: 60 (3 seconds)
+skip-delay-ticks: 60
+
+# Type of night skip: "instant" (immediate), "speed" (fast-forward), or "gradual" (smooth transition)
+skip-type: instant
+
+# How fast time passes during a gradual skip (higher = faster).
+# Only used when skip-type is "gradual".
+gradual-skip-speed-ticks: 30
+
+# Time of day to set after skipping (in Minecraft ticks).
+# 0 = dawn (sunrise), 1000 = morning, 6000 = noon, 12000 = dusk
+morning-time: 1000
+
+# Reset time to 0 (dawn) after skipping. If false, uses morning-time above.
+reset-time: true
+
+# Only count players in the same world as the sleeping player.
+per-world-sleep: true
+
+# Require all eligible players to be online before counting can begin.
+require-all-players-online: false
+
+# --- Weather Settings ---
+
+# Clear weather (rain/thunder) when a player sleeps during a storm.
+clear-weather: true
+
+# Reset rain to clear after skipping.
+reset-weather: true
+
+# Also clear thunder specifically.
+clear-thunder: true
+
+# Reset thunder to clear after skipping.
+reset-thunder: true
+
+# Reset the weather cycle duration (prevents immediate rain after clearing).
+reset-weather-cycle: true
+
+# --- Player Filtering ---
+
+# Consider AFK players as sleeping for the percentage calculation.
+count-afk-as-sleeping: false
+
+# Exclude AFK players from the total player count.
+# Prevents AFK players from making it harder to skip the night.
+exclude-afk-from-total: true
+
+# Count spectator mode players in the total.
+count-spectators: false
+
+# Count flying players in the total.
+count-flying: true
+
+# Ignore creative mode players entirely (don't count or require them).
+ignore-creative-mode: false
+
+# --- AFK Detection ---
+
+afk-detection:
+  # Check EssentialsX's AFK metadata
+  use-essentials: true
+  # Check CMI's AFK status
+  use-cmi: true
+  # Time in seconds before a player is considered AFK by the built-in AFK tracker.
+  # Set to 0 to disable built-in AFK detection (EssentialsX/CMI AFK still works).
+  time-seconds: 300
+
+# --- UI Settings ---
+
+ui:
+  # Action bar message shown to sleeping players
+  action-bar:
+    enabled: true
+
+  # Boss bar shown to all players when night is being skipped
+  boss-bar:
+    enabled: true
+    # Colors: BLUE, GREEN, PINK, PURPLE, RED, WHITE, YELLOW
+    color: BLUE
+    # Styles: SOLID, SEGMENTED_6, SEGMENTED_10, SEGMENTED_12, SEGMENTED_20
+    style: SOLID
+
+  # Progress bar in the action bar showing sleep progress
+  progress-bar:
+    enabled: true
+    # Character used for progress bar segments
+    symbol: "■"
+    # Total length of the progress bar
+    length: 20
+
+  # Title/subtitle shown to all players when night is skipped
+  title:
+    enabled: false
+    title: "&bGood Morning!"
+    subtitle: "&fNight skipped by &b%player%"
+    fade-in: 10
+    stay: 70
+    fade-out: 20
+
+# --- Sound Settings ---
+
+sounds:
+  # Master toggle for all sounds
+  enabled: true
+  # Sound played when night is skipped
+  skip-sound: ENTITY_PLAYER_LEVELUP
+  skip-sound-volume: 1.0
+  skip-sound-pitch: 1.0
+  # Sound played at night skip (alternative)
+  night-sound: ENTITY_PLAYER_LEVELUP
+  night-sound-volume: 0.5
+  night-sound-pitch: 1.0
+  # Sound played during storm skip
+  storm-sound: ENTITY_LIGHTNING_BOLT_THUNDER
+  storm-sound-volume: 1.0
+  storm-sound-pitch: 1.0
+
+# --- Gamerule Management ---
+
+# The gamerule playersSleepingPercentage will be automatically managed.
+manage-gamerule: true
+
+# --- Update Checker ---
+
+# Check for updates on startup via Modrinth API.
+check-for-updates: true
+
+# --- Disabled Worlds ---
+
+# Worlds where sleep skipping is disabled.
+disabled-worlds: []
+
+# --- Disabled Game Modes ---
+
+# Game modes where sleep skipping is disabled for players.
+# Options: SURVIVAL, CREATIVE, ADVENTURE, SPECTATOR
+disabled-gamemodes: []
