@@ -90,6 +90,11 @@ public class OnlysleepCommand implements CommandExecutor, TabCompleter {
     }
 
     private void sendInfo(CommandSender sender) {
+        if (!sender.hasPermission("onlysleep.info")) {
+            sender.sendMessage(configManager.getMessage("command.no-permission"));
+            return;
+        }
+
         String version = plugin.getDescription().getVersion();
         String author = plugin.getDescription().getAuthors().isEmpty()
             ? "Demonz Development" : plugin.getDescription().getAuthors().get(0);

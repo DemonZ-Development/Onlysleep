@@ -187,11 +187,13 @@ class SleepManagerTest {
     }
 
     @Test
-    void getSleepingCount_ReturnsZero_WhenPlayerNotActuallySleeping() {
-        // player2 is set up with isSleeping() returning false
+    void getSleepingCount_ReturnsOne_EvenWhenIsSleepingFalse() {
+        // PlayerBedEnterEvent fires before the server sets the sleeping state,
+        // so Player.isSleeping() can return false at event time. We trust the
+        // sleepingPlayers set instead.
         try (MockedStatic<Bukkit> bukkit = mockBukkitForTwoPlayers()) {
             sleepManager.onPlayerBedEnter(player2);
-            assertEquals(0, sleepManager.getSleepingCount(world));
+            assertEquals(1, sleepManager.getSleepingCount(world));
         }
     }
 

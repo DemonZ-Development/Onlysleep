@@ -45,15 +45,9 @@ public class SleepListener implements Listener {
             return;
         }
 
-        // Check if sleeping is possible in this world
+        // Check if sleeping is possible in this world (night or storm)
         if (!isSleepable(player.getWorld())) {
             player.sendMessage(configManager.getMessage("sleep.already-day"));
-            return;
-        }
-
-        // Check if weather skip is enabled but weather is already clear
-        if (!isSleepable(player.getWorld()) && player.getWorld().isClearWeather()) {
-            player.sendMessage(configManager.getMessage("weather.already-clear"));
             return;
         }
 

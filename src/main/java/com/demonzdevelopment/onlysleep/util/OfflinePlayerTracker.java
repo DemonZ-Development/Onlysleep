@@ -84,9 +84,12 @@ public class OfflinePlayerTracker implements Listener {
     /**
      * Returns {@code true} if there are known offline players who might be
      * eligible but aren't online. Uses the cached count.
+     * If the count hasn't been loaded yet, returns {@code true} to be safe.
      */
     public static boolean hasOfflinePlayers() {
-        return getKnownPlayerCount() > Bukkit.getOnlinePlayers().size();
+        int cached = knownPlayerCount.get();
+        if (cached < 0) return true; // Not loaded yet — assume there are offline players
+        return cached > Bukkit.getOnlinePlayers().size();
     }
 
     /**
