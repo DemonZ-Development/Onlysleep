@@ -59,5 +59,5 @@
 
 ## 🔗 Links
 
-- [GitHub](https://github.com/DemonzDevelopment/Onlysleep)
-- [Report Issues](https://github.com/DemonzDevelopment/Onlysleep/issues)
+- [GitHub](https://github.com/DemonZ-Development/Onlysleep)
+- [Report Issues](https://github.com/DemonZ-Development/Onlysleep/issues)

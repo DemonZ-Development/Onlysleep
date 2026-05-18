@@ -20,7 +20,7 @@ Get the latest `Onlysleep-*.jar` from one of these sources:
 | **Modrinth** | [https://modrinth.com/plugin/onlysleep](https://modrinth.com/plugin/onlysleep) |
 | **Hangar** | [https://hangar.papermc.io/DemonzDevelopment/Onlysleep](https://hangar.papermc.io/DemonzDevelopment/Onlysleep) |
 | **Spigot** | [https://www.spigotmc.org/resources/onlysleep.12345/](https://www.spigotmc.org/resources/onlysleep.12345/) |
-| **GitHub Releases** | [https://github.com/DemonzDevelopment/Onlysleep/releases](https://github.com/DemonzDevelopment/Onlysleep/releases) |
+| **GitHub Releases** | [https://github.com/DemonZ-Development/Onlysleep/releases](https://github.com/DemonZ-Development/Onlysleep/releases) |
 
 ### 2. Install the Plugin
 

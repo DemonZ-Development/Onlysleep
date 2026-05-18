@@ -32,6 +32,6 @@
 - [Modrinth](https://modrinth.com/plugin/onlysleep)
 - [Hangar](https://hangar.papermc.io/DemonzDevelopment/Onlysleep)
 - [Spigot](https://www.spigotmc.org/resources/onlysleep.12345/)
-- [GitHub](https://github.com/DemonzDevelopment/Onlysleep)
+- [GitHub](https://github.com/DemonZ-Development/Onlysleep)
 - [Discord](https://discord.gg/demonzdevelopment)
 - [bStats](https://bstats.org/plugin/bukkit/OnlySleep/31415)

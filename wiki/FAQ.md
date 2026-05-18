@@ -155,7 +155,7 @@ If you encounter a bug:
 
 1. **Check** that you're running the latest version of Onlysleep
 2. **Check** the console for any error messages
-3. **Create an issue** on [GitHub Issues](https://github.com/DemonzDevelopment/Onlysleep/issues) with:
+3. **Create an issue** on [GitHub Issues](https://github.com/DemonZ-Development/Onlysleep/issues) with:
    - Plugin version and server software version
    - Steps to reproduce the bug
    - Any relevant console errors
