@@ -98,6 +98,7 @@ public class OnlysleepCommand implements CommandExecutor, TabCompleter {
         placeholders.put("version", version);
         placeholders.put("author", author);
         placeholders.put("percent", String.valueOf(configManager.getSleepPercentage()));
+        placeholders.put("platform", plugin.getPlatform().getDisplayName());
 
         sender.sendMessage(configManager.getMessage("command.info.header", placeholders));
         sender.sendMessage(configManager.getMessage("command.info.version", placeholders));
