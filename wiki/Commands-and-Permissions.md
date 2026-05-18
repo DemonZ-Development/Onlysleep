@@ -30,8 +30,8 @@ Displays plugin version information and current settings.
 
 **Output:**
 ```
-=== Onlysleep v2.0.0 ===
-Version: 2.0.0
+=== Onlysleep v1.0.0 ===
+Version: 1.0.0
 Author: Demonz Development
 Status: Enabled | Paper
 Sleep Required: 50%
@@ -52,7 +52,7 @@ Shows detailed plugin status including platform, version, and all major settings
 === Onlysleep Status ===
 Platform: Paper
 Minecraft: 1.21.4
-Version: 2.0.0
+Version: 1.0.0
 Sleep %: 50%
 Per-World: Yes
 Boss Bar: Enabled
@@ -143,7 +143,7 @@ This is useful for:
 Players with this permission receive a direct message when Onlysleep detects a new version is available on startup:
 
 ```
-✨ A new version is available: 2.1.0 (Current: 2.0.0) - /modrinth download
+✨ A new version is available: 1.1.0 (Current: 1.0.0) - /modrinth download
 ```
 
 ---

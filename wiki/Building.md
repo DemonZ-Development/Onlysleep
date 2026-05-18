@@ -29,7 +29,7 @@ On Windows, use `gradlew.bat clean build`.
 The compiled JAR will be in `build/libs/`:
 
 ```
-build/libs/Onlysleep-2.0.0.jar
+build/libs/Onlysleep-1.0.0.jar
 ```
 
 ### 4. Install the Built JAR
@@ -58,7 +58,7 @@ mvn clean package
 The compiled JAR will be in `target/`:
 
 ```
-target/Onlysleep-2.0.0.jar
+target/Onlysleep-1.0.0.jar
 ```
 
 ---

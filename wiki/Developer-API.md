@@ -14,7 +14,7 @@ Onlysleep provides a public API for other plugins to integrate with. This allows
 
 ```kotlin
 dependencies {
-    compileOnly(files("libs/Onlysleep-2.0.0.jar"))
+    compileOnly(files("libs/Onlysleep-1.0.0.jar"))
 }
 ```
 
@@ -25,9 +25,9 @@ dependencies {
     <dependency>
         <groupId>com.demonzdevelopment</groupId>
         <artifactId>onlysleep</artifactId>
-        <version>2.0.0</version>
+        <version>1.0.0</version>
         <scope>system</scope>
-        <systemPath>${project.basedir}/libs/Onlysleep-2.0.0.jar</systemPath>
+        <systemPath>${project.basedir}/libs/Onlysleep-1.0.0.jar</systemPath>
     </dependency>
 </dependencies>
 ```
