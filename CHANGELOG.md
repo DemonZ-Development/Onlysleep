@@ -1,5 +1,7 @@
 # 📋 Changelog
 
+> For the full changelog, visit the [Onlysleep Wiki](https://github.com/DemonZ-Development/Onlysleep/wiki/Changelog).
+
 ---
 
 ## [1.0.0] - 2025-06-01
