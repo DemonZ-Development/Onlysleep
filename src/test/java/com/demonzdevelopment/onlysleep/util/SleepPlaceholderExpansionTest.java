@@ -59,7 +59,7 @@ class SleepPlaceholderExpansionTest {
         lenient().when(plugin.getConfigManager()).thenReturn(configManager);
         lenient().when(plugin.getPlatform()).thenReturn(platform);
         lenient().when(plugin.getDescription()).thenReturn(description);
-        lenient().when(description.getVersion()).thenReturn("2.0.0");
+        lenient().when(description.getVersion()).thenReturn("1.0.0");
         lenient().when(description.getAuthors()).thenReturn(java.util.Collections.singletonList("Demonz Development"));
         lenient().when(platform.getDisplayName()).thenReturn("Paper");
 
@@ -81,7 +81,7 @@ class SleepPlaceholderExpansionTest {
 
     @Test
     void getVersion_ReturnsPluginVersion() {
-        assertEquals("2.0.0", expansion.getVersion());
+        assertEquals("1.0.0", expansion.getVersion());
     }
 
     @Test
@@ -201,7 +201,7 @@ class SleepPlaceholderExpansionTest {
     @Test
     void placeholder_Version_ReturnsVersion() {
         String result = expansion.onPlaceholderRequest(player, "version");
-        assertEquals("2.0.0", result);
+        assertEquals("1.0.0", result);
     }
 
     @Test

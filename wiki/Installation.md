@@ -35,7 +35,7 @@ Check the server console for a message like:
 ```
 [Onlysleep] Detected platform: Paper
 [Onlysleep] bStats metrics initialized (ID: 31415)
-[Onlysleep] Onlysleep v2.0.0 by Demonz Development enabled!
+[Onlysleep] Onlysleep v1.0.0 by Demonz Development enabled!
 [Onlysleep] Running on Paper 1.21.4
 ```
 

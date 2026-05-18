@@ -29,7 +29,7 @@ class UpdateCheckerTest {
     @BeforeEach
     void setUp() {
         lenient().when(plugin.getDescription()).thenReturn(description);
-        lenient().when(description.getVersion()).thenReturn("2.0.0");
+        lenient().when(description.getVersion()).thenReturn("1.0.0");
         updateChecker = new UpdateChecker(plugin);
     }
 

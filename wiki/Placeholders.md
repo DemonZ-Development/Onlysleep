@@ -39,7 +39,7 @@ Onlysleep provides **19+ placeholders** when [PlaceholderAPI](https://placeholde
 
 | Placeholder | Description | Example |
 |-------------|-------------|---------|
-| `%onlysleep_version%` | Plugin version | `2.0.0` |
+| `%onlysleep_version%` | Plugin version | `1.0.0` |
 | `%onlysleep_platform%` | Server platform name | `Folia`, `Paper`, `Spigot`, `Bukkit` |
 
 ### World-Specific Placeholders
