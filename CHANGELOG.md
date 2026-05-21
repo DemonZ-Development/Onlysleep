@@ -4,6 +4,25 @@
 
 ---
 
+## [1.2.0] - 2026-05-21
+
+This release fixes critical bugs in the gradual and speed night-skip transition modes.
+
+### 🐛 Bug Fixes
+
+- **Fixed Gradual & Speed Skip Completing Instantly**:
+  - Rewrote the time-advance logic in `SleepManager` using a distance-traveled approach that correctly handles the night→midnight→morning wrap-around. Previously, the completion check failed when `targetTime` was `0` (dawn) because `newTime >= 0` was always true on the very first tick, making both modes behave identically to instant skip.
+- **Fixed "Good Morning" Message Appearing During Night**:
+  - Restructured `skipNight()` to defer all completion effects (sounds, titles, broadcast messages, player cleanup, and boss bar removal) into a callback that only fires when the gradual/speed timer actually reaches the target morning time. Previously, these effects fired immediately when the skip was initiated, causing players to see the "Good Morning" message while it was still visually nighttime.
+- **Speed vs Gradual Now Visually Distinct**:
+  - With the fixed time-advance logic, speed mode (150 ticks/tick, ~2-3 second timelapse) and gradual mode (configurable, default 30 ticks/tick, ~6-8 second smooth transition) now produce genuinely different visual experiences as intended.
+
+### 🛠️ Technical Improvements
+
+- Gradual/speed timer tasks are now properly stored in `skipTasks`, allowing mid-transition cancellation if a player leaves the bed during the time-advance animation.
+
+---
+
 ## [1.1.0] - 2026-05-21
 
 This release brings massive stability, compatibility, and user-experience improvements to Onlysleep.
