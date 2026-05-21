@@ -366,7 +366,9 @@ class SleepManagerTest {
 
     @Test
     void onPlayerQuit_DoesNotThrow_WhenPlayerNotSleeping() {
-        assertDoesNotThrow(() -> sleepManager.onPlayerQuit(player1));
+        try (MockedStatic<Bukkit> bukkit = mockBukkitForTwoPlayers()) {
+            assertDoesNotThrow(() -> sleepManager.onPlayerQuit(player1));
+        }
     }
 
     @Test

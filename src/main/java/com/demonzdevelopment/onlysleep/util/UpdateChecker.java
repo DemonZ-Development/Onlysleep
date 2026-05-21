@@ -32,9 +32,10 @@ public final class UpdateChecker {
      */
     public CompletableFuture<UpdateResult> checkAsync() {
         return CompletableFuture.supplyAsync(() -> {
+            HttpURLConnection connection = null;
             try {
                 URI uri = new URI(MODRINTH_API + "?loaders=%5B%22paper%22%2C%22spigot%22%2C%22folia%22%5D");
-                HttpURLConnection connection = (HttpURLConnection) uri.toURL().openConnection();
+                connection = (HttpURLConnection) uri.toURL().openConnection();
                 connection.setRequestMethod("GET");
                 connection.setConnectTimeout(5000);
                 connection.setReadTimeout(5000);
@@ -77,6 +78,10 @@ public final class UpdateChecker {
 
             } catch (Exception e) {
                 return new UpdateResult(false, null, "Check failed: " + e.getMessage());
+            } finally {
+                if (connection != null) {
+                    connection.disconnect();
+                }
             }
         });
     }

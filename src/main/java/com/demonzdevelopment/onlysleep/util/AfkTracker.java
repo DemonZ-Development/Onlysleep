@@ -96,6 +96,8 @@ public class AfkTracker implements Listener {
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerMove(PlayerMoveEvent event) {
+        // event.getTo() is @Nullable on Paper
+        if (event.getTo() == null) return;
         // Ignore tiny movements (head-turning / mouse jitter)
         if (event.getFrom().getBlockX() == event.getTo().getBlockX()
                 && event.getFrom().getBlockZ() == event.getTo().getBlockZ()

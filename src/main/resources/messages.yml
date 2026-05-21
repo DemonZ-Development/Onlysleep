@@ -21,6 +21,7 @@ sleep:
   cancelled: "&c%player% &ehas stopped sleeping."
   progress-bar: "&bSleeping... &7%bar% &7(&b%count%&7/&b%required%&7)"
   world-disabled: "&cSleep skipping is disabled in this world."
+  already-skipping: "&eThe night is already being skipped!"
 
 # --- Weather Messages ---
 

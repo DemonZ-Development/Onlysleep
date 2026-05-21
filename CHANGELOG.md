@@ -6,20 +6,41 @@
 
 ## [1.2.0] - 2026-05-21
 
-This release fixes critical bugs in the gradual and speed night-skip transition modes.
+This release fixes critical bugs across the sleep skip system, AFK detection, config handling, and more.
 
 ### 🐛 Bug Fixes
 
 - **Fixed Gradual & Speed Skip Completing Instantly**:
-  - Rewrote the time-advance logic in `SleepManager` using a distance-traveled approach that correctly handles the night→midnight→morning wrap-around. Previously, the completion check failed when `targetTime` was `0` (dawn) because `newTime >= 0` was always true on the very first tick, making both modes behave identically to instant skip.
+  - Rewrote the time-advance logic using a distance-traveled approach that correctly handles the night→midnight→morning wrap-around. Previously, both modes behaved identically to instant skip because `newTime >= 0` was always true on the first tick.
 - **Fixed "Good Morning" Message Appearing During Night**:
-  - Restructured `skipNight()` to defer all completion effects (sounds, titles, broadcast messages, player cleanup, and boss bar removal) into a callback that only fires when the gradual/speed timer actually reaches the target morning time. Previously, these effects fired immediately when the skip was initiated, causing players to see the "Good Morning" message while it was still visually nighttime.
+  - Deferred all completion effects (sounds, titles, messages, cleanup) into a callback that only fires after the gradual/speed timer actually finishes.
 - **Speed vs Gradual Now Visually Distinct**:
-  - With the fixed time-advance logic, speed mode (150 ticks/tick, ~2-3 second timelapse) and gradual mode (configurable, default 30 ticks/tick, ~6-8 second smooth transition) now produce genuinely different visual experiences as intended.
+  - Speed mode (150 ticks/tick, ~2-3s timelapse) and gradual mode (default 30 ticks/tick, ~6-8s sunrise) now feel genuinely different.
+- **Fixed Bed Leave Unconditionally Cancelling Skip**:
+  - Previously, any single player leaving their bed cancelled the skip for everyone, even if enough players were still sleeping. Now only cancels when the sleeping count drops below the threshold.
+- **Fixed Spurious "Cancelled" Message During Gradual Skip**:
+  - When vanilla kicked players out of bed at dawn during a gradual transition, a "Player has stopped sleeping" message appeared right before "Good Morning!". Bed-leave events during active transitions are now ignored.
+- **Fixed Player Quit Not Rechecking Sleep Status**:
+  - When a non-sleeping player quit, the total player count decreased but the sleep threshold wasn't rechecked. Now properly triggers a skip if the remaining sleepers meet the new lower threshold.
+- **Fixed CMI AFK Detection Always Failing**:
+  - The CMI integration was calling `getCMIPlayer()` on the Bukkit `Player` class (which doesn't have that method). Now uses CMI's correct static API: `CMI.getInstance().getPlayerManager().getUser(player)`.
+- **Fixed Config Values Containing `#` Being Stripped**:
+  - The `ConfigUpdater` naively stripped everything after `#` as an inline comment, breaking values like `symbol: "■#test"`. Now respects quoted strings.
+- **Fixed Misleading "No one needs to sleep" Message**:
+  - When a skip is already in progress, players now see "The night is already being skipped!" instead of the confusing "No one needs to sleep right now."
+- **Removed Duplicate "Monsters Nearby" Message**:
+  - Vanilla Minecraft already shows its own "You can't sleep — monsters are nearby" message. The plugin's custom message stacked on top, causing players to see it twice.
 
 ### 🛠️ Technical Improvements
 
-- Gradual/speed timer tasks are now properly stored in `skipTasks`, allowing mid-transition cancellation if a player leaves the bed during the time-advance animation.
+- Gradual/speed timer tasks stored in `skipTasks` for proper mid-transition cancellation.
+- `activeTransitions` set tracks worlds currently in mid-transition to prevent spurious cancel/message events.
+- `HttpURLConnection` in `UpdateChecker` now properly disconnected in a `finally` block (prevents socket leaks on 4-hour recurring checks).
+- Update checker recurring task is now stored and cancelled on `onDisable()`.
+- `handleUpdate` command dispatches async update results back to the main thread.
+- `AfkTracker.onPlayerMove` now null-checks `event.getTo()` (is `@Nullable` on Paper).
+- `WorldUnloadEvent` listener cleans up world state from maps to prevent memory leaks.
+- Added `SleepManager.cleanupWorld()` for explicit per-world state cleanup.
 
 ---
 

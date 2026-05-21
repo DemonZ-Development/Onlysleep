@@ -33,10 +33,10 @@ public class SleepListener implements Listener {
         // Check permissions
         if (player.hasPermission("onlysleep.exempt")) return;
 
-        // Check if monsters prevented sleep
+        // Check if monsters prevented sleep — vanilla already shows its own message,
+        // so we don't add a duplicate.
         BedEnterResult result = event.getBedEnterResult();
         if (result == BedEnterResult.NOT_SAFE) {
-            player.sendMessage(configManager.getMessage("sleep.not-safe"));
             return;
         }
 
@@ -69,7 +69,7 @@ public class SleepListener implements Listener {
 
         // Check if someone is already skipping the night
         if (sleepManager.isSkipScheduled(player.getWorld())) {
-            player.sendMessage(configManager.getMessage("sleep.not-required"));
+            player.sendMessage(configManager.getMessage("sleep.already-skipping"));
             return;
         }
 

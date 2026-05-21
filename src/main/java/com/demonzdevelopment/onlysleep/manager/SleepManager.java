@@ -30,6 +30,7 @@ public class SleepManager {
     private final Map<World, ScheduledTask> skipTasks = new HashMap<>();
     private final Map<World, BossBar> worldBossBars = new HashMap<>();
     private final Map<World, ScheduledTask> bossBarTasks = new HashMap<>();
+    private final Set<World> activeTransitions = new HashSet<>();
 
     public SleepManager(Onlysleep plugin, ConfigManager configManager) {
         this.plugin = plugin;
@@ -62,31 +63,54 @@ public class SleepManager {
 
     /**
      * Called when a player leaves a bed.
+     *
+     * <p>Only cancels the night skip if the sleeping count drops below
+     * the required threshold. During an active gradual/speed transition,
+     * bed-leave events are ignored because vanilla kicks players out of
+     * bed as morning arrives — this prevents a spurious "cancelled" message
+     * from appearing right before the "Good Morning" message.</p>
      */
     public void onPlayerBedLeave(Player player) {
         World world = player.getWorld();
         Set<UUID> players = sleepingPlayers.get(world);
         if (players != null) {
-            if (players.remove(player.getUniqueId())) {
-                // Broadcast cancellation message
-                if (skipTasks.containsKey(world)) {
-                    Map<String, String> placeholders = new HashMap<>();
-                    placeholders.put("player", player.getDisplayName());
-                    String message = configManager.getMessage("sleep.cancelled", placeholders);
-                    for (Player p : world.getPlayers()) {
-                        p.sendMessage(message);
-                    }
-                }
-            }
+            players.remove(player.getUniqueId());
             if (players.isEmpty()) {
                 sleepingPlayers.remove(world);
             }
         }
-        cancelSkip(world);
+
+        // During an active gradual/speed transition, don't cancel — the time
+        // is already visually transitioning and players are being kicked out
+        // of bed by vanilla because morning is arriving.
+        if (activeTransitions.contains(world)) {
+            return;
+        }
+
+        // Only cancel if the sleeping count has dropped below the threshold
+        if (skipTasks.containsKey(world)) {
+            int required = getRequiredSleepingCount(world);
+            int current = getSleepingCount(world);
+            if (current < required) {
+                // Broadcast cancellation message
+                Map<String, String> placeholders = new HashMap<>();
+                placeholders.put("player", player.getDisplayName());
+                String message = configManager.getMessage("sleep.cancelled", placeholders);
+                for (Player p : world.getPlayers()) {
+                    p.sendMessage(message);
+                }
+                cancelSkip(world);
+            }
+        }
     }
 
     /**
      * Called when a player disconnects.
+     *
+     * <p>Removes the player from the sleeping set and rechecks the sleep
+     * threshold. If a non-sleeping player quits, the total player count
+     * decreases, which may now make the current sleeping count sufficient
+     * to trigger a skip.</p>
      */
     public void onPlayerQuit(Player player) {
         World world = player.getWorld();
@@ -95,8 +119,25 @@ public class SleepManager {
             players.remove(player.getUniqueId());
             if (players.isEmpty()) {
                 sleepingPlayers.remove(world);
+            }
+        }
+
+        // Don't interfere with active transitions
+        if (activeTransitions.contains(world)) {
+            return;
+        }
+
+        // If a skip is scheduled and the sleeping count dropped below threshold, cancel
+        if (skipTasks.containsKey(world)) {
+            int required = getRequiredSleepingCount(world);
+            int current = getSleepingCount(world);
+            if (current < required) {
                 cancelSkip(world);
             }
+        } else {
+            // A non-sleeping player quit — total count decreased, recheck if
+            // the remaining sleeping players now meet the reduced threshold
+            checkSleepStatus(world);
         }
     }
 
@@ -152,6 +193,7 @@ public class SleepManager {
      * Cancels a pending night skip for a world.
      */
     private void cancelSkip(World world) {
+        activeTransitions.remove(world);
         ScheduledTask task = skipTasks.remove(world);
         if (task != null) {
             task.cancel();
@@ -195,6 +237,9 @@ public class SleepManager {
         // For instant mode this fires immediately; for gradual/speed it fires when the
         // timer reaches the target time.
         Runnable onSkipComplete = () -> {
+            // Clear transition flag first to prevent spurious cancel messages
+            activeTransitions.remove(world);
+
             // Play sounds (per-world, safe on region thread)
             if (configManager.isPlaySounds()) {
                 playSkipSound(world);
@@ -222,6 +267,7 @@ public class SleepManager {
 
         switch (skipType.toLowerCase()) {
             case "gradual":
+                activeTransitions.add(world);
                 ScheduledTask gradualTask = scheduleGradualSkip(world, targetTime,
                         configManager.getGradualSkipSpeedTicks(), onSkipComplete);
                 if (gradualTask != null) {
@@ -229,6 +275,7 @@ public class SleepManager {
                 }
                 break;
             case "speed":
+                activeTransitions.add(world);
                 ScheduledTask speedTask = scheduleGradualSkip(world, targetTime, 150, onSkipComplete);
                 if (speedTask != null) {
                     skipTasks.put(world, speedTask);
@@ -527,16 +574,16 @@ public class SleepManager {
             }
         }
 
-        // Check CMI AFK
+        // Check CMI AFK (via CMI's static API, not through the Player class)
         if (configManager.isUseCmiAfk()) {
             try {
-                Object cmiPlayer = player.getClass().getMethod("getCMIPlayer").invoke(player);
-                if (cmiPlayer != null) {
-                    Object data = cmiPlayer.getClass().getMethod("getAfkData").invoke(cmiPlayer);
-                    if (data != null) {
-                        boolean isAfk = (boolean) data.getClass().getMethod("isAfk").invoke(data);
-                        if (isAfk) return true;
-                    }
+                Class<?> cmiClass = Class.forName("com.Zrips.CMI.CMI");
+                Object cmi = cmiClass.getMethod("getInstance").invoke(null);
+                Object playerManager = cmi.getClass().getMethod("getPlayerManager").invoke(cmi);
+                Object cmiUser = playerManager.getClass().getMethod("getUser", Player.class).invoke(playerManager, player);
+                if (cmiUser != null) {
+                    boolean isAfk = (boolean) cmiUser.getClass().getMethod("isAfk").invoke(cmiUser);
+                    if (isAfk) return true;
                 }
             } catch (Exception ignored) {}
         }
@@ -597,5 +644,16 @@ public class SleepManager {
         worldBossBars.clear();
 
         sleepingPlayers.clear();
+        activeTransitions.clear();
+    }
+
+    /**
+     * Cleans up all state for a specific world (e.g., on world unload).
+     * Prevents memory leaks from World references held in maps.
+     */
+    public void cleanupWorld(World world) {
+        cancelSkip(world);
+        sleepingPlayers.remove(world);
+        removeBossBar(world);
     }
 }

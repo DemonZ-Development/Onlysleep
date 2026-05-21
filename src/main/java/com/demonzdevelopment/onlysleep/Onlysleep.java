@@ -13,6 +13,9 @@ import com.demonzdevelopment.onlysleep.util.UpdateChecker;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
 import org.bukkit.Bukkit;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.world.WorldUnloadEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
@@ -24,6 +27,7 @@ public final class Onlysleep extends JavaPlugin {
     private ConfigManager configManager;
     private SleepManager sleepManager;
     private UpdateChecker updateChecker;
+    private SchedulerAdapter.ScheduledTask updateCheckerTask;
     private PlatformAdapter.ServerPlatform platform;
 
     @Override
@@ -44,6 +48,9 @@ public final class Onlysleep extends JavaPlugin {
         // Register event listeners
         getServer().getPluginManager().registerEvents(new SleepListener(this, sleepManager, configManager), this);
 
+        // Register world unload listener (prevents memory leaks)
+        registerWorldUnloadListener();
+
         // Register command
         OnlysleepCommand commandExecutor = new OnlysleepCommand(this, configManager);
         getCommand("onlysleep").setExecutor(commandExecutor);
@@ -57,7 +64,7 @@ public final class Onlysleep extends JavaPlugin {
         if (configManager.isCheckForUpdates()) {
             checkForUpdates();
             // Check for updates every 4 hours (4 * 60 * 60 * 20 = 288000 ticks)
-            SchedulerAdapter.runGlobalTaskTimer(this, this::checkForUpdates, 288000L, 288000L);
+            this.updateCheckerTask = SchedulerAdapter.runGlobalTaskTimer(this, this::checkForUpdates, 288000L, 288000L);
         }
 
         // Register PlaceholderAPI expansion (if PAPI is installed)
@@ -81,6 +88,10 @@ public final class Onlysleep extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        if (updateCheckerTask != null) {
+            updateCheckerTask.cancel();
+            updateCheckerTask = null;
+        }
         if (sleepManager != null) {
             sleepManager.shutdown();
         }
@@ -118,6 +129,21 @@ public final class Onlysleep extends JavaPlugin {
         } catch (Exception e) {
             getLogger().warning("Failed to register PlaceholderAPI expansion: " + e.getMessage());
         }
+    }
+
+    /**
+     * Registers the WorldUnloadEvent listener to clean up world state
+     * and prevent memory leaks from World references held in maps.
+     */
+    private void registerWorldUnloadListener() {
+        getServer().getPluginManager().registerEvents(new Listener() {
+            @EventHandler
+            public void onWorldUnload(WorldUnloadEvent event) {
+                if (sleepManager != null) {
+                    sleepManager.cleanupWorld(event.getWorld());
+                }
+            }
+        }, this);
     }
 
     private void checkForUpdates() {
