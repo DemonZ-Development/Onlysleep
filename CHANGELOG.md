@@ -25,6 +25,10 @@ This release brings massive stability, compatibility, and user-experience improv
   - Integrated direct `PlayerJoinEvent` and `PlayerQuitEvent` hooks in the built-in `AfkTracker` to instantly initialize player activity on join and clean up on quit, solving a bug where silent/idle players could never become AFK.
 - **Strict Bed-Enter Validation**:
   - Restructured `SleepListener` to only proceed with sleep registrations when `BedEnterResult` is explicitly `OK` (or custom-handled `NOT_SAFE`), avoiding false-positive skips caused by other failed bed enter attempts.
+- **Asynchronous Recurring Update Checker**:
+  - Automatically schedules asynchronous update checks every 4 hours (non-blocking) when automatic checking is enabled, rather than only checking once on startup.
+- **Smart Configuration Updater**:
+  - Implemented an automatic, stateful configuration merger that updates `config.yml` and `messages.yml` with new options and comments from the jar resources, fully preserving custom user values, comments, and formatting without overwriting user customization.
 - **Safe Update Checks & Null-Safe Commands**:
   - Fixed unescaped brackets and double quotes in the Update Checker query parameters to comply with modern strict Java runtimes, preventing `URISyntaxException`.
   - Guaranteed null-safe execution of `/onlysleep update` by always instantiating `UpdateChecker` on plugin load, regardless of whether auto-checking is enabled in the config.

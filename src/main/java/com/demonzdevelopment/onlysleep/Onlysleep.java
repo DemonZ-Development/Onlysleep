@@ -7,6 +7,7 @@ import com.demonzdevelopment.onlysleep.command.OnlysleepCommand;
 import com.demonzdevelopment.onlysleep.util.AfkTracker;
 import com.demonzdevelopment.onlysleep.util.OfflinePlayerTracker;
 import com.demonzdevelopment.onlysleep.util.PlatformAdapter;
+import com.demonzdevelopment.onlysleep.util.SchedulerAdapter;
 import com.demonzdevelopment.onlysleep.util.SleepPlaceholderExpansion;
 import com.demonzdevelopment.onlysleep.util.UpdateChecker;
 import org.bstats.bukkit.Metrics;
@@ -55,6 +56,8 @@ public final class Onlysleep extends JavaPlugin {
         this.updateChecker = new UpdateChecker(this);
         if (configManager.isCheckForUpdates()) {
             checkForUpdates();
+            // Check for updates every 4 hours (4 * 60 * 60 * 20 = 288000 ticks)
+            SchedulerAdapter.runGlobalTaskTimer(this, this::checkForUpdates, 288000L, 288000L);
         }
 
         // Register PlaceholderAPI expansion (if PAPI is installed)

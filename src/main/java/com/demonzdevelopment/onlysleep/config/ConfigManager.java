@@ -97,10 +97,15 @@ public class ConfigManager {
     }
 
     public void loadConfigs() {
-        plugin.saveDefaultConfig();
+        // Automatically merge new default options and comments into config.yml
+        File configFile = new File(plugin.getDataFolder(), "config.yml");
+        ConfigUpdater.update(plugin, "config.yml", configFile);
         plugin.reloadConfig();
         this.config = plugin.getConfig();
 
+        // Automatically merge new default options and comments into messages.yml
+        File messagesFile = new File(plugin.getDataFolder(), "messages.yml");
+        ConfigUpdater.update(plugin, "messages.yml", messagesFile);
         loadMessages();
         loadSettings();
     }
@@ -111,21 +116,7 @@ public class ConfigManager {
 
     private void loadMessages() {
         File messagesFile = new File(plugin.getDataFolder(), "messages.yml");
-        if (!messagesFile.exists()) {
-            plugin.saveResource("messages.yml", false);
-        }
         this.messages = YamlConfiguration.loadConfiguration(messagesFile);
-
-        // Merge with defaults from jar
-        InputStream defaultMessages = plugin.getResource("messages.yml");
-        if (defaultMessages != null) {
-            YamlConfiguration defaultConfig = YamlConfiguration.loadConfiguration(new InputStreamReader(defaultMessages));
-            for (String key : defaultConfig.getKeys(true)) {
-                if (!messages.contains(key)) {
-                    messages.set(key, defaultConfig.get(key));
-                }
-            }
-        }
     }
 
     private void loadSettings() {
