@@ -32,7 +32,7 @@ Onlysleep is a highly configurable sleep plugin that lets you skip the night wit
 
 ### Requirements
 
-- Java 8+ (16+ recommended)
+- Java 21+
 - Minecraft 1.16.5+
 - Works standalone — no dependencies required!
 

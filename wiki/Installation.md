@@ -81,7 +81,7 @@ To update Onlysleep:
 
 **Problem:** Plugin doesn't load / "Plugin Onlysleep vX has failed to load"
 - Ensure you're running Minecraft 1.16.5 or newer
-- Check that Java 8+ is installed (run `java -version` on your server)
+- Check that Java 21+ is installed (run `java -version` on your server)
 - Check the console for specific error messages
 
 **Problem:** `/onlysleep` command not found

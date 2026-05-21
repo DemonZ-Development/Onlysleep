@@ -34,8 +34,14 @@ public class SleepListener implements Listener {
         if (player.hasPermission("onlysleep.exempt")) return;
 
         // Check if monsters prevented sleep
-        if (event.getBedEnterResult() == BedEnterResult.NOT_SAFE) {
+        BedEnterResult result = event.getBedEnterResult();
+        if (result == BedEnterResult.NOT_SAFE) {
             player.sendMessage(configManager.getMessage("sleep.not-safe"));
+            return;
+        }
+
+        // Only proceed if bed enter was successful
+        if (result != BedEnterResult.OK) {
             return;
         }
 

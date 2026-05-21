@@ -86,51 +86,42 @@ public final class SchedulerAdapter {
     private static ScheduledTask runFoliaTask(JavaPlugin plugin, World world, Runnable task, long delay, long period) {
         try {
             Object regionScheduler = Bukkit.class.getMethod("getRegionScheduler").invoke(null);
-            AtomicInteger taskId = new AtomicInteger(-1);
+            java.util.concurrent.atomic.AtomicReference<Object> taskRef = new java.util.concurrent.atomic.AtomicReference<>();
 
             Consumer<Object> consumer = scheduledTask -> {
-                try {
-                    // Store the task ID for cancellation
-                    if (taskId.get() == -1 && scheduledTask != null) {
-                        Method getTaskId = scheduledTask.getClass().getMethod("getTaskId");
-                        taskId.set((int) getTaskId.invoke(scheduledTask));
-                    }
-                    task.run();
-                } catch (Exception e) {
-                    task.run();
+                if (scheduledTask != null) {
+                    taskRef.compareAndSet(null, scheduledTask);
                 }
+                task.run();
             };
 
             if (period > 0) {
                 Method runAtFixedRate = regionScheduler.getClass().getMethod(
-                    "runAtFixedRate", JavaPlugin.class, World.class, Consumer.class, long.class, long.class
+                    "runAtFixedRate", org.bukkit.plugin.Plugin.class, World.class, Consumer.class, long.class, long.class
                 );
                 Object scheduledTask = runAtFixedRate.invoke(regionScheduler, plugin, world, consumer, delay, period);
                 if (scheduledTask != null) {
-                    Method getTaskId = scheduledTask.getClass().getMethod("getTaskId");
-                    taskId.set((int) getTaskId.invoke(scheduledTask));
+                    taskRef.compareAndSet(null, scheduledTask);
                 }
-                return new FoliaScheduledTask(regionScheduler, taskId, true);
+                return new FoliaScheduledTask(taskRef);
             } else if (delay > 0) {
                 Method runDelayed = regionScheduler.getClass().getMethod(
-                    "runDelayed", JavaPlugin.class, World.class, Consumer.class, long.class
+                    "runDelayed", org.bukkit.plugin.Plugin.class, World.class, Consumer.class, long.class
                 );
                 Object scheduledTask = runDelayed.invoke(regionScheduler, plugin, world, consumer, delay);
                 if (scheduledTask != null) {
-                    Method getTaskId = scheduledTask.getClass().getMethod("getTaskId");
-                    taskId.set((int) getTaskId.invoke(scheduledTask));
+                    taskRef.compareAndSet(null, scheduledTask);
                 }
-                return new FoliaScheduledTask(regionScheduler, taskId, false);
+                return new FoliaScheduledTask(taskRef);
             } else {
                 Method run = regionScheduler.getClass().getMethod(
-                    "run", JavaPlugin.class, World.class, Consumer.class
+                    "run", org.bukkit.plugin.Plugin.class, World.class, Consumer.class
                 );
                 Object scheduledTask = run.invoke(regionScheduler, plugin, world, consumer);
                 if (scheduledTask != null) {
-                    Method getTaskId = scheduledTask.getClass().getMethod("getTaskId");
-                    taskId.set((int) getTaskId.invoke(scheduledTask));
+                    taskRef.compareAndSet(null, scheduledTask);
                 }
-                return new FoliaScheduledTask(regionScheduler, taskId, false);
+                return new FoliaScheduledTask(taskRef);
             }
         } catch (Exception e) {
             // Fallback to Bukkit scheduler if reflection fails
@@ -150,50 +141,42 @@ public final class SchedulerAdapter {
     private static ScheduledTask runFoliaGlobalTask(JavaPlugin plugin, Runnable task, long delay, long period) {
         try {
             Object globalRegionScheduler = Bukkit.class.getMethod("getGlobalRegionScheduler").invoke(null);
-            AtomicInteger taskId = new AtomicInteger(-1);
+            java.util.concurrent.atomic.AtomicReference<Object> taskRef = new java.util.concurrent.atomic.AtomicReference<>();
 
             Consumer<Object> consumer = scheduledTask -> {
-                try {
-                    if (taskId.get() == -1 && scheduledTask != null) {
-                        Method getTaskId = scheduledTask.getClass().getMethod("getTaskId");
-                        taskId.set((int) getTaskId.invoke(scheduledTask));
-                    }
-                    task.run();
-                } catch (Exception e) {
-                    task.run();
+                if (scheduledTask != null) {
+                    taskRef.compareAndSet(null, scheduledTask);
                 }
+                task.run();
             };
 
             if (period > 0) {
                 Method runAtFixedRate = globalRegionScheduler.getClass().getMethod(
-                    "runAtFixedRate", JavaPlugin.class, Consumer.class, long.class, long.class
+                    "runAtFixedRate", org.bukkit.plugin.Plugin.class, Consumer.class, long.class, long.class
                 );
                 Object scheduledTask = runAtFixedRate.invoke(globalRegionScheduler, plugin, consumer, delay, period);
                 if (scheduledTask != null) {
-                    Method getTaskId = scheduledTask.getClass().getMethod("getTaskId");
-                    taskId.set((int) getTaskId.invoke(scheduledTask));
+                    taskRef.compareAndSet(null, scheduledTask);
                 }
-                return new FoliaScheduledTask(globalRegionScheduler, taskId, true);
+                return new FoliaScheduledTask(taskRef);
             } else if (delay > 0) {
                 Method runDelayed = globalRegionScheduler.getClass().getMethod(
-                    "runDelayed", JavaPlugin.class, Consumer.class, long.class
+                    "runDelayed", org.bukkit.plugin.Plugin.class, Consumer.class, long.class
                 );
                 Object scheduledTask = runDelayed.invoke(globalRegionScheduler, plugin, consumer, delay);
                 if (scheduledTask != null) {
-                    Method getTaskId = scheduledTask.getClass().getMethod("getTaskId");
-                    taskId.set((int) getTaskId.invoke(scheduledTask));
+                    taskRef.compareAndSet(null, scheduledTask);
                 }
-                return new FoliaScheduledTask(globalRegionScheduler, taskId, false);
+                return new FoliaScheduledTask(taskRef);
             } else {
                 Method run = globalRegionScheduler.getClass().getMethod(
-                    "run", JavaPlugin.class, Consumer.class
+                    "run", org.bukkit.plugin.Plugin.class, Consumer.class
                 );
                 Object scheduledTask = run.invoke(globalRegionScheduler, plugin, consumer);
                 if (scheduledTask != null) {
-                    Method getTaskId = scheduledTask.getClass().getMethod("getTaskId");
-                    taskId.set((int) getTaskId.invoke(scheduledTask));
+                    taskRef.compareAndSet(null, scheduledTask);
                 }
-                return new FoliaScheduledTask(globalRegionScheduler, taskId, false);
+                return new FoliaScheduledTask(taskRef);
             }
         } catch (Exception e) {
             // Fallback
@@ -236,38 +219,35 @@ public final class SchedulerAdapter {
     }
 
     private static class FoliaScheduledTask implements ScheduledTask {
-        private final Object scheduler;
-        private final AtomicInteger taskId;
-        private final boolean repeating;
+        private final java.util.concurrent.atomic.AtomicReference<Object> taskRef;
         private volatile boolean cancelled = false;
 
-        FoliaScheduledTask(Object scheduler, AtomicInteger taskId, boolean repeating) {
-            this.scheduler = scheduler;
-            this.taskId = taskId;
-            this.repeating = repeating;
+        FoliaScheduledTask(java.util.concurrent.atomic.AtomicReference<Object> taskRef) {
+            this.taskRef = taskRef;
         }
 
         @Override
         public void cancel() {
             this.cancelled = true;
-            int id = taskId.get();
-            if (id == -1) return;
-
+            Object taskObject = taskRef.get();
+            if (taskObject == null) return;
             try {
-                if (repeating) {
-                    Method cancelTask = scheduler.getClass().getMethod("cancelTask", int.class);
-                    cancelTask.invoke(scheduler, id);
-                } else {
-                    Method cancelTask = scheduler.getClass().getMethod("cancelTask", int.class);
-                    cancelTask.invoke(scheduler, id);
-                }
+                Method cancel = taskObject.getClass().getMethod("cancel");
+                cancel.invoke(taskObject);
             } catch (Exception ignored) {
-                // Best effort cancellation
             }
         }
 
         @Override
         public boolean isCancelled() {
+            Object taskObject = taskRef.get();
+            if (taskObject != null) {
+                try {
+                    Method isCancelled = taskObject.getClass().getMethod("isCancelled");
+                    return (boolean) isCancelled.invoke(taskObject);
+                } catch (Exception ignored) {
+                }
+            }
             return cancelled;
         }
     }

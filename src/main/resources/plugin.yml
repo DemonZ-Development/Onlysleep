@@ -24,7 +24,6 @@ permissions:
       onlysleep.info: true
       onlysleep.reload: true
       onlysleep.status: true
-      onlysleep.exempt: true
       onlysleep.update: true
   onlysleep.info:
     description: Allows viewing plugin information via /onlysleep info

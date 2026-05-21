@@ -27,7 +27,7 @@
 5. Reload with `/onlysleep reload`
 
 ### Requirements
-- **Java 8+** (16+ recommended)
+- **Java 21+**
 - **Minecraft 1.16.5+**
 - **Works standalone** — no dependencies required!
 
@@ -51,7 +51,7 @@
 | `onlysleep.info` | OP | View plugin info |
 | `onlysleep.reload` | OP | Reload config |
 | `onlysleep.status` | OP | View status |
-| `onlysleep.exempt` | OP | Excluded from sleep |
+| `onlysleep.exempt` | None | Excluded from sleep (operators sleep by default) |
 | `onlysleep.update` | OP | Update alerts |
 
 ## 📊 bStats

@@ -52,8 +52,8 @@ public final class Onlysleep extends JavaPlugin {
         initializeMetrics();
 
         // Initialize update checker
+        this.updateChecker = new UpdateChecker(this);
         if (configManager.isCheckForUpdates()) {
-            this.updateChecker = new UpdateChecker(this);
             checkForUpdates();
         }
 

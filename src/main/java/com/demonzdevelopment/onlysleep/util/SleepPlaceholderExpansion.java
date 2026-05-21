@@ -73,11 +73,42 @@ public class SleepPlaceholderExpansion extends PlaceholderExpansion {
 
     @Override
     public @Nullable String onPlaceholderRequest(Player player, @NotNull String params) {
+        SleepManager sleepManager = plugin.getSleepManager();
+        String paramsLower = params.toLowerCase();
+
+        // Player-independent placeholders
+        switch (paramsLower) {
+            case "version":
+                return plugin.getDescription().getVersion();
+            case "platform":
+                return plugin.getPlatform().getDisplayName();
+            case "percentage":
+                return String.valueOf(plugin.getConfigManager().getSleepPercentage());
+        }
+
+        if (params.startsWith("world_sleeping_")) {
+            String worldName = params.substring("world_sleeping_".length());
+            org.bukkit.World world = org.bukkit.Bukkit.getWorld(worldName);
+            if (world == null) return "0";
+            return String.valueOf(sleepManager.getSleepingCount(world));
+        }
+        if (params.startsWith("world_required_")) {
+            String worldName = params.substring("world_required_".length());
+            org.bukkit.World world = org.bukkit.Bukkit.getWorld(worldName);
+            if (world == null) return "0";
+            return String.valueOf(sleepManager.getRequiredSleepingCount(world));
+        }
+        if (params.startsWith("world_total_")) {
+            String worldName = params.substring("world_total_".length());
+            org.bukkit.World world = org.bukkit.Bukkit.getWorld(worldName);
+            if (world == null) return "0";
+            return String.valueOf(sleepManager.getTotalPlayerCount(world));
+        }
+
+        // Player-dependent placeholders
         if (player == null) return "";
 
-        SleepManager sleepManager = plugin.getSleepManager();
-
-        switch (params.toLowerCase()) {
+        switch (paramsLower) {
             case "sleeping":
                 return String.valueOf(sleepManager.getSleepingCount(player.getWorld()));
 
@@ -123,17 +154,11 @@ public class SleepPlaceholderExpansion extends PlaceholderExpansion {
                 return String.valueOf(isNight || isStorm);
             }
 
-            case "version":
-                return plugin.getDescription().getVersion();
-
             case "afk":
                 return String.valueOf(AfkTracker.isAfk(player));
 
             case "is_sleeping":
                 return String.valueOf(sleepManager.isPlayerSleeping(player));
-
-            case "percentage":
-                return String.valueOf(plugin.getConfigManager().getSleepPercentage());
 
             case "total":
                 return String.valueOf(sleepManager.getTotalPlayerCount(player.getWorld()));
@@ -149,28 +174,7 @@ public class SleepPlaceholderExpansion extends PlaceholderExpansion {
                 return String.valueOf(isNight);
             }
 
-            case "platform":
-                return plugin.getPlatform().getDisplayName();
-
             default:
-                if (params.startsWith("world_sleeping_")) {
-                    String worldName = params.substring("world_sleeping_".length());
-                    org.bukkit.World world = org.bukkit.Bukkit.getWorld(worldName);
-                    if (world == null) return "0";
-                    return String.valueOf(sleepManager.getSleepingCount(world));
-                }
-                if (params.startsWith("world_required_")) {
-                    String worldName = params.substring("world_required_".length());
-                    org.bukkit.World world = org.bukkit.Bukkit.getWorld(worldName);
-                    if (world == null) return "0";
-                    return String.valueOf(sleepManager.getRequiredSleepingCount(world));
-                }
-                if (params.startsWith("world_total_")) {
-                    String worldName = params.substring("world_total_".length());
-                    org.bukkit.World world = org.bukkit.Bukkit.getWorld(worldName);
-                    if (world == null) return "0";
-                    return String.valueOf(sleepManager.getTotalPlayerCount(world));
-                }
                 return null; // Unknown placeholder
         }
     }
