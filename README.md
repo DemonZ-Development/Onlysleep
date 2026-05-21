@@ -49,7 +49,7 @@
 
 ### Requirements
 
-- **Java 8+** (Java 16+ recommended for best performance)
+- **Java 21+** (The plugin requires Java 21+ to run)
 - **Minecraft 1.16.5+** (Bukkit, Spigot, Paper, Folia, or any compatible server)
 - **No other plugins required!** (Works standalone)
 - **[Optional] PlaceholderAPI** for placeholder expansion support
@@ -104,7 +104,7 @@ All messages are fully customizable with color codes (`&0`-`&f`) and placeholder
 | `onlysleep.info` | OP | View plugin information |
 | `onlysleep.reload` | OP | Reload configuration |
 | `onlysleep.status` | OP | View plugin status |
-| `onlysleep.exempt` | OP | Excluded from sleep calculations |
+| `onlysleep.exempt` | None | Excluded from sleep calculations (operators sleep by default) |
 | `onlysleep.update` | OP | Receives update notifications |
 
 ---

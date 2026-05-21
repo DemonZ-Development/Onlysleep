@@ -101,6 +101,26 @@ class SleepPlaceholderExpansionTest {
     }
 
     @Test
+    void onPlaceholderRequest_Works_WhenPlayerIsNull_ForPlayerIndependent() {
+        // version
+        assertEquals("1.0.0", expansion.onPlaceholderRequest(null, "version"));
+
+        // platform
+        assertEquals("Paper", expansion.onPlaceholderRequest(null, "platform"));
+
+        // percentage
+        when(configManager.getSleepPercentage()).thenReturn(50);
+        assertEquals("50", expansion.onPlaceholderRequest(null, "percentage"));
+
+        // world_sleeping
+        when(sleepManager.getSleepingCount(world)).thenReturn(2);
+        try (MockedStatic<Bukkit> bukkit = mockStatic(Bukkit.class)) {
+            bukkit.when(() -> Bukkit.getWorld("world")).thenReturn(world);
+            assertEquals("2", expansion.onPlaceholderRequest(null, "world_sleeping_world"));
+        }
+    }
+
+    @Test
     void placeholder_Sleeping_ReturnsCount() {
         when(sleepManager.getSleepingCount(world)).thenReturn(3);
         String result = expansion.onPlaceholderRequest(player, "sleeping");

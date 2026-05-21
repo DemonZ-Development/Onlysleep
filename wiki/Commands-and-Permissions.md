@@ -105,8 +105,9 @@ onlysleep.* (OP)
 ├── onlysleep.command (Everyone)
 ├── onlysleep.reload (OP)
 ├── onlysleep.status (OP)
-├── onlysleep.exempt (OP)
 └── onlysleep.update (OP)
+
+onlysleep.exempt (None - operators sleep by default)
 ```
 
 ### Permission Reference
@@ -117,7 +118,7 @@ onlysleep.* (OP)
 | `onlysleep.command` | **Everyone** | Allows use of `/onlysleep` command and all subcommands except `status` |
 | `onlysleep.reload` | OP | Allows using `/onlysleep reload` to reload the configuration |
 | `onlysleep.status` | OP | Allows using `/onlysleep status` to view detailed plugin status |
-| `onlysleep.exempt` | OP | Exempts the player from sleep calculations entirely |
+| `onlysleep.exempt` | None | Exempts the player from sleep calculations entirely (operators sleep by default) |
 | `onlysleep.update` | OP | Receives update notifications when a new version is available |
 
 ---

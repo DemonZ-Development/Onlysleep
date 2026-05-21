@@ -33,7 +33,7 @@ public final class UpdateChecker {
     public CompletableFuture<UpdateResult> checkAsync() {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                URI uri = new URI(MODRINTH_API + "?loaders=[\"paper\",\"spigot\",\"folia\"]");
+                URI uri = new URI(MODRINTH_API + "?loaders=%5B%22paper%22%2C%22spigot%22%2C%22folia%22%5D");
                 HttpURLConnection connection = (HttpURLConnection) uri.toURL().openConnection();
                 connection.setRequestMethod("GET");
                 connection.setConnectTimeout(5000);

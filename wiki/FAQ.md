@@ -91,7 +91,7 @@ It's **not recommended** to use Onlysleep alongside other sleep plugins. They wi
 
 **Causes & Solutions:**
 1. **Outdated Minecraft version** — Onlysleep requires Minecraft 1.16.5+
-2. **Incompatible Java version** — Onlysleep requires Java 8+ (Java 16+ recommended)
+2. **Incompatible Java version** — Onlysleep requires Java 21+
 3. **Corrupted jar file** — Re-download the jar file
 4. **Missing dependencies** — Onlysleep has no hard dependencies, but ensure you're running a supported server software
 

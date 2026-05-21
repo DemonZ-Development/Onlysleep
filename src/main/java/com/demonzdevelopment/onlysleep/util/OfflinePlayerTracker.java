@@ -118,6 +118,12 @@ public class OfflinePlayerTracker implements Listener {
         // If the count has never been loaded, trigger the full load
         if (knownPlayerCount.get() < 0) {
             refreshAsync();
+            return;
+        }
+
+        // If this is a new player who has never played before, increment the unique count
+        if (!event.getPlayer().hasPlayedBefore()) {
+            knownPlayerCount.incrementAndGet();
         }
 
         // Ensure the known count is at least the current online count

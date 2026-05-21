@@ -52,7 +52,7 @@ Onlysleep is a lightweight, highly configurable sleep plugin that lets you skip 
 
 [size=5][color=#ffaa00]⚙ Requirements[/color][/size]
 [LIST]
-[*]Java 8+ (Java 16+ recommended)
+[*]Java 21+
 [*]Minecraft 1.16.5+
 [*]Works standalone — [b]no dependencies required![/b]
 [/LIST]
@@ -65,7 +65,7 @@ Onlysleep is a lightweight, highly configurable sleep plugin that lets you skip 
 [*][b]onlysleep.command[/b] — Use commands (Everyone)
 [*][b]onlysleep.reload[/b] — Reload config (OP)
 [*][b]onlysleep.status[/b] — View status (OP)
-[*][b]onlysleep.exempt[/b] — Excluded from sleep (OP)
+[*][b]onlysleep.exempt[/b] — Excluded from sleep (None - operators sleep by default)
 [*][b]onlysleep.update[/b] — Update alerts (OP)
 [/LIST]
 

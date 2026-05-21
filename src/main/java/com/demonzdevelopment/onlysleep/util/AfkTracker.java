@@ -7,6 +7,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.Map;
 import java.util.UUID;
@@ -109,5 +111,23 @@ public class AfkTracker implements Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerInteract(PlayerInteractEvent event) {
         updateActivity(event.getPlayer());
+    }
+
+    /**
+     * Initialises the inactivity timer when a player joins.
+     */
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        updateActivity(event.getPlayer());
+    }
+
+    /**
+     * Cleans up the player's inactivity timer when they quit.
+     */
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        if (event.getPlayer() != null) {
+            lastActivity.remove(event.getPlayer().getUniqueId());
+        }
     }
 }

@@ -193,7 +193,7 @@ public class SleepManager {
                 scheduleGradualSkip(world, targetTime);
                 break;
             case "speed":
-                world.setTime(targetTime + 24000);
+                scheduleGradualSkip(world, targetTime, 150);
                 break;
             case "instant":
             default:
@@ -241,23 +241,37 @@ public class SleepManager {
      * Schedules a gradual night skip (slowly moves time forward).
      */
     private void scheduleGradualSkip(World world, long targetTime) {
-        int speed = configManager.getGradualSkipSpeedTicks();
+        scheduleGradualSkip(world, targetTime, configManager.getGradualSkipSpeedTicks());
+    }
 
-        ScheduledTask gradualTask = SchedulerAdapter.runTaskTimer(plugin, world, () -> {
+    /**
+     * Schedules a gradual/speed night skip (slowly or rapidly moves time forward).
+     */
+    private void scheduleGradualSkip(World world, long targetTime, int speed) {
+        final ScheduledTask[] taskHolder = new ScheduledTask[1];
+
+        taskHolder[0] = SchedulerAdapter.runTaskTimer(plugin, world, () -> {
             long currentTime = world.getTime();
             long newTime = currentTime + speed;
 
+            boolean done = false;
             if (newTime >= targetTime && currentTime < targetTime) {
                 world.setTime(targetTime);
-            } else if (newTime > 24000) {
+                done = true;
+            } else if (newTime >= 24000) {
                 world.setTime(targetTime);
+                done = true;
             } else {
                 world.setTime(newTime);
+                if (newTime >= targetTime) {
+                    done = true;
+                }
+            }
+
+            if (done && taskHolder[0] != null) {
+                taskHolder[0].cancel();
             }
         }, 1L, 1L);
-
-        // Cancel after a reasonable time (20 seconds max)
-        SchedulerAdapter.runTaskLater(plugin, world, gradualTask::cancel, 400L);
     }
 
     /**

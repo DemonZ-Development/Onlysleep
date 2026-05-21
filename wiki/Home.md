@@ -7,7 +7,7 @@
 **Skip the night with just one player sleeping** — or configure it your way.
 
 **Supports:** Bukkit · Spigot · Paper · Purpur · Folia · Any Paper fork  
-**Minecraft:** 1.16.5+ · **Java:** 8+ (16+ recommended)
+**Minecraft:** 1.16.5+ · **Java:** 21+
 
 </div>
 
