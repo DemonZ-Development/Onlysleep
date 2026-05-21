@@ -152,16 +152,21 @@ public class OnlysleepCommand implements CommandExecutor, TabCompleter {
 
         sender.sendMessage(configManager.getMessage("update.checking"));
         plugin.getUpdateChecker().checkAsync().thenAccept(result -> {
-            if (result.isUpdateAvailable()) {
-                Map<String, String> placeholders = new HashMap<>();
-                placeholders.put("new", result.getLatestVersion());
-                placeholders.put("current", plugin.getDescription().getVersion());
-                sender.sendMessage(configManager.getMessage("update.available", placeholders));
-            } else {
-                sender.sendMessage(configManager.getMessage("update.current"));
-            }
+            // Schedule message sending on the main thread (CompletableFuture runs on ForkJoinPool)
+            plugin.getServer().getScheduler().runTask(plugin, () -> {
+                if (result.isUpdateAvailable()) {
+                    Map<String, String> placeholders = new HashMap<>();
+                    placeholders.put("new", result.getLatestVersion());
+                    placeholders.put("current", plugin.getDescription().getVersion());
+                    sender.sendMessage(configManager.getMessage("update.available", placeholders));
+                } else {
+                    sender.sendMessage(configManager.getMessage("update.current"));
+                }
+            });
         }).exceptionally(throwable -> {
-            sender.sendMessage(configManager.getMessage("update.check-fail"));
+            plugin.getServer().getScheduler().runTask(plugin, () ->
+                sender.sendMessage(configManager.getMessage("update.check-fail"))
+            );
             return null;
         });
     }

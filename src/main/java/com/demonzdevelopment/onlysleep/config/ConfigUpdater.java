@@ -80,10 +80,8 @@ public final class ConfigUpdater {
 
                     // Check if there is a value after the colon
                     String valuePart = line.substring(colonIndex + 1).trim();
-                    // Remove inline comments
-                    if (valuePart.contains("#")) {
-                        valuePart = valuePart.substring(0, valuePart.indexOf('#')).trim();
-                    }
+                    // Remove inline comments (only outside of quoted strings)
+                    valuePart = stripInlineComment(valuePart);
 
                     if (!valuePart.isEmpty() && !valuePart.equals("{") && !valuePart.equals("[")) {
                         // It's a leaf node key-value pair!
@@ -135,6 +133,28 @@ public final class ConfigUpdater {
             }
         }
         return count;
+    }
+
+    /**
+     * Strips an inline YAML comment (text after an unquoted {@code #}).
+     * Respects single-quoted and double-quoted strings so that {@code #}
+     * characters inside quotes are not treated as comments.
+     */
+    private static String stripInlineComment(String value) {
+        boolean inSingle = false;
+        boolean inDouble = false;
+        for (int i = 0; i < value.length(); i++) {
+            char c = value.charAt(i);
+            if (c == '\'' && !inDouble) {
+                inSingle = !inSingle;
+            } else if (c == '"' && !inSingle) {
+                inDouble = !inDouble;
+            } else if (c == '#' && !inSingle && !inDouble) {
+                // Found an unquoted # — strip everything from here
+                return value.substring(0, i).trim();
+            }
+        }
+        return value;
     }
 
     private static String getFullPath(Stack<KeyInfo> stack) {
