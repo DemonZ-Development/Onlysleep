@@ -164,9 +164,13 @@ public class SleepManager {
      *
      * <p><b>Folia-safe:</b> World operations (time, weather) run on the region scheduler.
      * Global broadcasts are delegated to the global scheduler.</p>
+     *
+     * <p>For gradual and speed modes, all completion effects (sounds, titles, messages,
+     * cleanup) are deferred until the time transition actually finishes, preventing
+     * the "Good Morning" message from appearing while it's still visually night.</p>
      */
     private void skipNight(World world) {
-        // Handle weather clearing
+        // Handle weather clearing (always immediate)
         final boolean clearedWeather;
         if (configManager.isClearWeather() && (world.hasStorm() || world.isThundering())) {
             if (configManager.isResetWeather()) {
@@ -184,44 +188,58 @@ public class SleepManager {
             clearedWeather = false;
         }
 
+        // Capture player name before any cleanup (needed for deferred gradual/speed completion)
+        final String playerName = getSleepingPlayerName(world);
+
+        // Completion callback — runs only after the time transition has actually finished.
+        // For instant mode this fires immediately; for gradual/speed it fires when the
+        // timer reaches the target time.
+        Runnable onSkipComplete = () -> {
+            // Play sounds (per-world, safe on region thread)
+            if (configManager.isPlaySounds()) {
+                playSkipSound(world);
+            }
+
+            // Show title (per-world, safe on region thread)
+            if (configManager.isShowTitle()) {
+                showSkipTitle(world, playerName);
+            }
+
+            // Broadcast messages via global scheduler (Folia-safe)
+            SchedulerAdapter.runGlobalTask(plugin, () ->
+                broadcastSkipMessages(playerName, clearedWeather)
+            );
+
+            // Cleanup
+            sleepingPlayers.remove(world);
+            skipTasks.remove(world);
+            removeBossBar(world);
+        };
+
         // Handle time change based on skip type
         String skipType = configManager.getSkipType();
         long targetTime = configManager.isResetTime() ? 0 : configManager.getMorningTime();
 
         switch (skipType.toLowerCase()) {
             case "gradual":
-                scheduleGradualSkip(world, targetTime);
+                ScheduledTask gradualTask = scheduleGradualSkip(world, targetTime,
+                        configManager.getGradualSkipSpeedTicks(), onSkipComplete);
+                if (gradualTask != null) {
+                    skipTasks.put(world, gradualTask);
+                }
                 break;
             case "speed":
-                scheduleGradualSkip(world, targetTime, 150);
+                ScheduledTask speedTask = scheduleGradualSkip(world, targetTime, 150, onSkipComplete);
+                if (speedTask != null) {
+                    skipTasks.put(world, speedTask);
+                }
                 break;
             case "instant":
             default:
                 world.setTime(targetTime);
+                onSkipComplete.run();
                 break;
         }
-
-        // Play sounds (per-world, safe on region thread)
-        if (configManager.isPlaySounds()) {
-            playSkipSound(world);
-        }
-
-        // Show title (per-world, safe on region thread)
-        String playerName = getSleepingPlayerName(world);
-        if (configManager.isShowTitle()) {
-            showSkipTitle(world, playerName);
-        }
-
-        // Broadcast messages via global scheduler (Folia-safe)
-        final String finalPlayerName = playerName;
-        SchedulerAdapter.runGlobalTask(plugin, () ->
-            broadcastSkipMessages(finalPlayerName, clearedWeather)
-        );
-
-        // Cleanup
-        sleepingPlayers.remove(world);
-        skipTasks.remove(world);
-        removeBossBar(world);
     }
 
     /**
@@ -238,40 +256,65 @@ public class SleepManager {
     }
 
     /**
-     * Schedules a gradual night skip (slowly moves time forward).
+     * Schedules a gradual or speed night skip that smoothly advances time forward
+     * through midnight to the target morning time.
+     *
+     * <p>Uses a distance-traveled approach to correctly handle the night-to-morning
+     * wrap-around (e.g., time going 15000 → 24000/0 → 1000). The total distance
+     * is calculated once at the start and progress is tracked tick-by-tick.</p>
+     *
+     * @param world      The world to advance time in.
+     * @param targetTime The target morning time (e.g., 0 for dawn, 1000 for morning).
+     * @param speed      Ticks to advance per timer tick (30 = gradual, 150 = speed).
+     * @param onComplete Callback to run when the time transition finishes.
+     * @return The scheduled timer task, or null if the skip completed immediately.
      */
-    private void scheduleGradualSkip(World world, long targetTime) {
-        scheduleGradualSkip(world, targetTime, configManager.getGradualSkipSpeedTicks());
-    }
+    private ScheduledTask scheduleGradualSkip(World world, long targetTime, int speed, Runnable onComplete) {
+        final long startTime = world.getTime();
 
-    /**
-     * Schedules a gradual/speed night skip (slowly or rapidly moves time forward).
-     */
-    private void scheduleGradualSkip(World world, long targetTime, int speed) {
+        // Calculate total ticks to travel from current time to target, going forward.
+        // During night, time goes: startTime → 24000 (wraps to 0) → targetTime.
+        final long totalDistance;
+        if (targetTime <= startTime) {
+            // Normal night→morning case: travel forward through midnight
+            // e.g., startTime=15000, targetTime=0:    distance = 9000
+            // e.g., startTime=15000, targetTime=1000: distance = 10000
+            totalDistance = (24000 - startTime) + targetTime;
+        } else {
+            // Target is ahead (unusual, e.g., storm during early morning)
+            totalDistance = targetTime - startTime;
+        }
+
+        // Safety: if distance is zero, snap immediately
+        if (totalDistance <= 0) {
+            world.setTime(targetTime);
+            if (onComplete != null) onComplete.run();
+            return null;
+        }
+
+        final long[] traveled = {0};
         final ScheduledTask[] taskHolder = new ScheduledTask[1];
 
         taskHolder[0] = SchedulerAdapter.runTaskTimer(plugin, world, () -> {
-            long currentTime = world.getTime();
-            long newTime = currentTime + speed;
+            traveled[0] += speed;
 
-            boolean done = false;
-            if (newTime >= targetTime && currentTime < targetTime) {
+            if (traveled[0] >= totalDistance) {
+                // Reached target — snap to exact time and finish
                 world.setTime(targetTime);
-                done = true;
-            } else if (newTime >= 24000) {
-                world.setTime(targetTime);
-                done = true;
-            } else {
-                world.setTime(newTime);
-                if (newTime >= targetTime) {
-                    done = true;
+                if (taskHolder[0] != null) {
+                    taskHolder[0].cancel();
                 }
-            }
-
-            if (done && taskHolder[0] != null) {
-                taskHolder[0].cancel();
+                if (onComplete != null) {
+                    onComplete.run();
+                }
+            } else {
+                // Advance time, wrapping around at 24000
+                long newTime = (startTime + traveled[0]) % 24000;
+                world.setTime(newTime);
             }
         }, 1L, 1L);
+
+        return taskHolder[0];
     }
 
     /**
