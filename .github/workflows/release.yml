@@ -33,11 +33,32 @@ jobs:
         id: version
         run: echo "VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
 
+      - name: Extract Release Notes
+        run: |
+          python3 -c "
+          import re
+          version = '${{ steps.version.outputs.VERSION }}'
+          with open('CHANGELOG.md', 'r', encoding='utf-8') as f:
+              content = f.read()
+          # Match the block starting with ## [version] and stopping before the next ## [ block or end of file
+          pattern = r'(## \[' + re.escape(version) + r'\].*?)(?=\n## \[|\Z)'
+          match = re.search(pattern, content, re.DOTALL)
+          if match:
+              notes = match.group(1).strip()
+              # Remove trailing horizontal rule line if present
+              notes = re.sub(r'\n---$', '', notes).strip()
+              with open('RELEASE_NOTES.md', 'w', encoding='utf-8') as out:
+                  out.write(notes)
+          else:
+              with open('RELEASE_NOTES.md', 'w', encoding='utf-8') as out:
+                  out.write('Release notes for version ' + version)
+          "
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           name: Onlysleep ${{ steps.version.outputs.VERSION }}
-          body_path: CHANGELOG.md
+          body_path: RELEASE_NOTES.md
           files: build/libs/Onlysleep-*.jar
           draft: false
           prerelease: false
