@@ -4,6 +4,20 @@
 
 **Skip the night with just one player sleeping** — fully configurable, lightweight, and compatible with **every major Minecraft server platform**.
 
+---
+
+## 💖 Sponsored By
+
+<div align="center">
+  <a href="https://nexeu.zip">
+    <img src="https://whodoesntloveavatars.s3.fra.databucket.eu/assets/promo.png" alt="Nexeu Sponsor" width="600px">
+  </a>
+  <br>
+  Looking for high-performance, budget-friendly game server hosting? Check out <a href="https://nexeu.zip"><b>Nexeu Hosting</b></a>!
+</div>
+
+---
+
 ## ✨ Features
 
 - **One-Player Sleep** — Default mode, or configure any percentage
