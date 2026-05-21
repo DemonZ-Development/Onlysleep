@@ -6,6 +6,12 @@
 
 [HR]
 
+[CENTER][size=5][color=#ffaa00]💖 Sponsored By[/color][/size]
+[URL='https://nexeu.zip'][IMG]https://whodoesntloveavatars.s3.fra.databucket.eu/assets/promo.png[/IMG][/URL]
+[size=3]Looking for high-performance, budget-friendly game server hosting? Check out [URL='https://nexeu.zip'][b]Nexeu Hosting[/b][/URL]![/size][/CENTER]
+
+[HR]
+
 [size=5][color=#ffaa00]✳ Description[/color][/size]
 Onlysleep is a lightweight, highly configurable sleep plugin that lets you skip the night with just one player sleeping (or any percentage you choose). It works on [b]Bukkit, Spigot, Paper, Purpur, Folia, and all Paper forks[/b] out of the box.
 
