@@ -31,6 +31,7 @@ public class SleepManager {
     private final Map<World, BossBar> worldBossBars = new HashMap<>();
     private final Map<World, ScheduledTask> bossBarTasks = new HashMap<>();
     private final Set<World> activeTransitions = new HashSet<>();
+    private final Map<World, String> skippingPlayerNames = new HashMap<>();
 
     public SleepManager(Onlysleep plugin, ConfigManager configManager) {
         this.plugin = plugin;
@@ -232,6 +233,7 @@ public class SleepManager {
 
         // Capture player name before any cleanup (needed for deferred gradual/speed completion)
         final String playerName = getSleepingPlayerName(world);
+        skippingPlayerNames.put(world, playerName);
 
         // Completion callback — runs only after the time transition has actually finished.
         // For instant mode this fires immediately; for gradual/speed it fires when the
@@ -655,5 +657,17 @@ public class SleepManager {
         cancelSkip(world);
         sleepingPlayers.remove(world);
         removeBossBar(world);
+    }
+
+    // ========== Test hooks (package-private) ==========
+
+    /** Test hook: invoke the package-private skipNight. */
+    void skipNightForTest(World world) {
+        skipNight(world);
+    }
+
+    /** Test hook: read the snapshot of the initiating player's name. */
+    String getSkippingPlayerNameForTest(World world) {
+        return skippingPlayerNames.get(world);
     }
 }

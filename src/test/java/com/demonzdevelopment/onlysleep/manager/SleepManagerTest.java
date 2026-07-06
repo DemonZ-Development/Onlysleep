@@ -457,4 +457,21 @@ class SleepManagerTest {
             assertTrue(sleepManager.isPlayerSleeping(player1));
         }
     }
+
+    // ========== skipNight populates skippingPlayerNames ==========
+
+    @Test
+    void skipNight_populatesSkippingPlayerNames() {
+        try (MockedStatic<Bukkit> bukkit = mockBukkitForTwoPlayers()) {
+            when(configManager.getSkipType()).thenReturn("instant");
+            when(configManager.isResetTime()).thenReturn(true);
+            when(configManager.isClearWeather()).thenReturn(false);
+
+            sleepManager.onPlayerBedEnter(player1);
+
+            sleepManager.skipNightForTest(world);
+
+            assertEquals("Player1", sleepManager.getSkippingPlayerNameForTest(world));
+        }
+    }
 }
