@@ -681,6 +681,19 @@ public class SleepManager {
         removeBossBar(world);
     }
 
+    /**
+     * Removes every Phantom entity in the given world. Called by the gradual
+     * skip completion path as cheap, defensive insurance against phantoms
+     * spawning during the time-freeze — if vanilla's phantom spawn check fires
+     * anyway, the player just slept through the night and shouldn't have to
+     * deal with the result.
+     */
+    private void clearPhantoms(World world) {
+        for (org.bukkit.entity.Phantom phantom : world.getEntitiesByClass(org.bukkit.entity.Phantom.class)) {
+            phantom.remove();
+        }
+    }
+
     // ========== Test hooks (package-private) ==========
 
     /** Test hook: invoke the package-private skipNight. */
@@ -696,5 +709,10 @@ public class SleepManager {
     /** Test hook: invoke the package-private showBossBarForWorld. */
     void showBossBarForWorldForTest(World world) {
         showBossBarForWorld(world);
+    }
+
+    /** Test hook: invoke the package-private clearPhantoms. */
+    void clearPhantomsForTest(World world) {
+        clearPhantoms(world);
     }
 }

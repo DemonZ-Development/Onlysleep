@@ -535,4 +535,19 @@ class SleepManagerTest {
     // API. Task 9's time-freeze already prevents the vanilla wake-up
     // threshold from triggering (world.getTime() never crosses 23458
     // during the animation), so a defensive guard is unnecessary.
+
+    // ========== clearPhantoms ==========
+
+    @Test
+    void clearPhantoms_removesAllPhantomsInWorld() {
+        org.bukkit.entity.Phantom phantom1 = mock(org.bukkit.entity.Phantom.class);
+        org.bukkit.entity.Phantom phantom2 = mock(org.bukkit.entity.Phantom.class);
+        when(world.getEntitiesByClass(org.bukkit.entity.Phantom.class))
+            .thenReturn(java.util.Arrays.asList(phantom1, phantom2));
+
+        sleepManager.clearPhantomsForTest(world);
+
+        verify(phantom1).remove();
+        verify(phantom2).remove();
+    }
 }
