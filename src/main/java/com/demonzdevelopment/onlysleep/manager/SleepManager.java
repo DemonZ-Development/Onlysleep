@@ -32,6 +32,21 @@ public class SleepManager {
     private final Map<World, ScheduledTask> bossBarTasks = new HashMap<>();
     private final Set<World> activeTransitions = new HashSet<>();
     private final Map<World, String> skippingPlayerNames = new HashMap<>();
+    private final Map<World, GradualSkipState> gradualSkipStates = new HashMap<>();
+
+    /**
+     * Per-world state for an in-flight gradual (or speed) skip. Holds the
+     * immutable inputs computed once at skip-start and a single-element array
+     * for the mutable step counter so the timer runnable can update it without
+     * a wrapper AtomicInteger.
+     */
+    private record GradualSkipState(
+        int totalSteps,
+        int[] currentStep,
+        long targetTime,
+        long originalTime,
+        Runnable onComplete
+    ) {}
 
     public SleepManager(Onlysleep plugin, ConfigManager configManager) {
         this.plugin = plugin;
