@@ -362,25 +362,36 @@ public class SleepManager {
             return null;
         }
 
-        final long[] traveled = {0};
+        // Time-freeze gradual skip: world time stays parked at startTime for the
+        // entire animation, then snaps to targetTime in a single setTime() call
+        // at the final tick. This is what fixes the "player gets up in the
+        // middle of the night" bug — vanilla's wake-up threshold (23458) is
+        // never crossed because world time never moves.
+        final int totalSteps = (int) Math.ceil((double) totalDistance / speed);
+        final int[] currentStep = {0};
+
+        GradualSkipState state = new GradualSkipState(totalSteps, currentStep, targetTime, startTime, onComplete);
+        gradualSkipStates.put(world, state);
+
         final ScheduledTask[] taskHolder = new ScheduledTask[1];
 
         taskHolder[0] = SchedulerAdapter.runTaskTimer(plugin, world, () -> {
-            traveled[0] += speed;
+            currentStep[0]++;
 
-            if (traveled[0] >= totalDistance) {
-                // Reached target — snap to exact time and finish
+            // Tick visual progression only — no world.setTime() yet.
+            updateSleepStatus(world);
+
+            if (currentStep[0] >= totalSteps) {
+                // Final snap: single setTime() for the entire gradual skip.
                 world.setTime(targetTime);
+                clearPhantoms(world);
+                gradualSkipStates.remove(world);
                 if (taskHolder[0] != null) {
                     taskHolder[0].cancel();
                 }
                 if (onComplete != null) {
                     onComplete.run();
                 }
-            } else {
-                // Advance time, wrapping around at 24000
-                long newTime = (startTime + traveled[0]) % 24000;
-                world.setTime(newTime);
             }
         }, 1L, 1L);
 
@@ -714,5 +725,16 @@ public class SleepManager {
     /** Test hook: invoke the package-private clearPhantoms. */
     void clearPhantomsForTest(World world) {
         clearPhantoms(world);
+    }
+
+    /** Test hook: invoke the package-private scheduleGradualSkip. */
+    ScheduledTask scheduleGradualSkipForTest(World world, long targetTime, int speed, Runnable onComplete) {
+        return scheduleGradualSkip(world, targetTime, speed, onComplete);
+    }
+
+    /** Test hook: read totalSteps from the gradual skip state for a world. Returns -1 if no state. */
+    int getGradualSkipTotalStepsForTest(World world) {
+        GradualSkipState state = gradualSkipStates.get(world);
+        return state != null ? state.totalSteps() : -1;
     }
 }

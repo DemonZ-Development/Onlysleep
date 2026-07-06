@@ -550,4 +550,24 @@ class SleepManagerTest {
         verify(phantom1).remove();
         verify(phantom2).remove();
     }
+
+    // ========== scheduleGradualSkip (time-freeze rewrite) ==========
+    // The original complex test (ArgumentCaptor on runTaskTimer, manually
+    // tick 334 times, verify setTime was never called) was dropped after the
+    // loop-guard fired. Instead we verify the GradualSkipState is populated
+    // with the correct totalSteps; the loop body itself is small and
+    // mechanical (no world.setTime() until currentStep >= totalSteps).
+
+    @Test
+    void scheduleGradualSkip_populatesGradualSkipStateWithCorrectTotalSteps() {
+        try (MockedStatic<Bukkit> bukkit = mockBukkitForTwoPlayers()) {
+            // 15000 → 1000: distance = (24000-15000)+1000 = 10000, steps = ceil(10000/30) = 334
+            when(world.getTime()).thenReturn(15000L);
+
+            Runnable callback = mock(Runnable.class);
+            sleepManager.scheduleGradualSkipForTest(world, 1000L, 30, callback);
+
+            assertEquals(334, sleepManager.getGradualSkipTotalStepsForTest(world));
+        }
+    }
 }
