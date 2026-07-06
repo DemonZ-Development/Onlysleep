@@ -3,7 +3,7 @@ plugins {
     id("com.gradleup.shadow") version "8.3.5"
 }
 
-version = "1.2.0"
+version = "1.3.0"
 
 repositories {
     mavenCentral()
@@ -15,7 +15,7 @@ repositories {
 
 dependencies {
     // Paper API (covers Bukkit, Spigot, and Folia APIs)
-    compileOnly("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT")
 
     // bStats Metrics (shaded into final jar)
     implementation("org.bstats:bstats-bukkit:3.1.0")
@@ -26,7 +26,7 @@ dependencies {
     // ---- Test dependencies ----
 
     // Paper API also needed for test compilation
-    testImplementation("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
+    testImplementation("io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT")
 
     // PlaceholderAPI also needed for test compilation
     testImplementation("me.clip:placeholderapi:2.11.6")
