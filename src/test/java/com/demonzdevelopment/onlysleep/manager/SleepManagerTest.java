@@ -527,4 +527,12 @@ class SleepManagerTest {
             assertNull(sleepManager.getSkippingPlayerNameForTest(world));
         }
     }
+
+    // ========== reassertSleeping (skipped) ==========
+    // The original plan called for a defensive reassertSleeping() helper
+    // that re-asserted Player.setSleeping(true) on each gradual tick.
+    // However, Player.setSleeping(boolean) does not exist in the Bukkit
+    // API. Task 9's time-freeze already prevents the vanilla wake-up
+    // threshold from triggering (world.getTime() never crosses 23458
+    // during the animation), so a defensive guard is unnecessary.
 }
