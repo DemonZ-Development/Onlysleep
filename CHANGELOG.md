@@ -4,6 +4,21 @@
 
 ---
 
+## [1.3.0] - 2026-07-06
+
+This release upgrades the Paper API target to 1.21.11 and fixes two bugs in the gradual/speed skip system.
+
+### ⚡ Changed
+
+- **Paper API target**: bumped from 1.21.4 to 1.21.11
+
+### 🐛 Bug Fixes
+
+- **Boss bar no longer shows "Unknown" when the initiating sleeper logs off mid-skip**:
+  - Replaced the live `Bukkit.getPlayer(uuid)` lookup (which returned `null` after the player logged out, falling back to `"Unknown"`) with a per-world snapshot of the initiating player's name, populated at skip-start. The boss bar and deferred title both read from the snapshot, so attribution survives the player going offline.
+- **Sleeping players no longer wake up mid-skip in gradual mode**:
+  - Rewrote `scheduleGradualSkip` to keep `world.getTime()` parked at the original night value for the entire animation. `setTime()` is now called exactly once — at the final tick — to snap to the morning target. This prevents vanilla's wake-up threshold (`world.getTime() > 23458`) from being crossed mid-animation, which previously caused players to be kicked out of bed before the skip's completion effects fired.
+
 ## [1.2.0] - 2026-05-21
 
 This release fixes critical bugs across the sleep skip system, AFK detection, config handling, and more.
