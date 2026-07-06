@@ -599,7 +599,7 @@ public class SleepManager {
         removeBossBar(world);
 
         BossBar bossBar = Bukkit.createBossBar(
-            configManager.getMessage("boss-bar.title", Map.of("player", getSleepingPlayerName(world))),
+            configManager.getMessage("boss-bar.title", Map.of("player", skippingPlayerNames.getOrDefault(world, "Players"))),
             configManager.getBossBarColor(),
             configManager.getBossBarStyle()
         );
@@ -669,5 +669,10 @@ public class SleepManager {
     /** Test hook: read the snapshot of the initiating player's name. */
     String getSkippingPlayerNameForTest(World world) {
         return skippingPlayerNames.get(world);
+    }
+
+    /** Test hook: invoke the package-private showBossBarForWorld. */
+    void showBossBarForWorldForTest(World world) {
+        showBossBarForWorld(world);
     }
 }

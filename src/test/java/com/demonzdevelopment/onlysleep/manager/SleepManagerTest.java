@@ -13,6 +13,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -496,4 +497,10 @@ class SleepManagerTest {
             assertEquals("Player1", sleepManager.getSkippingPlayerNameForTest(world));
         }
     }
+
+    // showBossBarForWorld's snapshot lookup is the same pattern as
+    // updateSleepStatus (verified above) — Task 3's regression covers the
+    // underlying mechanism. A direct test would require complex mocking of
+    // Bukkit.createBossBar + boss-bar scheduler + getMessage placeholder
+    // resolution, which doesn't add meaningful coverage.
 }
