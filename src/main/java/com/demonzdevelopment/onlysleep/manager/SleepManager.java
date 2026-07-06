@@ -382,7 +382,7 @@ public class SleepManager {
             bossBar.setProgress(progress);
 
             Map<String, String> placeholders = new HashMap<>();
-            placeholders.put("player", getSleepingPlayerName(world));
+            placeholders.put("player", skippingPlayerNames.getOrDefault(world, "Players"));
             bossBar.setTitle(configManager.getMessage("boss-bar.title", placeholders));
         }
 

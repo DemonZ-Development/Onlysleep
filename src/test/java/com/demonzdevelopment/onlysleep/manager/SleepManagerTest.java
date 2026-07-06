@@ -474,4 +474,26 @@ class SleepManagerTest {
             assertEquals("Player1", sleepManager.getSkippingPlayerNameForTest(world));
         }
     }
+
+    @Test
+    void skippingPlayerNames_persistsAfterInitiatorOffline() {
+        try (MockedStatic<Bukkit> bukkit = mockBukkitForTwoPlayers()) {
+            when(configManager.getSkipType()).thenReturn("instant");
+            when(configManager.isResetTime()).thenReturn(true);
+            when(configManager.isClearWeather()).thenReturn(false);
+
+            sleepManager.onPlayerBedEnter(player1);
+            sleepManager.skipNightForTest(world);
+
+            assertEquals("Player1", sleepManager.getSkippingPlayerNameForTest(world));
+
+            // Bug condition: initiator logs out. Live getSleepingPlayerName would
+            // now return "Unknown" because Bukkit.getPlayer returns null. The
+            // snapshot in skippingPlayerNames is unaffected — which is exactly
+            // what line 383 of updateSleepStatus now reads from.
+            when(Bukkit.getPlayer(uuid1)).thenReturn(null);
+
+            assertEquals("Player1", sleepManager.getSkippingPlayerNameForTest(world));
+        }
+    }
 }
