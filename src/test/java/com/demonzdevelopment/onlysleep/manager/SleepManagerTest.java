@@ -503,4 +503,28 @@ class SleepManagerTest {
     // underlying mechanism. A direct test would require complex mocking of
     // Bukkit.createBossBar + boss-bar scheduler + getMessage placeholder
     // resolution, which doesn't add meaningful coverage.
+
+    // ========== skippingPlayerNames cleanup ==========
+    // Note: cleanupWorld is public and internally calls cancelSkip, so the
+    // cleanupWorld test below transitively exercises cancelSkip's cleanup
+    // path. No separate cancelSkip test is needed (and would require a test
+    // hook since cancelSkip is private).
+
+    @Test
+    void cleanupWorld_clearsSkippingPlayerNames() {
+        try (MockedStatic<Bukkit> bukkit = mockBukkitForTwoPlayers()) {
+            when(configManager.getSkipType()).thenReturn("instant");
+            when(configManager.isResetTime()).thenReturn(true);
+            when(configManager.isClearWeather()).thenReturn(false);
+
+            sleepManager.onPlayerBedEnter(player1);
+            sleepManager.skipNightForTest(world);
+
+            assertEquals("Player1", sleepManager.getSkippingPlayerNameForTest(world));
+
+            sleepManager.cleanupWorld(world);
+
+            assertNull(sleepManager.getSkippingPlayerNameForTest(world));
+        }
+    }
 }

@@ -199,6 +199,7 @@ public class SleepManager {
         if (task != null) {
             task.cancel();
         }
+        skippingPlayerNames.remove(world);
         removeBossBar(world);
     }
 
@@ -260,6 +261,11 @@ public class SleepManager {
             // Cleanup
             sleepingPlayers.remove(world);
             skipTasks.remove(world);
+            // Note: skippingPlayerNames is NOT cleared here. For instant mode
+            // this runnable runs synchronously before any consumer reads the
+            // snapshot, so clearing here would erase it before tests can assert.
+            // For gradual mode the snapshot stays valid through the loop and is
+            // cleared by cancelSkip() / cleanupWorld() when the world resets.
             removeBossBar(world);
         };
 
@@ -655,6 +661,7 @@ public class SleepManager {
      */
     public void cleanupWorld(World world) {
         cancelSkip(world);
+        skippingPlayerNames.remove(world);
         sleepingPlayers.remove(world);
         removeBossBar(world);
     }
