@@ -19,12 +19,6 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-/**
- * Tests for {@link SleepPlaceholderExpansion}.
- * <p>
- * Verifies each placeholder returns the expected value based on mocked state.
- * Uses MockedStatic for Bukkit static methods where needed.
- */
 @ExtendWith(MockitoExtension.class)
 class SleepPlaceholderExpansionTest {
 
@@ -67,7 +61,7 @@ class SleepPlaceholderExpansionTest {
         lenient().when(player.getUniqueId()).thenReturn(playerUuid);
 
         lenient().when(world.getName()).thenReturn("world");
-        lenient().when(world.getTime()).thenReturn(14000L); // Night time
+        lenient().when(world.getTime()).thenReturn(14000L); 
 
         lenient().when(configManager.isWorldEnabled("world")).thenReturn(true);
 
@@ -102,17 +96,14 @@ class SleepPlaceholderExpansionTest {
 
     @Test
     void onPlaceholderRequest_Works_WhenPlayerIsNull_ForPlayerIndependent() {
-        // version
+
         assertEquals("1.0.0", expansion.onPlaceholderRequest(null, "version"));
 
-        // platform
         assertEquals("Paper", expansion.onPlaceholderRequest(null, "platform"));
 
-        // percentage
         when(configManager.getSleepPercentage()).thenReturn(50);
         assertEquals("50", expansion.onPlaceholderRequest(null, "percentage"));
 
-        // world_sleeping
         when(sleepManager.getSleepingCount(world)).thenReturn(2);
         try (MockedStatic<Bukkit> bukkit = mockStatic(Bukkit.class)) {
             bukkit.when(() -> Bukkit.getWorld("world")).thenReturn(world);

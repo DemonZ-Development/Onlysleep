@@ -1,4 +1,4 @@
-# ⚙️ Configuration
+# Configuration
 
 Onlysleep's configuration is located at `plugins/Onlysleep/config.yml`. The plugin works out-of-the-box with sensible defaults, so you only need to change what you want.
 
@@ -47,7 +47,7 @@ The type of night skip animation.
 | Value | Description |
 |-------|-------------|
 | `instant` | Time changes immediately to morning |
-| `speed` | Time fast-forwards (adds 24000 ticks to set to next day) |
+| `speed` | Time fast-forwards to morning (~2–3s timelapse) |
 | `gradual` | Time smoothly transitions (uses `gradual-skip-speed-ticks`) |
 
 ---
@@ -123,7 +123,7 @@ Controls whether storms and thunderstorms are cleared when a player sleeps.
 |---------|-------------|
 | `clear-weather` | Clear rain/thunder when a player sleeps during a storm |
 | `reset-weather` | Actually set rain to clear after skipping |
-| `clear-thunder` | Clear thunder specifically |
+| `clear-thunder` | Clear thunder independently of `clear-weather` |
 | `reset-thunder` | Actually set thunder to clear after skipping |
 | `reset-weather-cycle` | Reset the weather cycle duration (prevents immediate rain after clearing) |
 
@@ -191,7 +191,7 @@ afk-detection:
 The AFK check order is:
 1. Built-in AFK tracker (movement + interaction based)
 2. EssentialsX metadata (`afk` metadata value)
-3. CMI API (`getCMIPlayer().getAfkData().isAfk()`)
+3. CMI static API (`CMI.getInstance().getPlayerManager().getUser(player).isAfk()`)
 
 ---
 
@@ -292,8 +292,8 @@ sounds:
 |---------|-------------|
 | `enabled` | Master toggle for all sounds |
 | `skip-sound` | Sound played when the night skip completes |
-| `night-sound` | Alternative night skip sound |
-| `storm-sound` | Sound played during storm skip |
+| `night-sound` | Sound played when a player starts sleeping at night |
+| `storm-sound` | Sound played when a storm is cleared during a skip |
 
 Any valid [Bukkit Sound](https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html) enum value can be used.
 

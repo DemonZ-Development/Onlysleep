@@ -22,7 +22,6 @@ public class ConfigManager {
     private FileConfiguration config;
     private FileConfiguration messages;
 
-    // Sleep settings
     private int sleepPercentage;
     private int skipDelayTicks;
     private int morningTime;
@@ -30,25 +29,21 @@ public class ConfigManager {
     private boolean perWorldSleep;
     private boolean requireAllPlayersOnline;
 
-    // Weather settings
     private boolean clearWeather;
     private boolean resetWeather;
     private boolean clearThunder;
     private boolean resetThunder;
 
-    // Player filtering
     private boolean countAfkAsSleeping;
     private boolean excludeAfkFromTotal;
     private boolean countSpectators;
     private boolean countFlying;
     private boolean ignoreCreativeMode;
 
-    // AFK detection
     private boolean useEssentialsAfk;
     private boolean useCmiAfk;
     private int afkTimeSeconds;
 
-    // UI settings
     private boolean showProgressBar;
     private String progressBarSymbol;
     private int progressBarLength;
@@ -63,7 +58,6 @@ public class ConfigManager {
     private int titleFadeOut;
     private boolean showActionBar;
 
-    // Sound settings
     private boolean playSounds;
     private String skipSound;
     private float skipSoundVolume;
@@ -75,21 +69,16 @@ public class ConfigManager {
     private float stormSoundVolume;
     private float stormSoundPitch;
 
-    // Night skip type
-    private String skipType; // "instant", "speed", "gradual"
+    private String skipType; 
     private int gradualSkipSpeedTicks;
     private boolean resetWeatherCycle;
 
-    // Gamerule management
     private boolean manageGamerule;
 
-    // Update checker
     private boolean checkForUpdates;
 
-    // Disabled worlds
     private List<String> disabledWorlds;
 
-    // Disabled game modes
     private List<String> disabledGameModes;
 
     public ConfigManager(Onlysleep plugin) {
@@ -97,13 +86,12 @@ public class ConfigManager {
     }
 
     public void loadConfigs() {
-        // Automatically merge new default options and comments into config.yml
+
         File configFile = new File(plugin.getDataFolder(), "config.yml");
         ConfigUpdater.update(plugin, "config.yml", configFile);
         plugin.reloadConfig();
         this.config = plugin.getConfig();
 
-        // Automatically merge new default options and comments into messages.yml
         File messagesFile = new File(plugin.getDataFolder(), "messages.yml");
         ConfigUpdater.update(plugin, "messages.yml", messagesFile);
         loadMessages();
@@ -120,7 +108,7 @@ public class ConfigManager {
     }
 
     private void loadSettings() {
-        // Sleep
+
         this.sleepPercentage = config.getInt("sleep-percentage", 50);
         this.skipDelayTicks = config.getInt("skip-delay-ticks", 60);
         this.morningTime = config.getInt("morning-time", 1000);
@@ -128,30 +116,25 @@ public class ConfigManager {
         this.perWorldSleep = config.getBoolean("per-world-sleep", true);
         this.requireAllPlayersOnline = config.getBoolean("require-all-players-online", false);
 
-        // Weather
         this.clearWeather = config.getBoolean("clear-weather", true);
         this.resetWeather = config.getBoolean("reset-weather", true);
         this.clearThunder = config.getBoolean("clear-thunder", true);
         this.resetThunder = config.getBoolean("reset-thunder", true);
 
-        // Player filtering
         this.countAfkAsSleeping = config.getBoolean("count-afk-as-sleeping", false);
         this.excludeAfkFromTotal = config.getBoolean("exclude-afk-from-total", true);
         this.countSpectators = config.getBoolean("count-spectators", false);
         this.countFlying = config.getBoolean("count-flying", true);
         this.ignoreCreativeMode = config.getBoolean("ignore-creative-mode", false);
 
-        // AFK detection
         this.useEssentialsAfk = config.getBoolean("afk-detection.use-essentials", true);
         this.useCmiAfk = config.getBoolean("afk-detection.use-cmi", true);
         this.afkTimeSeconds = config.getInt("afk-detection.time-seconds", 300);
 
-        // UI - Progress bar
         this.showProgressBar = config.getBoolean("ui.progress-bar.enabled", true);
         this.progressBarSymbol = config.getString("ui.progress-bar.symbol", "■");
         this.progressBarLength = config.getInt("ui.progress-bar.length", 20);
 
-        // UI - Boss bar
         this.showBossBar = config.getBoolean("ui.boss-bar.enabled", true);
         try {
             this.bossBarColor = BarColor.valueOf(config.getString("ui.boss-bar.color", "BLUE").toUpperCase());
@@ -164,7 +147,6 @@ public class ConfigManager {
             this.bossBarStyle = BarStyle.SOLID;
         }
 
-        // UI - Title
         this.showTitle = config.getBoolean("ui.title.enabled", false);
         this.titleMessage = config.getString("ui.title.title", "&bGood Morning!");
         this.subtitleMessage = config.getString("ui.title.subtitle", "&fNight skipped by &b%player%");
@@ -172,10 +154,8 @@ public class ConfigManager {
         this.titleStay = config.getInt("ui.title.stay", 70);
         this.titleFadeOut = config.getInt("ui.title.fade-out", 20);
 
-        // UI - Action bar
         this.showActionBar = config.getBoolean("ui.action-bar.enabled", true);
 
-        // Sound settings
         this.playSounds = config.getBoolean("sounds.enabled", true);
         this.skipSound = config.getString("sounds.skip-sound", "ENTITY_PLAYER_LEVELUP");
         this.skipSoundVolume = (float) config.getDouble("sounds.skip-sound-volume", 1.0);
@@ -187,25 +167,18 @@ public class ConfigManager {
         this.stormSoundVolume = (float) config.getDouble("sounds.storm-sound-volume", 1.0);
         this.stormSoundPitch = (float) config.getDouble("sounds.storm-sound-pitch", 1.0);
 
-        // Skip type
         this.skipType = config.getString("skip-type", "instant");
         this.gradualSkipSpeedTicks = config.getInt("gradual-skip-speed-ticks", 30);
         this.resetWeatherCycle = config.getBoolean("reset-weather-cycle", true);
 
-        // Gamerule
         this.manageGamerule = config.getBoolean("manage-gamerule", true);
 
-        // Update checker
         this.checkForUpdates = config.getBoolean("check-for-updates", true);
 
-        // Disabled worlds
         this.disabledWorlds = config.getStringList("disabled-worlds");
 
-        // Disabled game modes
         this.disabledGameModes = config.getStringList("disabled-gamemodes");
     }
-
-    // --- Message methods ---
 
     public String getMessage(String path) {
         return getMessage(path, new HashMap<>());
@@ -217,12 +190,10 @@ public class ConfigManager {
             return ChatColor.RED + "Message not found: " + path;
         }
 
-        // Apply prefix
         String prefix = ChatColor.translateAlternateColorCodes('&',
             messages.getString("prefix", "&8[&bOnlysleep&8] &r"));
         String result = prefix + ChatColor.translateAlternateColorCodes('&', message);
 
-        // Apply placeholders
         for (Map.Entry<String, String> entry : placeholders.entrySet()) {
             result = result.replace("%" + entry.getKey() + "%", entry.getValue());
         }
@@ -246,13 +217,10 @@ public class ConfigManager {
         return result;
     }
 
-    /**
-     * Builds a visual progress bar string.
-     */
     public String buildProgressBar(double current, double max) {
         if (max <= 0) return "";
         int completed = (int) Math.round((current / max) * progressBarLength);
-        // Cap at progressBarLength to handle the case where current > max
+
         if (completed > progressBarLength) completed = progressBarLength;
         int remaining = progressBarLength - completed;
 
@@ -267,14 +235,9 @@ public class ConfigManager {
         return ChatColor.translateAlternateColorCodes('&', bar.toString());
     }
 
-    /**
-     * Checks if a world is enabled for sleep features.
-     */
     public boolean isWorldEnabled(String worldName) {
         return !disabledWorlds.contains(worldName);
     }
-
-    // --- Getters ---
 
     public int getSleepPercentage() { return sleepPercentage; }
     public int getSkipDelayTicks() { return skipDelayTicks; }

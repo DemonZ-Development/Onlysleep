@@ -1,12 +1,10 @@
-<img src="https://raw.githubusercontent.com/DemonZ-Development/Onlysleep/master/assets/banner.png" alt="Onlysleep Banner" width="100%">
+# Onlysleep
 
-# 🌙 Onlysleep
-
-**Skip the night with just one player sleeping** — fully configurable, lightweight, and compatible with **every major Minecraft server platform**.
+Skip the night with just one player sleeping — fully configurable, lightweight, and compatible with every major Minecraft server platform.
 
 ---
 
-## 💖 Sponsored By
+## Sponsored By
 
 <div align="center">
   <a href="https://nexeu.zip">
@@ -18,34 +16,31 @@
 
 ---
 
-## ✨ Features
+## Features
 
-- **One-Player Sleep** — Default mode, or configure any percentage
-- **Multi-Platform** — Works on Bukkit, Spigot, Paper, Purpur, Folia, and forks
-- **Per-World Sleep** — Configure per-world or global counting
-- **Weather Skip** — Clear storms and thunderstorms automatically
-- **Visual Feedback** — Boss bar, action bar, progress bar, titles
-- **Sound Effects** — Fully configurable sounds
-- **Smart Filtering** — Ignores AFK, spectators, exempt players
-- **AFK Detection** — EssentialsX & CMI support
-- **PlaceholderAPI** — 12+ placeholders for integrations
-- **Update Checker** — Auto-checks for new versions
-- **bStats** — Anonymous usage statistics
+- One-player sleep by default, or configure any percentage
+- Multi-platform: Bukkit, Spigot, Paper, Purpur, Folia, and forks
+- Per-world or global sleep counting
+- Weather skip: clear rain and thunder independently
+- Visual feedback: boss bar, action bar, progress bar, titles
+- Configurable sounds on bed-enter and night-skip
+- Smart filtering: AFK detection (EssentialsX & CMI), spectators, exempt permissions, disabled gamemodes
+- Gamerule management for `playersSleepingPercentage`
+- PlaceholderAPI: 12+ placeholders
+- Update checker and bStats (opt-out available)
+- Per-world disable
 
-## 📥 Installation
+## Installation
 
-1. Download the JAR
-2. Place in your `plugins/` folder
-3. Restart your server
-4. Configure `plugins/Onlysleep/config.yml`
-5. Reload with `/onlysleep reload`
+1. Download the JAR.
+2. Place it in your `plugins/` folder.
+3. Restart your server.
+4. Configure `plugins/Onlysleep/config.yml`.
+5. Reload with `/onlysleep reload`.
 
-### Requirements
-- **Java 21+**
-- **Minecraft 1.16.5+**
-- **Works standalone** — no dependencies required!
+**Requirements:** Java 21+, Minecraft 1.16.5+. Works standalone; PlaceholderAPI is optional.
 
-## 🎮 Commands
+## Commands
 
 | Command | Description | Permission |
 |---------|-------------|------------|
@@ -56,7 +51,7 @@
 
 **Aliases:** `/os`, `/sleep`
 
-## 🔐 Permissions
+## Permissions
 
 | Permission | Default | Description |
 |------------|---------|-------------|
@@ -68,19 +63,17 @@
 | `onlysleep.exempt` | None | Excluded from sleep (operators sleep by default) |
 | `onlysleep.update` | OP | Update alerts |
 
-## 📊 bStats
+## bStats
 
 [![bStats](https://bstats.org/signatures/bukkit/OnlySleep.svg)](https://bstats.org/plugin/bukkit/OnlySleep/31415)
 
 [View statistics](https://bstats.org/plugin/bukkit/OnlySleep/31415)
 
-## 🔗 Links
+## Links
 
-- 🌐 [Website](https://demonzdevelopment.online)
-- 💻 [GitHub](https://github.com/DemonZ-Development/Onlysleep)
-- 🐦 [Twitter / X](https://x.com/DemonZ_Dev)
-- 🎥 [YouTube](https://www.youtube.com/@DemonzDevelopment)
-- 📸 [Instagram](https://www.instagram.com/demonzdevelopement)
-- 🔑 [Discord](https://discord.gg/qkvkEaPryF)
-- 📋 [Reddit](https://www.reddit.com/r/DemonZDevelopment/)
-- 📧 demonzdevelopment@gmail.com
+- [Website](https://demonzdevelopment.online)
+- [GitHub](https://github.com/DemonZ-Development/Onlysleep)
+- [Discord](https://discord.gg/qkvkEaPryF)
+- [Twitter / X](https://x.com/DemonZ_Dev)
+- [YouTube](https://www.youtube.com/@DemonzDevelopment)
+- [demonzdevelopment@gmail.com](mailto:demonzdevelopment@gmail.com)

@@ -20,12 +20,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-/**
- * Tests for {@link AfkTracker}.
- * <p>
- * Verifies AFK detection timing, activity updates from events,
- * and edge cases like first-seen players.
- */
 @ExtendWith(MockitoExtension.class)
 class AfkTrackerTest {
 
@@ -52,7 +46,7 @@ class AfkTrackerTest {
         lenient().when(plugin.getConfigManager()).thenReturn(configManager);
         lenient().when(plugin.getServer()).thenReturn(server);
         lenient().when(server.getPluginManager()).thenReturn(pluginManager);
-        lenient().when(configManager.getAfkTimeSeconds()).thenReturn(300); // 5 min timeout
+        lenient().when(configManager.getAfkTimeSeconds()).thenReturn(300); 
         lenient().when(player.getUniqueId()).thenReturn(playerUuid);
     }
 
@@ -61,10 +55,6 @@ class AfkTrackerTest {
         AfkTracker.shutdown();
     }
 
-    /**
-     * Creates a {@link MockedStatic}<{@link Bukkit}> with a mocked scheduler,
-     * needed for {@link AfkTracker#init(Onlysleep)} which schedules a timer task.
-     */
     private MockedStatic<Bukkit> mockBukkitForInit() {
         MockedStatic<Bukkit> bukkit = mockStatic(Bukkit.class);
         BukkitScheduler scheduler = mock(BukkitScheduler.class);
@@ -92,19 +82,18 @@ class AfkTrackerTest {
 
     @Test
     void isAfk_ReturnsTrue_ForInactivePlayer() throws Exception {
-        // Override timeout to 1 second so we can test with a slightly old timestamp
+
         when(configManager.getAfkTimeSeconds()).thenReturn(1);
         try (MockedStatic<Bukkit> bukkit = mockBukkitForInit()) {
             AfkTracker.init(plugin);
-            // Mark the player as active
+
             AfkTracker.updateActivity(player);
-            // Use reflection to set an old timestamp (2+ seconds ago with a 1-second timeout)
+
             setLastActivityTimestamp(playerUuid, System.currentTimeMillis() - 2500);
             assertTrue(AfkTracker.isAfk(player), "Player should be AFK after 2.5s of inactivity with 1s timeout");
         }
     }
 
-    /** Sets the last activity timestamp for a player via reflection on the static map. */
     private void setLastActivityTimestamp(java.util.UUID uuid, long timestamp) throws Exception {
         java.lang.reflect.Field field = AfkTracker.class.getDeclaredField("lastActivity");
         field.setAccessible(true);
@@ -116,8 +105,7 @@ class AfkTrackerTest {
     @Test
     void isAfk_ReturnsFalse_WhenTimeoutIsZero() {
         when(configManager.getAfkTimeSeconds()).thenReturn(0);
-        // When timeout <= 0, init() returns early and doesn't schedule any task
-        // so no Bukkit mocking is needed
+
         AfkTracker.init(plugin);
         assertFalse(AfkTracker.isAfk(player));
     }
@@ -125,7 +113,7 @@ class AfkTrackerTest {
     @Test
     void isAfk_ReturnsFalse_WhenTimeoutIsNegative() {
         when(configManager.getAfkTimeSeconds()).thenReturn(-1);
-        // When timeout <= 0, init() returns early and doesn't schedule any task
+
         AfkTracker.init(plugin);
         assertFalse(AfkTracker.isAfk(player));
     }
@@ -144,7 +132,7 @@ class AfkTrackerTest {
             AfkTracker.init(plugin);
             AfkTracker.updateActivity(player);
             AfkTracker.shutdown();
-            // After shutdown, isAfk should return false (no tracker state)
+
             assertFalse(AfkTracker.isAfk(player));
         }
     }
@@ -160,9 +148,9 @@ class AfkTrackerTest {
     void isAfk_UpdatesActivity_OnFirstCheck() {
         try (MockedStatic<Bukkit> bukkit = mockBukkitForInit()) {
             AfkTracker.init(plugin);
-            // First time seeing a player — should mark them as active
+
             assertFalse(AfkTracker.isAfk(player));
-            // Subsequent check should also return false (they were just marked active)
+
             assertFalse(AfkTracker.isAfk(player));
         }
     }

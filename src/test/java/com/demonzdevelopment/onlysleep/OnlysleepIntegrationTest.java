@@ -28,13 +28,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-/**
- * Integration-style tests using pure Mockito, verifying that the plugin's
- * components work together correctly without needing a real server.
- *
- * <p>These tests verify end-to-end flows (e.g., player enters bed → count
- * increases → skip scheduled) using mocked Bukkit APIs.</p>
- */
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 class OnlysleepIntegrationTest {
@@ -64,7 +57,6 @@ class OnlysleepIntegrationTest {
         configManager = mock(ConfigManager.class);
         when(plugin.getConfigManager()).thenReturn(configManager);
 
-        // Default config stubs
         lenient().when(configManager.isWorldEnabled(anyString())).thenReturn(true);
         lenient().when(configManager.isPerWorldSleep()).thenReturn(true);
         lenient().when(configManager.getSleepPercentage()).thenReturn(50);
@@ -93,7 +85,6 @@ class OnlysleepIntegrationTest {
         lenient().when(player.isSleeping()).thenReturn(true);
         lenient().when(player.getGameMode()).thenReturn(org.bukkit.GameMode.SURVIVAL);
 
-        // Mock scheduler for SchedulerAdapter
         lenient().when(scheduler.runTask(any(), any(Runnable.class))).thenReturn(mock(BukkitTask.class));
         lenient().when(scheduler.runTaskLater(any(), any(Runnable.class), anyLong())).thenReturn(mock(BukkitTask.class));
         lenient().when(scheduler.runTaskTimer(any(), any(Runnable.class), anyLong(), anyLong())).thenReturn(mock(BukkitTask.class));
@@ -105,8 +96,6 @@ class OnlysleepIntegrationTest {
         AfkTracker.shutdown();
         OfflinePlayerTracker.shutdown();
     }
-
-    // ========== Plugin lifecycle ==========
 
     @Test
     void configManager_Available() {
@@ -122,8 +111,6 @@ class OnlysleepIntegrationTest {
     void platform_Detectable() {
         assertNotNull(PlatformAdapter.getPlatform());
     }
-
-    // ========== Sleep flow ==========
 
     @Test
     void sleepingCount_Zero_WhenNoPlayersSleeping() {
@@ -208,7 +195,6 @@ class OnlysleepIntegrationTest {
             sleepManager.onPlayerBedEnter(player);
             assertEquals(1, sleepManager.getSleepingCount(world));
 
-            // Enter bed again (should be idempotent)
             sleepManager.onPlayerBedEnter(player);
             assertEquals(1, sleepManager.getSleepingCount(world));
         }

@@ -51,7 +51,7 @@ public class OnlysleepCommand implements CommandExecutor, TabCompleter {
             case "update":
                 handleUpdate(sender);
                 break;
-     
+
             default:
                 sendHelp(sender);
                 break;
@@ -68,18 +68,14 @@ public class OnlysleepCommand implements CommandExecutor, TabCompleter {
         try {
             configManager.reload();
 
-            // Re-apply gamerule management in case manage-gamerule or disabled
-            // worlds changed.
             plugin.getSleepManager().applyGamerules();
 
-            // Re-initialise AFK tracker if its config changed
             com.demonzdevelopment.onlysleep.util.AfkTracker.shutdown();
             if (configManager.getAfkTimeSeconds() > 0) {
                 com.demonzdevelopment.onlysleep.util.AfkTracker.init(plugin);
                 plugin.getLogger().info("AFK tracker re-initialised (" + configManager.getAfkTimeSeconds() + "s timeout)");
             }
 
-            // Re-initialise offline player tracker if its config changed
             com.demonzdevelopment.onlysleep.util.OfflinePlayerTracker.shutdown();
             if (configManager.isRequireAllPlayersOnline()) {
                 com.demonzdevelopment.onlysleep.util.OfflinePlayerTracker.init(plugin);
@@ -157,10 +153,7 @@ public class OnlysleepCommand implements CommandExecutor, TabCompleter {
 
         sender.sendMessage(configManager.getMessage("update.checking"));
         plugin.getUpdateChecker().checkAsync().thenAccept(result -> {
-            // Dispatch message sending to the main/global thread — CompletableFuture
-            // completes on the ForkJoinPool, and Player.sendMessage is not async-safe.
-            // Using SchedulerAdapter keeps this Folia-compatible (Bukkit.getScheduler()
-            // throws on Folia servers).
+
             SchedulerAdapter.runGlobalTask(plugin, () -> {
                 if (result.isUpdateAvailable()) {
                     Map<String, String> placeholders = new HashMap<>();
@@ -190,8 +183,6 @@ public class OnlysleepCommand implements CommandExecutor, TabCompleter {
         sender.sendMessage(configManager.getMessage("help.help", placeholders));
         sender.sendMessage(configManager.getMessage("help.footer", placeholders));
     }
-
-
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {

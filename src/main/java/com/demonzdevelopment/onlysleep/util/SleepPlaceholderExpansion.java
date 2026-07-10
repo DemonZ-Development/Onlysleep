@@ -11,31 +11,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-/**
- * PlaceholderAPI expansion providing sleep-related placeholders.
- *
- * <p>Registered automatically when PlaceholderAPI is detected on the server.
- *
- * <p><b>Placeholders:</b>
- * <ul>
- *   <li>{@code %onlysleep_sleeping%} — Number of sleeping players in the player's world</li>
- *   <li>{@code %onlysleep_required%} — Number of players required to skip night</li>
- *   <li>{@code %onlysleep_progress%} — Percentage of required sleepers achieved</li>
- *   <li>{@code %onlysleep_progress_bar%} — Visual progress bar of sleep progress</li>
- *   <li>{@code %onlysleep_sleeping_names%} — Comma-separated names of sleeping players</li>
- *   <li>{@code %onlysleep_skipping%} — Whether a night skip is currently scheduled (true/false)</li>
- *   <li>{@code %onlysleep_enabled%} — Whether sleeping is enabled in the player's world</li>
- *   <li>{@code %onlysleep_is_sleepable%} — Whether it's currently night/storm in the world</li>
- *   <li>{@code %onlysleep_version%} — Onlysleep plugin version</li>
- *   <li>{@code %onlysleep_afk%} — Whether the player is considered AFK (true/false)</li>
- *   <li>{@code %onlysleep_is_sleeping%} — Whether the player is currently counted as sleeping</li>
- *   <li>{@code %onlysleep_percentage%} — Configured sleep percentage value</li>
- *   <li>{@code %onlysleep_total%} — Total eligible player count in the world</li>
- *   <li>{@code %onlysleep_status%} — "Sleeping" or "Awake" based on player's state</li>
- *   <li>{@code %onlysleep_is_night%} — Whether it's currently night time in the player's world</li>
- *   <li>{@code %onlysleep_platform%} — Server platform name (Folia, Paper, Spigot, Bukkit)</li>
- * </ul>
- */
 public class SleepPlaceholderExpansion extends PlaceholderExpansion {
 
     private final Onlysleep plugin;
@@ -76,7 +51,6 @@ public class SleepPlaceholderExpansion extends PlaceholderExpansion {
         SleepManager sleepManager = plugin.getSleepManager();
         String paramsLower = params.toLowerCase();
 
-        // Player-independent placeholders
         switch (paramsLower) {
             case "version":
                 return plugin.getDescription().getVersion();
@@ -105,7 +79,6 @@ public class SleepPlaceholderExpansion extends PlaceholderExpansion {
             return String.valueOf(sleepManager.getTotalPlayerCount(world));
         }
 
-        // Player-dependent placeholders
         if (player == null) return "";
 
         switch (paramsLower) {
@@ -175,7 +148,7 @@ public class SleepPlaceholderExpansion extends PlaceholderExpansion {
             }
 
             default:
-                return null; // Unknown placeholder
+                return null; 
         }
     }
 }
