@@ -16,25 +16,87 @@ import org.bukkit.World;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class SleepManager {
 
+    /** World time tick at which night begins (monsters start spawning). */
+    public static final long NIGHT_START_TICK = 12542;
+    /** World time tick at which night ends (monsters stop spawning). */
+    public static final long NIGHT_END_TICK = 23458;
+
+    /** @return {@code true} if the given world time falls within the night range. */
+    public static boolean isNight(long time) {
+        return time >= NIGHT_START_TICK && time <= NIGHT_END_TICK;
+    }
+
     private final Onlysleep plugin;
     private final ConfigManager configManager;
-    private final Map<World, Set<UUID>> sleepingPlayers = new HashMap<>();
-    private final Map<World, ScheduledTask> skipTasks = new HashMap<>();
-    private final Map<World, BossBar> worldBossBars = new HashMap<>();
-    private final Map<World, ScheduledTask> bossBarTasks = new HashMap<>();
-    private final Set<World> activeTransitions = new HashSet<>();
+    private final Map<World, Set<UUID>> sleepingPlayers = new ConcurrentHashMap<>();
+    private final Map<World, ScheduledTask> skipTasks = new ConcurrentHashMap<>();
+    private final Map<World, BossBar> worldBossBars = new ConcurrentHashMap<>();
+    private final Map<World, ScheduledTask> bossBarTasks = new ConcurrentHashMap<>();
+    private final Set<World> activeTransitions = ConcurrentHashMap.newKeySet();
 
     public SleepManager(Onlysleep plugin, ConfigManager configManager) {
         this.plugin = plugin;
         this.configManager = configManager;
+    }
+
+    // --- Gamerule management ---
+
+    /**
+     * Value (>100) written to {@code playersSleepingPercentage} so vanilla never
+     * auto-skips the night and Onlysleep fully controls sleep math. A value of 0
+     * would let vanilla *also* skip (double-processing), so we stay above 100.
+     */
+    private static final int GAMERULE_DISABLED_VALUE = 101;
+
+    /**
+     * Vanilla default for {@code playersSleepingPercentage}.
+     */
+    private static final int GAMERULE_DEFAULT_VALUE = 100;
+
+    /**
+     * Applies the {@code playersSleepingPercentage} gamerule to all enabled worlds.
+     * Called on enable, reload, and world load when {@code manage-gamerule} is enabled.
+     */
+    public void applyGamerules() {
+        if (!configManager.isManageGamerule()) return;
+
+        for (World world : Bukkit.getWorlds()) {
+            if (!configManager.isWorldEnabled(world.getName())) continue;
+            setGamerule(world, GAMERULE_DISABLED_VALUE);
+        }
+    }
+
+    /**
+     * Restores the {@code playersSleepingPercentage} gamerule to its default on disable.
+     */
+    public void restoreGamerules() {
+        if (!configManager.isManageGamerule()) return;
+
+        for (World world : Bukkit.getWorlds()) {
+            setGamerule(world, GAMERULE_DEFAULT_VALUE);
+        }
+    }
+
+    private void setGamerule(World world, int value) {
+        try {
+            // String-based API for broad compatibility (Bukkit/Spigot/Paper 1.16+ and Folia).
+            // setGameRuleValue is deprecated on newer Paper but remains the most portable way
+            // to set this gamerule across all supported server versions.
+            world.setGameRuleValue("playersSleepingPercentage", String.valueOf(value));
+        } catch (Exception e) {
+            plugin.getLogger().warning("Failed to set playersSleepingPercentage on world "
+                + world.getName() + ": " + e.getMessage());
+        }
     }
 
     /**
@@ -56,6 +118,12 @@ public class SleepManager {
         String message = configManager.getMessage("sleep.start-sleep", placeholders);
         for (Player p : world.getPlayers()) {
             p.sendMessage(message);
+        }
+
+        // Play the night-sound (ambient cue when a player starts sleeping)
+        if (configManager.isPlaySounds()) {
+            playSound(world, configManager.getNightSound(),
+                configManager.getNightSoundVolume(), configManager.getNightSoundPitch());
         }
 
         checkSleepStatus(world);
@@ -218,17 +286,30 @@ public class SleepManager {
             if (configManager.isResetWeather()) {
                 world.setStorm(false);
             }
-            if (configManager.isResetThunder() && world.isThundering()) {
-                world.setThundering(false);
-            }
             if (configManager.isResetWeatherCycle()) {
                 world.setWeatherDuration(Integer.MAX_VALUE);
-                world.setThunderDuration(Integer.MAX_VALUE);
             }
             clearedWeather = true;
         } else {
             clearedWeather = false;
         }
+
+        // clear-thunder works independently of clear-weather: a user may want only
+        // thunder cleared while leaving rain untouched, or vice-versa.
+        final boolean clearedThunder;
+        if (configManager.isClearThunder() && world.isThundering()) {
+            if (configManager.isResetThunder()) {
+                world.setThundering(false);
+            }
+            if (configManager.isResetWeatherCycle()) {
+                world.setThunderDuration(Integer.MAX_VALUE);
+            }
+            clearedThunder = true;
+        } else {
+            clearedThunder = false;
+        }
+
+        final boolean weatherWasCleared = clearedWeather || clearedThunder;
 
         // Capture player name before any cleanup (needed for deferred gradual/speed completion)
         final String playerName = getSleepingPlayerName(world);
@@ -242,6 +323,10 @@ public class SleepManager {
 
             // Play sounds (per-world, safe on region thread)
             if (configManager.isPlaySounds()) {
+                if (clearedThunder) {
+                    playSound(world, configManager.getStormSound(),
+                        configManager.getStormSoundVolume(), configManager.getStormSoundPitch());
+                }
                 playSkipSound(world);
             }
 
@@ -252,7 +337,7 @@ public class SleepManager {
 
             // Broadcast messages via global scheduler (Folia-safe)
             SchedulerAdapter.runGlobalTask(plugin, () ->
-                broadcastSkipMessages(playerName, clearedWeather)
+                broadcastSkipMessages(world, playerName, weatherWasCleared)
             );
 
             // Cleanup
@@ -290,16 +375,21 @@ public class SleepManager {
     }
 
     /**
-     * Broadcasts skip-related messages on the global thread (Folia-safe).
+     * Broadcasts skip-related messages to the affected world (Folia-safe).
+     * Scoping to the world avoids announcing "Good morning" to players in
+     * unrelated worlds, consistent with the per-world sleep model.
      */
-    private void broadcastSkipMessages(String playerName, boolean clearedWeather) {
+    private void broadcastSkipMessages(World world, String playerName, boolean clearedWeather) {
         Map<String, String> placeholders = new HashMap<>();
         placeholders.put("player", playerName);
 
-        if (clearedWeather) {
-            Bukkit.broadcastMessage(configManager.getMessage("weather.clearing", placeholders));
+        String clearingMsg = clearedWeather ? configManager.getMessage("weather.clearing", placeholders) : null;
+        String skipMsg = configManager.getMessage("sleep.enough-sleeping", placeholders);
+
+        for (Player p : world.getPlayers()) {
+            if (clearingMsg != null) p.sendMessage(clearingMsg);
+            p.sendMessage(skipMsg);
         }
-        Bukkit.broadcastMessage(configManager.getMessage("sleep.enough-sleeping", placeholders));
     }
 
     /**
@@ -413,20 +503,25 @@ public class SleepManager {
     }
 
     /**
-     * Plays sounds when night is skipped.
+     * Plays a named sound (from config) to all players in a world.
      */
-    private void playSkipSound(World world) {
+    private void playSound(World world, String soundName, float volume, float pitch) {
         try {
-            Sound sound = Sound.valueOf(configManager.getSkipSound());
-            float volume = configManager.getSkipSoundVolume();
-            float pitch = configManager.getSkipSoundPitch();
-
+            Sound sound = Sound.valueOf(soundName);
             for (Player player : world.getPlayers()) {
                 player.playSound(player.getLocation(), sound, volume, pitch);
             }
         } catch (IllegalArgumentException e) {
-            plugin.getLogger().warning("Invalid sound: " + configManager.getSkipSound());
+            plugin.getLogger().warning("Invalid sound: " + soundName);
         }
+    }
+
+    /**
+     * Plays the night-skip sound.
+     */
+    private void playSkipSound(World world) {
+        playSound(world, configManager.getSkipSound(),
+            configManager.getSkipSoundVolume(), configManager.getSkipSoundPitch());
     }
 
     /**
@@ -446,9 +541,12 @@ public class SleepManager {
 
     /**
      * Gets the set of currently sleeping player UUIDs in a world (public, for PAPI).
+     * Returns an unmodifiable view of the internal set so callers can iterate it
+     * safely even if the set is concurrently modified on Folia region threads.
      */
     public Set<UUID> getSleepingPlayers(World world) {
-        return sleepingPlayers.get(world);
+        Set<UUID> players = sleepingPlayers.get(world);
+        return players == null ? null : Collections.unmodifiableSet(players);
     }
 
     /**
@@ -509,12 +607,15 @@ public class SleepManager {
             }
         }
 
-        // If enabled, also count AFK players as sleeping (they count toward the threshold)
+        // If enabled, also count AFK players as sleeping (they count toward the threshold).
+        // Dedup against the sleepingPlayers set (authoritative) rather than Player.isSleeping(),
+        // which returns false immediately after PlayerBedEnterEvent fires — otherwise a player
+        // who just entered a bed and is also AFK would be counted twice.
         if (configManager.isCountAfkAsSleeping()) {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 if (configManager.isPerWorldSleep() && !player.getWorld().equals(world)) continue;
                 if (player.hasPermission("onlysleep.exempt")) continue;
-                if (isAfk(player) && !player.isSleeping()) {
+                if (isAfk(player) && (sleeping == null || !sleeping.contains(player.getUniqueId()))) {
                     count++;
                 }
             }
@@ -545,6 +646,12 @@ public class SleepManager {
             // Game mode checks
             if (player.getGameMode() == GameMode.SPECTATOR && !configManager.isCountSpectators()) continue;
             if (player.getGameMode() == GameMode.CREATIVE && configManager.isIgnoreCreativeMode()) continue;
+
+            // Disabled game modes — players in these modes can't sleep but must
+            // also not be counted toward the required total (otherwise the
+            // threshold may become impossible to reach).
+            GameMode gameMode = player.getGameMode();
+            if (gameMode != null && configManager.isGameModeDisabled(gameMode.name())) continue;
 
             // Flying check
             if (player.isFlying() && !configManager.isCountFlying()) continue;
@@ -630,6 +737,13 @@ public class SleepManager {
     }
 
     // --- Shutdown ---
+
+    /**
+     * Test seam: invokes the private night-skip logic from the test suite.
+     */
+    void skipNightForTest(World world) {
+        skipNight(world);
+    }
 
     public void shutdown() {
         // Cancel all tasks

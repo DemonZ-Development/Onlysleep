@@ -4,6 +4,7 @@ import com.demonzdevelopment.onlysleep.Onlysleep;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -28,6 +29,7 @@ public class AfkTracker implements Listener {
     private static final Map<UUID, Long> lastActivity = new ConcurrentHashMap<>();
     private static Onlysleep plugin;
     private static SchedulerAdapter.ScheduledTask cleanupTask;
+    private static Listener registeredListener;
 
     /**
      * Initialises the AFK tracker and registers event listeners.
@@ -38,7 +40,17 @@ public class AfkTracker implements Listener {
 
         if (plugin.getConfigManager().getAfkTimeSeconds() <= 0) return; // Disabled
 
-        plugin.getServer().getPluginManager().registerEvents(new AfkTracker(), plugin);
+        // Unregister any previously-registered listener (e.g. from a reload)
+        // before registering a fresh one, otherwise each reload duplicates
+        // the PlayerMoveEvent/PlayerInteractEvent handlers.
+        if (registeredListener != null) {
+            HandlerList.unregisterAll(registeredListener);
+            registeredListener = null;
+        }
+
+        AfkTracker listener = new AfkTracker();
+        plugin.getServer().getPluginManager().registerEvents(listener, plugin);
+        registeredListener = listener;
 
         // Periodic cleanup of stale entries (every 20 ticks / 1 second)
         cleanupTask = SchedulerAdapter.runGlobalTaskTimer(plugin, () -> {
@@ -59,6 +71,10 @@ public class AfkTracker implements Listener {
         if (cleanupTask != null) {
             cleanupTask.cancel();
             cleanupTask = null;
+        }
+        if (registeredListener != null) {
+            HandlerList.unregisterAll(registeredListener);
+            registeredListener = null;
         }
         lastActivity.clear();
     }

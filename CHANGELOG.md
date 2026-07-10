@@ -4,6 +4,34 @@
 
 ---
 
+## [1.3.0] - 2026-07-11
+
+This release makes advertised features actually work, hardens thread-safety on Folia, and fixes several reload/memory leaks. All tests passing (132).
+
+### Bug Fixes
+
+- **Wired up `manage-gamerule`**: the `playersSleepingPercentage` gamerule is now actually applied to enabled worlds (set >100 so Onlysleep fully controls sleep math) on enable, reload, and world load, and restored to default on disable. Previously advertised but never applied.
+- **`disabled-gamemodes` now excluded from the total player count**: players in disabled gamemodes can't sleep but were still counted toward the required threshold — could make the night impossible to skip. Now excluded (null-safe).
+- **`clear-thunder` now works independently of `clear-weather`**: thunder can be cleared on its own even when `clear-weather: false`.
+- **`night-sound` / `storm-sound` now functional**: night-sound plays when a player starts sleeping; storm-sound plays when a storm is cleared. Previously loaded but never used.
+- **Listener leak on `/onlysleep reload`**: `AfkTracker` and `OfflinePlayerTracker` no longer register duplicate event listeners on every reload (now properly unregistered).
+- **`OfflinePlayerTracker` stale cache after reload**: shutdown now resets the cached count so the "not loaded" sentinel works again.
+- **Off-thread Bukkit calls in update checker**: OP update notifications now dispatch to the main/global thread instead of running on the ForkJoinPool.
+- **Folia crash on `/onlysleep update`**: replaced `Bukkit.getScheduler().runTask()` (throws on Folia) with the `SchedulerAdapter` global task.
+- **"Good morning" broadcast no longer leaks server-wide**: skip/Weather-clearing messages are now scoped to the world that actually skipped, consistent with per-world sleep.
+- **AFK double-count fixed**: with `count-afk-as-sleeping`, a just-bed-entered player was counted twice (once in the sleeping set, once as AFK) because `isSleeping()` is still false right after the bed-enter event. Now deduped against the authoritative `sleepingPlayers` set.
+- **Off-thread `getOfflinePlayers()` call**: moved from ForkJoinPool to a scheduled global task (thread-safe on all server impls).
+- **Thread-safe state maps**: the five SleepManager state maps/sets are now `ConcurrentHashMap`/concurrent sets, preventing corruption on Folia region threads.
+
+### Technical Improvements
+
+- Broad server-version support: gamerule handling uses the portable string-based API (Spigot/Paper/Folia 1.16+).
+- Extracted shared night-time bounds (`12542`–`23458`) into `SleepManager.NIGHT_START_TICK` / `NIGHT_END_TICK` + `isNight()`, reused by the listener and PlaceholderAPI expansion.
+- `getSleepingPlayers()` returns an unmodifiable view for safe PAPI iteration under concurrency.
+- Added tests for gamerule apply/restore, disabled-gamemode exclusion, and independent thunder clearing.
+
+---
+
 ## [1.2.0] - 2026-05-21
 
 This release fixes critical bugs across the sleep skip system, AFK detection, config handling, and more.

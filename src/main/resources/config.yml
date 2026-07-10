@@ -45,7 +45,8 @@ clear-weather: true
 # Reset rain to clear after skipping.
 reset-weather: true
 
-# Also clear thunder specifically.
+# Clear thunder independently of rain. Works on its own even when
+# clear-weather is false, so you can clear only the thunder.
 clear-thunder: true
 
 # Reset thunder to clear after skipping.
@@ -124,7 +125,7 @@ sounds:
   skip-sound: ENTITY_PLAYER_LEVELUP
   skip-sound-volume: 1.0
   skip-sound-pitch: 1.0
-  # Sound played at night skip (alternative)
+  # Sound played when a player starts sleeping at night
   night-sound: ENTITY_PLAYER_LEVELUP
   night-sound-volume: 0.5
   night-sound-pitch: 1.0

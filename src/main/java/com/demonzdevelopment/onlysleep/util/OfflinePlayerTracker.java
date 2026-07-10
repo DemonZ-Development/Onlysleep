@@ -4,6 +4,7 @@ import com.demonzdevelopment.onlysleep.Onlysleep;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
@@ -31,14 +32,26 @@ public class OfflinePlayerTracker implements Listener {
     private static final AtomicInteger knownPlayerCount = new AtomicInteger(-1);
     private static final AtomicLong lastRefresh = new AtomicLong(0);
     private static SchedulerAdapter.ScheduledTask refreshTask;
+    private static Onlysleep plugin;
+    private static Listener registeredListener;
 
     /**
      * Initialises the tracker: starts the periodic refresh and registers events.
      */
-    public static void init(Onlysleep plugin) {
-        plugin.getServer().getPluginManager().registerEvents(new OfflinePlayerTracker(), plugin);
+    public static void init(Onlysleep instance) {
+        plugin = instance;
 
-        // Force an initial async load of the offline player count
+        // Unregister any previously-registered listener (e.g. from a reload)
+        if (registeredListener != null) {
+            HandlerList.unregisterAll(registeredListener);
+            registeredListener = null;
+        }
+
+        OfflinePlayerTracker listener = new OfflinePlayerTracker();
+        plugin.getServer().getPluginManager().registerEvents(listener, plugin);
+        registeredListener = listener;
+
+        // Force an initial load of the offline player count
         refreshAsync();
 
         // Refresh every 5 minutes
@@ -50,13 +63,21 @@ public class OfflinePlayerTracker implements Listener {
     }
 
     /**
-     * Shuts down the periodic refresh task.
+     * Shuts down the periodic refresh task and unregisters listeners.
      */
     public static void shutdown() {
         if (refreshTask != null) {
             refreshTask.cancel();
             refreshTask = null;
         }
+        if (registeredListener != null) {
+            HandlerList.unregisterAll(registeredListener);
+            registeredListener = null;
+        }
+        // Reset the cache so the next init forces a fresh load and the
+        // "not loaded yet" sentinel logic works again after a reload.
+        knownPlayerCount.set(-1);
+        lastRefresh.set(0);
     }
 
     /**
@@ -92,19 +113,31 @@ public class OfflinePlayerTracker implements Listener {
     }
 
     /**
-     * Asynchronously loads the offline player count from disk.
-     * This is the only place {@link Bukkit#getOfflinePlayers()} is called.
+     * Loads the offline player count.
+     * <p>Runs on the global scheduler thread (instead of ForkJoinPool) because
+     * {@link Bukkit#getOfflinePlayers()} performs disk I/O that is not guaranteed
+     * thread-safe on all server implementations and can throw on Folia's async pool.
      */
     public static CompletableFuture<Void> refreshAsync() {
-        return CompletableFuture.runAsync(() -> {
+        if (plugin == null) {
+            CompletableFuture<Void> f = new CompletableFuture<>();
+            f.complete(null);
+            return f;
+        }
+
+        CompletableFuture<Void> future = new CompletableFuture<>();
+        SchedulerAdapter.runGlobalTask(plugin, () -> {
             try {
                 int count = Bukkit.getOfflinePlayers().length;
                 knownPlayerCount.set(count);
                 lastRefresh.set(System.currentTimeMillis());
             } catch (Exception ignored) {
                 // Best-effort, will retry on next refresh cycle
+            } finally {
+                future.complete(null);
             }
         });
+        return future;
     }
 
     /**

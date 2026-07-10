@@ -96,7 +96,7 @@ public class SleepListener implements Listener {
      */
     private boolean isSleepable(World world) {
         long time = world.getTime();
-        boolean isNight = time >= 12542 && time <= 23458;
+        boolean isNight = SleepManager.isNight(time);
         boolean isStorm = world.hasStorm() || world.isThundering();
         return isNight || isStorm;
     }

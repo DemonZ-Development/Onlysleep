@@ -51,6 +51,10 @@ public final class Onlysleep extends JavaPlugin {
         // Register world unload listener (prevents memory leaks)
         registerWorldUnloadListener();
 
+        // Apply gamerule management (disable vanilla sleep skipping so Onlysleep
+        // fully controls the night) on enabled worlds.
+        sleepManager.applyGamerules();
+
         // Register command
         OnlysleepCommand commandExecutor = new OnlysleepCommand(this, configManager);
         getCommand("onlysleep").setExecutor(commandExecutor);
@@ -93,6 +97,7 @@ public final class Onlysleep extends JavaPlugin {
             updateCheckerTask = null;
         }
         if (sleepManager != null) {
+            sleepManager.restoreGamerules();
             sleepManager.shutdown();
         }
         OfflinePlayerTracker.shutdown();
@@ -143,6 +148,13 @@ public final class Onlysleep extends JavaPlugin {
                     sleepManager.cleanupWorld(event.getWorld());
                 }
             }
+
+            @EventHandler
+            public void onWorldLoad(org.bukkit.event.world.WorldLoadEvent event) {
+                if (sleepManager != null) {
+                    sleepManager.applyGamerules();
+                }
+            }
         }, this);
     }
 
@@ -156,19 +168,24 @@ public final class Onlysleep extends JavaPlugin {
                 getLogger().info("Download at: https://modrinth.com/plugin/onlysleep");
                 getLogger().info("GitHub: https://github.com/DemonZ-Development/Onlysleep");
 
-                // Notify online ops
-                Map<String, String> placeholders = new HashMap<>();
-                placeholders.put("new", result.getLatestVersion());
-                placeholders.put("current", getDescription().getVersion());
+                // Notify online ops — must run on the main/global thread because
+                // this CompletableFuture completes on the ForkJoinPool common pool,
+                // and Bukkit.getOnlinePlayers()/Player.sendMessage are not async-safe.
+                final String finalNew = result.getLatestVersion();
+                SchedulerAdapter.runGlobalTask(this, () -> {
+                    Map<String, String> placeholders = new HashMap<>();
+                    placeholders.put("new", finalNew);
+                    placeholders.put("current", getDescription().getVersion());
 
-                String msg = configManager.getMessage("update.available", placeholders);
-                String links = configManager.getMessage("update.available-links");
-                Bukkit.getOnlinePlayers().stream()
-                    .filter(p -> p.hasPermission("onlysleep.update"))
-                    .forEach(p -> {
-                        p.sendMessage(msg);
-                        p.sendMessage(links);
-                    });
+                    String msg = configManager.getMessage("update.available", placeholders);
+                    String links = configManager.getMessage("update.available-links");
+                    Bukkit.getOnlinePlayers().stream()
+                        .filter(p -> p.hasPermission("onlysleep.update"))
+                        .forEach(p -> {
+                            p.sendMessage(msg);
+                            p.sendMessage(links);
+                        });
+                });
             } else {
                 getLogger().info(result.getMessage());
             }

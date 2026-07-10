@@ -3,6 +3,7 @@ package com.demonzdevelopment.onlysleep.command;
 import com.demonzdevelopment.onlysleep.Onlysleep;
 import com.demonzdevelopment.onlysleep.config.ConfigManager;
 import com.demonzdevelopment.onlysleep.util.PlatformAdapter;
+import com.demonzdevelopment.onlysleep.util.SchedulerAdapter;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -66,6 +67,10 @@ public class OnlysleepCommand implements CommandExecutor, TabCompleter {
 
         try {
             configManager.reload();
+
+            // Re-apply gamerule management in case manage-gamerule or disabled
+            // worlds changed.
+            plugin.getSleepManager().applyGamerules();
 
             // Re-initialise AFK tracker if its config changed
             com.demonzdevelopment.onlysleep.util.AfkTracker.shutdown();
@@ -152,8 +157,11 @@ public class OnlysleepCommand implements CommandExecutor, TabCompleter {
 
         sender.sendMessage(configManager.getMessage("update.checking"));
         plugin.getUpdateChecker().checkAsync().thenAccept(result -> {
-            // Schedule message sending on the main thread (CompletableFuture runs on ForkJoinPool)
-            plugin.getServer().getScheduler().runTask(plugin, () -> {
+            // Dispatch message sending to the main/global thread — CompletableFuture
+            // completes on the ForkJoinPool, and Player.sendMessage is not async-safe.
+            // Using SchedulerAdapter keeps this Folia-compatible (Bukkit.getScheduler()
+            // throws on Folia servers).
+            SchedulerAdapter.runGlobalTask(plugin, () -> {
                 if (result.isUpdateAvailable()) {
                     Map<String, String> placeholders = new HashMap<>();
                     placeholders.put("new", result.getLatestVersion());
@@ -164,7 +172,7 @@ public class OnlysleepCommand implements CommandExecutor, TabCompleter {
                 }
             });
         }).exceptionally(throwable -> {
-            plugin.getServer().getScheduler().runTask(plugin, () ->
+            SchedulerAdapter.runGlobalTask(plugin, () ->
                 sender.sendMessage(configManager.getMessage("update.check-fail"))
             );
             return null;

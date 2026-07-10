@@ -149,7 +149,7 @@ public class SleepPlaceholderExpansion extends PlaceholderExpansion {
 
             case "is_sleepable": {
                 long time = player.getWorld().getTime();
-                boolean isNight = time >= 12542 && time <= 23458;
+                boolean isNight = SleepManager.isNight(time);
                 boolean isStorm = player.getWorld().hasStorm() || player.getWorld().isThundering();
                 return String.valueOf(isNight || isStorm);
             }
@@ -170,7 +170,7 @@ public class SleepPlaceholderExpansion extends PlaceholderExpansion {
 
             case "is_night": {
                 long time = player.getWorld().getTime();
-                boolean isNight = time >= 12542 && time <= 23458;
+                boolean isNight = SleepManager.isNight(time);
                 return String.valueOf(isNight);
             }
 
