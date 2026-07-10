@@ -2,49 +2,40 @@
 
 <div align="center">
 
-Skip the night with just one player sleeping — or configure it your way.
+![Onlysleep](../assets/logo.png)
 
-**Supports:** Bukkit · Spigot · Paper · Purpur · Folia · any Paper fork
+**One player sleeps. Everyone wakes up.**
+
+**Supports:** Bukkit, Spigot, Paper, Purpur, Folia, and any Paper fork
 **Minecraft:** 1.16.5+ · **Java:** 21+
 
 </div>
 
 ---
 
-## Sponsored By
-
-<div align="center">
-  <a href="https://nexeu.zip">
-    <img src="https://whodoesntloveavatars.s3.fra.databucket.eu/assets/promo.png" alt="Nexeu Sponsor" width="600px">
-  </a>
-  <br>
-  Looking for high-performance, budget-friendly game server hosting? Check out <a href="https://nexeu.zip"><b>Nexeu Hosting</b></a>!
-</div>
-
----
+A lightweight sleep plugin that does one thing well: skip the night when a player goes to bed. No bloat, no wall of config you'll never touch. Just drop it in, and it works.
 
 ## Features
 
-- One-player sleep by default, or require any percentage (0–100%)
-- Per-world or global sleep counting
-- Multi-platform: Bukkit, Spigot, Paper, Folia, and forks
+- One-player sleep by default, or any percentage (0-100%)
+- Per-world sleep (each world tracks separately)
 - Weather skip: clear rain and thunder independently
-- Visual feedback: boss bar, action bar, progress bar, titles
-- Configurable sounds on bed-enter and night-skip
-- Smart filtering: AFK (EssentialsX & CMI), spectators, exempt permissions, disabled gamemodes
-- Gamerule management for `playersSleepingPercentage`
+- Boss bar, action bar, progress bar, and title support
+- Sounds when someone starts sleeping and when night is skipped
+- AFK detection (built-in, plus EssentialsX and CMI)
+- Filters out spectators, creative, flying, and exempt players
+- Automatic gamerule management for `playersSleepingPercentage`
 - PlaceholderAPI: 12+ placeholders
 - Update checker and bStats (opt-out available)
-- Per-world disable
-- Full Folia regionized-scheduler support
+- Full Folia support with regionized scheduler
 
 ## Quick Start
 
-1. Download the latest `Onlysleep-*.jar` from [Modrinth](https://modrinth.com/plugin/onlysleep), [Hangar](https://hangar.papermc.io/DemonzDevelopment/Onlysleep), or the [GitHub releases](https://github.com/DemonZ-Development/Onlysleep/releases).
-2. Place it in your server's `plugins/` folder.
+1. Download the latest `Onlysleep-*.jar` from [Modrinth](https://modrinth.com/plugin/onlysleep), [Hangar](https://hangar.papermc.io/DemonzDevelopment/Onlysleep), or [GitHub Releases](https://github.com/DemonZ-Development/Onlysleep/releases).
+2. Drop it into your server's `plugins/` folder.
 3. Restart your server.
-4. Configure `plugins/Onlysleep/config.yml`.
-5. Reload with `/onlysleep reload`.
+4. Edit `plugins/Onlysleep/config.yml` if you want to tweak anything.
+5. Apply changes with `/onlysleep reload`.
 
 > No dependencies required. PlaceholderAPI is optional.
 
@@ -81,5 +72,19 @@ This plugin uses [bStats](https://bstats.org/plugin/bukkit/OnlySleep/31415) to c
 
 - [GitHub Issues](https://github.com/DemonZ-Development/Onlysleep/issues)
 - [Discord](https://discord.gg/qkvkEaPryF)
+
+---
+
+## Sponsored By
+
+<div align="center">
+  <a href="https://nexeu.zip">
+    <img src="https://whodoesntloveavatars.s3.fra.databucket.eu/assets/promo.png" alt="Nexeu Sponsor" width="600px">
+  </a>
+  <br>
+  Looking for high-performance, budget-friendly game server hosting? Check out <a href="https://nexeu.zip"><b>Nexeu Hosting</b></a>!
+</div>
+
+---
 
 Licensed under the [MIT License](https://github.com/DemonZ-Development/Onlysleep/blob/master/LICENSE).
