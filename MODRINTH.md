@@ -1,6 +1,6 @@
-# Onlysleep
+![Onlysleep](https://raw.githubusercontent.com/DemonZ-Development/Onlysleep/master/assets/modrinth-page.png)
 
-![Onlysleep](assets/modrinth-page.png)
+# Onlysleep
 
 **One player sleeps. Everyone wakes up.**
 
@@ -8,7 +8,7 @@ No complicated setup. No wall of config. Drop the JAR in, restart, and players c
 
 ---
 
-## Features
+![Features](https://raw.githubusercontent.com/DemonZ-Development/Onlysleep/master/assets/modrinth/features-heading.png)
 
 - One-player sleep by default, or any percentage you want
 - Per-world sleep (each world tracks separately)
@@ -21,28 +21,28 @@ No complicated setup. No wall of config. Drop the JAR in, restart, and players c
 - PlaceholderAPI: 12+ placeholders
 - Update checker and bStats (opt-out available)
 
-## Installation
+---
 
-1. Download the JAR.
-2. Drop it into your `plugins/` folder.
-3. Restart your server.
-4. Edit `plugins/Onlysleep/config.yml` if you want to tweak anything.
-5. Apply changes with `/onlysleep reload`.
+
+![Installation](https://raw.githubusercontent.com/DemonZ-Development/Onlysleep/master/assets/modrinth/installation-heading.png)
+
+![Installation Steps](https://raw.githubusercontent.com/DemonZ-Development/Onlysleep/master/assets/modrinth/installation-steps.png)
 
 **Requirements:** Java 21+, Minecraft 1.16.5+. Works on its own. PlaceholderAPI is optional.
 
-## Commands
+---
 
-| Command | Description | Permission |
-|---------|-------------|------------|
-| `/onlysleep` | Show help | `onlysleep.command` |
-| `/onlysleep reload` | Reload config | `onlysleep.reload` |
-| `/onlysleep info` | Plugin info | `onlysleep.info` |
-| `/onlysleep status` | Status overview | `onlysleep.status` |
+
+![Commands](https://raw.githubusercontent.com/DemonZ-Development/Onlysleep/master/assets/modrinth/commands-heading.png)
+
+![Commands Preview](https://raw.githubusercontent.com/DemonZ-Development/Onlysleep/master/assets/modrinth/commands-preview.png)
 
 **Aliases:** `/os`, `/sleep`
 
-## Permissions
+---
+
+
+![Permissions](https://raw.githubusercontent.com/DemonZ-Development/Onlysleep/master/assets/modrinth/permissions-heading.png)
 
 | Permission | Default | Description |
 |------------|---------|-------------|
@@ -54,7 +54,10 @@ No complicated setup. No wall of config. Drop the JAR in, restart, and players c
 | `onlysleep.exempt` | None | Excluded from sleep (operators sleep by default) |
 | `onlysleep.update` | OP | Update alerts |
 
-## Configuration
+---
+
+
+![Configuration](https://raw.githubusercontent.com/DemonZ-Development/Onlysleep/master/assets/modrinth/config-preview.png)
 
 Defaults work fine. The main knob is `sleep-percentage` in `config.yml`:
 
@@ -64,9 +67,14 @@ Defaults work fine. The main knob is `sleep-percentage` in `config.yml`:
 
 Set `per-world-sleep: false` if you want global counting across all worlds.
 
-See [`config.yml`](src/main/resources/config.yml) for every option and [`messages.yml`](src/main/resources/messages.yml) for message customization.
+See [`config.yml`](https://github.com/DemonZ-Development/Onlysleep/blob/master/src/main/resources/config.yml) for every option and [`messages.yml`](https://github.com/DemonZ-Development/Onlysleep/blob/master/src/main/resources/messages.yml) for message customization.
 
-## PlaceholderAPI
+---
+
+
+![PlaceholderAPI](https://raw.githubusercontent.com/DemonZ-Development/Onlysleep/master/assets/modrinth/placeholders-heading.png)
+
+![PlaceholderAPI Preview](https://raw.githubusercontent.com/DemonZ-Development/Onlysleep/master/assets/modrinth/placeholders-preview.png)
 
 If you have [PlaceholderAPI](https://placeholderapi.com/) installed, these placeholders are available:
 
@@ -78,7 +86,7 @@ If you have [PlaceholderAPI](https://placeholderapi.com/) installed, these place
 | `%onlysleep_total%` | Total eligible players in the world |
 | `%onlysleep_progress%` | % of required sleepers achieved (0-100) |
 | `%onlysleep_progress_bar%` | Visual progress bar |
-| `%onlysleep_sleeping_names%` | Comma-separated names of sleeping players |
+| `%onlysleep_sleeping_names%` | Names of sleeping players |
 | `%onlysleep_status%` | "Sleeping" or "Awake" |
 | `%onlysleep_is_sleeping%` | `true`/`false` |
 | `%onlysleep_is_night%` | `true`/`false` if it's night |
@@ -91,6 +99,8 @@ If you have [PlaceholderAPI](https://placeholderapi.com/) installed, these place
 | `%onlysleep_world_sleeping_<world>%` | Sleeping count in a specific world |
 | `%onlysleep_world_required_<world>%` | Required count in a specific world |
 | `%onlysleep_world_total_<world>%` | Total eligible in a specific world |
+
+---
 
 ## Building
 
