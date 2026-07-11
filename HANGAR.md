@@ -1,12 +1,82 @@
-![Onlysleep Banner](https://raw.githubusercontent.com/DemonZ-Development/Onlysleep/master/assets/banner.png)
+# Onlysleep
 
-# 🌙 Onlysleep
+**One player sleeps. Everyone wakes up.**
 
-**Skip the night with just one player sleeping** — fully configurable, lightweight, and compatible with every major Minecraft server platform.
+A lightweight sleep plugin that does its job and gets out of the way. No complicated setup, no wall of config you'll never touch. Drop the JAR in, restart, and your players can actually skip the night.
 
 ---
 
-## 💖 Sponsored By
+## Features
+
+- One-player sleep by default, or any percentage you want
+- Per-world sleep (each world tracks separately)
+- Weather skip: clear rain and thunder independently
+- Boss bar, action bar, progress bar, and title support
+- Sounds when someone starts sleeping and when night is skipped
+- AFK detection (built-in, plus EssentialsX and CMI)
+- Filters out spectators, creative, flying, and exempt players
+- Automatic gamerule management for `playersSleepingPercentage`
+- PlaceholderAPI: 12+ placeholders
+- Update checker and bStats (opt-out available)
+- Full Folia support with regionized scheduler
+
+## Commands
+
+- `/onlysleep` - Show help
+- `/onlysleep help` - Show help page
+- `/onlysleep reload` - Reload configuration
+- `/onlysleep info` - Show plugin information
+- `/onlysleep status` - Show detailed plugin status
+
+**Aliases:** `/os`, `/sleep`
+
+## Permissions
+
+| Permission | Default | Description |
+|------------|---------|-------------|
+| `onlysleep.*` | OP | All permissions |
+| `onlysleep.command` | Everyone | Use commands |
+| `onlysleep.info` | OP | View plugin info |
+| `onlysleep.reload` | OP | Reload config |
+| `onlysleep.status` | OP | View status |
+| `onlysleep.exempt` | None | Excluded from sleep (operators sleep by default) |
+| `onlysleep.update` | OP | Update alerts |
+
+## Installation
+
+1. Download the JAR.
+2. Drop it into your `plugins/` folder.
+3. Restart your server.
+4. Edit `plugins/Onlysleep/config.yml` if you want to tweak anything.
+5. Apply changes with `/onlysleep reload`.
+
+**Requirements:** Java 21+, Minecraft 1.16.5+. Works standalone. PlaceholderAPI is optional.
+
+## Configuration
+
+Defaults work fine. The main knob is `sleep-percentage` in `config.yml`:
+
+- `0` = one player sleeps, everyone wakes up
+- `50` = half the server needs to be in bed
+- `100` = everyone has to sleep
+
+Set `per-world-sleep: false` if you want global counting across all worlds.
+
+See [`config.yml`](src/main/resources/config.yml) for every option and [`messages.yml`](src/main/resources/messages.yml) for message customization.
+
+## bStats
+
+[![bStats](https://bstats.org/signatures/bukkit/OnlySleep.svg)](https://bstats.org/plugin/bukkit/OnlySleep/31415)
+
+Anonymous stats only. No personal data. Opt out in `plugins/bStats/config.yml`.
+
+## Links
+
+[Modrinth](https://modrinth.com/plugin/onlysleep) | [GitHub](https://github.com/DemonZ-Development/Onlysleep) | [Issues](https://github.com/DemonZ-Development/Onlysleep/issues) | [Discord](https://discord.gg/qkvkEaPryF) | [Website](https://demonzdevelopment.online) | [Twitter / X](https://x.com/DemonZ_Dev) | [YouTube](https://www.youtube.com/@DemonzDevelopment) | [Instagram](https://www.instagram.com/demonzdevelopement) | [Reddit](https://www.reddit.com/r/DemonZDevelopment/) | [demonzdevelopment@gmail.com](mailto:demonzdevelopment@gmail.com)
+
+---
+
+## Sponsored By
 
 <div align="center">
   <a href="https://nexeu.zip">
@@ -15,51 +85,3 @@
   <br>
   Looking for high-performance, budget-friendly game server hosting? Check out <a href="https://nexeu.zip"><b>Nexeu Hosting</b></a>!
 </div>
-
----
-
-## Description
-
-Onlysleep is a highly configurable sleep plugin that lets you skip the night with just one player sleeping — or any percentage you choose. It's designed to work seamlessly across **Bukkit, Spigot, Paper, Purpur, Folia, and all Paper forks**.
-
-### Key Features
-
-- **One-Player Sleep** — Default mode, or configure any percentage (50%, 75%, 100%)
-- **Multi-Platform** — Full Folia support with regionized scheduler
-- **Per-World Sleep** — Per-world or global sleep counting
-- **Weather Skip** — Automatically clear storms and thunderstorms
-- **Visual Feedback** — Boss bar, action bar, progress bar, and titles
-- **Sound Effects** — Fully configurable sounds
-- **Smart Filtering** — AFK detection, spectator ignore, exempt permissions
-- **PlaceholderAPI** — 12+ placeholders for integrations
-- **Disabled Worlds** — Disable sleep in specific worlds
-- **Update Checker** — Automatic update notifications via Modrinth API
-- **bStats** — Anonymous usage statistics (opt-out available)
-
-### Commands
-
-- `/onlysleep` — Show help
-- `/onlysleep help` — Show help
-- `/onlysleep reload` — Reload configuration
-- `/onlysleep info` — Show plugin information
-- `/onlysleep status` — Show detailed plugin status
-
-### Requirements
-
-- Java 21+
-- Minecraft 1.16.5+
-- Works standalone — no dependencies required!
-
-### bStats
-
-[![bStats](https://bstats.org/signatures/bukkit/OnlySleep.svg)](https://bstats.org/plugin/bukkit/OnlySleep/31415)
-
-[Modrinth](https://modrinth.com/plugin/onlysleep) | [bStats](https://bstats.org/plugin/bukkit/OnlySleep/31415) | [GitHub](https://github.com/DemonZ-Development/Onlysleep) | [Report Issues](https://github.com/DemonZ-Development/Onlysleep/issues) | [Discord](https://discord.gg/qkvkEaPryF) | [Website](https://demonzdevelopment.online)
-
-### 🌐 More Links
-
-- 🐦 [Twitter / X](https://x.com/DemonZ_Dev)
-- 🎥 [YouTube](https://www.youtube.com/@DemonzDevelopment)
-- 📸 [Instagram](https://www.instagram.com/demonzdevelopement)
-- 📋 [Reddit](https://www.reddit.com/r/DemonZDevelopment/)
-- 📧 demonzdevelopment@gmail.com

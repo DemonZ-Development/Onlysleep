@@ -33,7 +33,6 @@ class ConfigUpdaterTest {
 
         ConfigUpdater.update(plugin, "config.yml", destination);
 
-        // Verify that saveResource was called since destination didn't exist
         verify(plugin, times(1)).saveResource("config.yml", false);
     }
 
@@ -41,7 +40,6 @@ class ConfigUpdaterTest {
     void update_MergesNewKeys_AndPreservesCommentsAndUserValues(@TempDir Path tempDir) throws Exception {
         File destination = tempDir.resolve("config.yml").toFile();
 
-        // 1. Create a simulated user config file with customized values
         List<String> userLines = List.of(
             "# Custom Header Comment",
             "sleep-percentage: 75 # User custom percentage",
@@ -55,7 +53,6 @@ class ConfigUpdaterTest {
         );
         Files.write(destination.toPath(), userLines, StandardCharsets.UTF_8);
 
-        // 2. Create a simulated default config inside the jar (new keys added in a new update)
         String defaultJarContent = 
             "# Default Config Header\n" +
             "sleep-percentage: 50\n" +
@@ -70,13 +67,10 @@ class ConfigUpdaterTest {
 
         when(plugin.getResource("config.yml")).thenReturn(new ByteArrayInputStream(defaultJarContent.getBytes(StandardCharsets.UTF_8)));
 
-        // 3. Run updater
         ConfigUpdater.update(plugin, "config.yml", destination);
 
-        // 4. Verify the updated file contains the correct elements
         List<String> updatedLines = Files.readAllLines(destination.toPath(), StandardCharsets.UTF_8);
 
-        // Verify structure & comments
         boolean foundComment = false;
         boolean foundNewSetting = false;
         boolean foundUserValue = false;
@@ -102,7 +96,6 @@ class ConfigUpdaterTest {
         assertTrue(foundUserValue, "Should preserve the user's customized values");
         assertTrue(foundNestedNewSetting, "Should merge new nested keys (like afk-detection.use-cmi)");
 
-        // 5. Verify it's a valid YAML file via YamlConfiguration loader
         FileConfiguration resultConfig = YamlConfiguration.loadConfiguration(destination);
         assertEquals(75, resultConfig.getInt("sleep-percentage"));
         assertEquals(20, resultConfig.getInt("skip-delay-ticks"));

@@ -35,53 +35,40 @@ public final class Onlysleep extends JavaPlugin {
     public void onEnable() {
         instance = this;
 
-        // Detect server platform
         this.platform = PlatformAdapter.getPlatform();
         getLogger().info("Detected platform: " + platform.getDisplayName());
 
-        // Initialize configuration
         this.configManager = new ConfigManager(this);
         configManager.loadConfigs();
 
-        // Initialize sleep manager (uses scheduler adapter for Folia compatibility)
         this.sleepManager = new SleepManager(this, configManager);
 
-        // Override vanilla playersSleepingPercentage on enabled worlds so the
-        // plugin fully owns sleep math. Original values are restored on disable.
-        sleepManager.applyGamerules();
-
-        // Register event listeners
         getServer().getPluginManager().registerEvents(new SleepListener(this, sleepManager, configManager), this);
 
-        // Keep gamerules and per-world state correct as worlds load/unload.
         registerWorldLifecycleListener();
 
-        // Register command
+        sleepManager.applyGamerules();
+
         OnlysleepCommand commandExecutor = new OnlysleepCommand(this, configManager);
         getCommand("onlysleep").setExecutor(commandExecutor);
         getCommand("onlysleep").setTabCompleter(commandExecutor);
 
-        // Initialize bStats metrics
         initializeMetrics();
 
-        // Initialize update checker
         this.updateChecker = new UpdateChecker(this);
         if (configManager.isCheckForUpdates()) {
             checkForUpdates();
-            // Check for updates every 4 hours (4 * 60 * 60 * 20 = 288000 ticks)
+
             this.updateCheckerTask = SchedulerAdapter.runGlobalTaskTimer(this, this::checkForUpdates, 288000L, 288000L);
         }
 
-        // Register PlaceholderAPI expansion (if PAPI is installed)
         registerPlaceholderExpansion();
 
-        // Initialise built-in AFK tracker
         if (configManager.getAfkTimeSeconds() > 0) {
             AfkTracker.init(this);
             getLogger().info("AFK tracker initialised (" + configManager.getAfkTimeSeconds() + "s timeout)");
         }
 
-        // Initialise offline player tracker (for require-all-players-online feature)
         if (configManager.isRequireAllPlayersOnline()) {
             OfflinePlayerTracker.init(this);
             getLogger().info("Offline player tracker initialised for require-all-players-online");
@@ -110,7 +97,6 @@ public final class Onlysleep extends JavaPlugin {
         try {
             Metrics metrics = new Metrics(this, 31415);
 
-            // Custom charts
             metrics.addCustomChart(new SimplePie("server_platform", () -> platform.getDisplayName()));
             metrics.addCustomChart(new SimplePie("sleep_percentage", () -> String.valueOf(configManager.getSleepPercentage())));
             metrics.addCustomChart(new SimplePie("per_world_sleep", () -> String.valueOf(configManager.isPerWorldSleep())));
@@ -123,9 +109,6 @@ public final class Onlysleep extends JavaPlugin {
         }
     }
 
-    /**
-     * Registers the PlaceholderAPI expansion if PlaceholderAPI is installed.
-     */
     private void registerPlaceholderExpansion() {
         try {
             if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
@@ -169,19 +152,21 @@ public final class Onlysleep extends JavaPlugin {
                 getLogger().info("Download at: https://modrinth.com/plugin/onlysleep");
                 getLogger().info("GitHub: https://github.com/DemonZ-Development/Onlysleep");
 
-                // Notify online ops
-                Map<String, String> placeholders = new HashMap<>();
-                placeholders.put("new", result.getLatestVersion());
-                placeholders.put("current", getDescription().getVersion());
+                final String finalNew = result.getLatestVersion();
+                SchedulerAdapter.runGlobalTask(this, () -> {
+                    Map<String, String> placeholders = new HashMap<>();
+                    placeholders.put("new", finalNew);
+                    placeholders.put("current", getDescription().getVersion());
 
-                String msg = configManager.getMessage("update.available", placeholders);
-                String links = configManager.getMessage("update.available-links");
-                Bukkit.getOnlinePlayers().stream()
-                    .filter(p -> p.hasPermission("onlysleep.update"))
-                    .forEach(p -> {
-                        p.sendMessage(msg);
-                        p.sendMessage(links);
-                    });
+                    String msg = configManager.getMessage("update.available", placeholders);
+                    String links = configManager.getMessage("update.available-links");
+                    Bukkit.getOnlinePlayers().stream()
+                        .filter(p -> p.hasPermission("onlysleep.update"))
+                        .forEach(p -> {
+                            p.sendMessage(msg);
+                            p.sendMessage(links);
+                        });
+                });
             } else {
                 getLogger().info(result.getMessage());
             }

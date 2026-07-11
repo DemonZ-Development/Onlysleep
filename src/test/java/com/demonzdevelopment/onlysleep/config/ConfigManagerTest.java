@@ -15,12 +15,6 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-/**
- * Tests for {@link ConfigManager}.
- * <p>
- * Uses reflection to set internal state since {@code loadSettings()}
- * is private and requires a running server.
- */
 @ExtendWith(MockitoExtension.class)
 class ConfigManagerTest {
 
@@ -33,7 +27,6 @@ class ConfigManagerTest {
     void setUp() throws Exception {
         configManager = new ConfigManager(plugin);
 
-        // Use reflection to set internal fields for pure-logic tests
         setField("progressBarLength", 20);
         setField("progressBarSymbol", "\u25A0");
     }
@@ -44,7 +37,6 @@ class ConfigManagerTest {
         field.set(configManager, value);
     }
 
-    /** Counts occurrences of a symbol character in a string (ignoring color codes). */
     private int countSymbols(String bar, String symbol) {
         String stripped = ChatColor.stripColor(bar);
         int count = 0;
@@ -55,8 +47,6 @@ class ConfigManagerTest {
         }
         return count;
     }
-
-    // --- buildProgressBar ---
 
     @Test
     void buildProgressBar_ReturnsEmptyString_WhenMaxIsZero() {
@@ -74,11 +64,11 @@ class ConfigManagerTest {
     void buildProgressBar_ReturnsAllGreen_WhenCurrentEqualsMax() {
         String bar = configManager.buildProgressBar(20, 20);
         assertNotNull(bar);
-        // All 20 symbols should be present
+
         assertEquals(20, countSymbols(bar, "\u25A0"), "All 20 symbols should be present");
-        // Should contain green color code
+
         assertTrue(bar.contains(ChatColor.COLOR_CHAR + "a"), "Should contain green color code");
-        // Should NOT contain gray color code (remaining = 0)
+
         assertFalse(bar.contains("§7"), "Should not contain gray section when nothing remains");
     }
 
@@ -95,8 +85,7 @@ class ConfigManagerTest {
     void buildProgressBar_ReturnsAllGray_WhenCurrentIsZero() {
         String bar = configManager.buildProgressBar(0, 20);
         assertNotNull(bar);
-        // When completed = 0, the green section is empty but the color code &a is still in the string
-        // The important thing is that ALL 20 symbols are gray
+
         assertTrue(bar.contains(ChatColor.COLOR_CHAR + "7"), "Should contain gray section");
         assertEquals(20, countSymbols(bar, "\u25A0"), "All 20 symbols should be present");
     }
@@ -131,8 +120,6 @@ class ConfigManagerTest {
         assertEquals(10, countSymbols(bar, "\u25A0"), "Should have exactly 10 symbols with custom length");
     }
 
-    // --- isGameModeDisabled ---
-
     @Test
     void isGameModeDisabled_ReturnsTrue_WhenGameModeInList() throws Exception {
         setField("disabledGameModes", Arrays.asList("CREATIVE", "SPECTATOR"));
@@ -148,8 +135,6 @@ class ConfigManagerTest {
         setField("disabledGameModes", List.of());
         assertFalse(configManager.isGameModeDisabled("CREATIVE"));
     }
-
-    // --- isWorldEnabled ---
 
     @Test
     void isWorldEnabled_ReturnsTrue_WhenWorldNotInDisabledList() throws Exception {

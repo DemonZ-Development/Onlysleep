@@ -1,4 +1,4 @@
-# 🎮 Commands & Permissions
+# Commands & Permissions
 
 ## Commands
 
@@ -25,13 +25,13 @@ Shows the help page with available commands.
 Displays plugin version information and current settings.
 
 - **Usage:** `/onlysleep info`
-- **Permission:** `onlysleep.command` (default: everyone)
+- **Permission:** `onlysleep.info` (default: OP)
 - **Aliases:** `/os info`, `/sleep info`
 
 **Output:**
 ```
-=== Onlysleep v1.0.0 ===
-Version: 1.0.0
+=== Onlysleep v1.3.0 ===
+Version: 1.3.0
 Author: Demonz Development
 Status: Enabled | Paper
 Sleep Required: 50%

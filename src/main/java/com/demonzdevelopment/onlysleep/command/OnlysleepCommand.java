@@ -3,6 +3,7 @@ package com.demonzdevelopment.onlysleep.command;
 import com.demonzdevelopment.onlysleep.Onlysleep;
 import com.demonzdevelopment.onlysleep.config.ConfigManager;
 import com.demonzdevelopment.onlysleep.util.PlatformAdapter;
+import com.demonzdevelopment.onlysleep.util.SchedulerAdapter;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -50,7 +51,7 @@ public class OnlysleepCommand implements CommandExecutor, TabCompleter {
             case "update":
                 handleUpdate(sender);
                 break;
-     
+
             default:
                 sendHelp(sender);
                 break;
@@ -77,7 +78,6 @@ public class OnlysleepCommand implements CommandExecutor, TabCompleter {
                 plugin.getLogger().info("AFK tracker re-initialised (" + configManager.getAfkTimeSeconds() + "s timeout)");
             }
 
-            // Re-initialise offline player tracker if its config changed
             com.demonzdevelopment.onlysleep.util.OfflinePlayerTracker.shutdown();
             if (configManager.isRequireAllPlayersOnline()) {
                 com.demonzdevelopment.onlysleep.util.OfflinePlayerTracker.init(plugin);
@@ -155,8 +155,8 @@ public class OnlysleepCommand implements CommandExecutor, TabCompleter {
 
         sender.sendMessage(configManager.getMessage("update.checking"));
         plugin.getUpdateChecker().checkAsync().thenAccept(result -> {
-            // Schedule message sending on the main thread (CompletableFuture runs on ForkJoinPool)
-            plugin.getServer().getScheduler().runTask(plugin, () -> {
+
+            SchedulerAdapter.runGlobalTask(plugin, () -> {
                 if (result.isUpdateAvailable()) {
                     Map<String, String> placeholders = new HashMap<>();
                     placeholders.put("new", result.getLatestVersion());
@@ -167,7 +167,7 @@ public class OnlysleepCommand implements CommandExecutor, TabCompleter {
                 }
             });
         }).exceptionally(throwable -> {
-            plugin.getServer().getScheduler().runTask(plugin, () ->
+            SchedulerAdapter.runGlobalTask(plugin, () ->
                 sender.sendMessage(configManager.getMessage("update.check-fail"))
             );
             return null;
@@ -185,8 +185,6 @@ public class OnlysleepCommand implements CommandExecutor, TabCompleter {
         sender.sendMessage(configManager.getMessage("help.help", placeholders));
         sender.sendMessage(configManager.getMessage("help.footer", placeholders));
     }
-
-
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {

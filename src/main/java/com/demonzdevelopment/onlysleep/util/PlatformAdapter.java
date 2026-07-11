@@ -2,10 +2,6 @@ package com.demonzdevelopment.onlysleep.util;
 
 import org.bukkit.Bukkit;
 
-/**
- * Detects the current server platform and provides platform-specific functionality.
- * Supports: Folia, Paper, Spigot, Bukkit (and derivatives like Purpur, Pufferfish, etc.)
- */
 public final class PlatformAdapter {
 
     private static ServerPlatform platform = null;
@@ -14,9 +10,6 @@ public final class PlatformAdapter {
 
     private PlatformAdapter() {}
 
-    /**
-     * Detects and returns the current server platform.
-     */
     public static ServerPlatform getPlatform() {
         if (platform == null) {
             detect();
@@ -24,9 +17,6 @@ public final class PlatformAdapter {
         return platform;
     }
 
-    /**
-     * Checks if the server is running Folia (regionized threaded server).
-     */
     public static boolean isFolia() {
         if (folia == null) {
             try {
@@ -39,9 +29,6 @@ public final class PlatformAdapter {
         return folia;
     }
 
-    /**
-     * Checks if the server is running Paper or a Paper fork (e.g., Purpur, Pufferfish).
-     */
     public static boolean isPaper() {
         if (paper == null) {
             try {
@@ -54,9 +41,6 @@ public final class PlatformAdapter {
         return paper;
     }
 
-    /**
-     * Checks if the server is running Spigot (not Paper).
-     */
     public static boolean isSpigot() {
         try {
             Class.forName("org.spigotmc.SpigotConfig");
@@ -66,9 +50,6 @@ public final class PlatformAdapter {
         }
     }
 
-    /**
-     * Gets the Minecraft version (e.g., "1.21.4").
-     */
     public static String getMinecraftVersion() {
         String version = Bukkit.getBukkitVersion();
         if (version.contains("-")) {

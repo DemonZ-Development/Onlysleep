@@ -28,13 +28,6 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
-/**
- * Tests for {@link SleepManager}.
- * <p>
- * Uses {@link MockedStatic} to mock Bukkit static methods since
- * SleepManager calls {@code Bukkit.getOnlinePlayers()}, {@code Bukkit.getPlayer(UUID)},
- * and {@code Bukkit.getScheduler()} internally.
- */
 @ExtendWith(MockitoExtension.class)
 @SuppressWarnings("removal")
 class SleepManagerTest {
@@ -86,13 +79,11 @@ class SleepManagerTest {
         lenient().when(player1.isFlying()).thenReturn(false);
         lenient().when(player2.isFlying()).thenReturn(false);
 
-        // Mock scheduler for SchedulerAdapter calls
         lenient().when(scheduler.runTask(any(Plugin.class), any(Runnable.class))).thenReturn(bukkitTask);
         lenient().when(scheduler.runTaskLater(any(Plugin.class), any(Runnable.class), anyLong())).thenReturn(bukkitTask);
         lenient().when(scheduler.runTaskTimer(any(Plugin.class), any(Runnable.class), anyLong(), anyLong())).thenReturn(bukkitTask);
         lenient().when(bukkitTask.isCancelled()).thenReturn(false);
 
-        // Default config
         lenient().when(configManager.isPerWorldSleep()).thenReturn(true);
         lenient().when(configManager.getSleepPercentage()).thenReturn(50);
         lenient().when(configManager.isRequireAllPlayersOnline()).thenReturn(false);
@@ -112,9 +103,6 @@ class SleepManagerTest {
         sleepManager.shutdown();
     }
 
-    // ========== Helpers ==========
-
-    /** Sets up Bukkit mocks for tests that involve calling Bukkit static methods. */
     private MockedStatic<Bukkit> mockBukkitForTwoPlayers() {
         MockedStatic<Bukkit> bukkit = mockStatic(Bukkit.class);
         bukkit.when(() -> Bukkit.getPlayer(uuid1)).thenReturn(player1);
@@ -124,14 +112,10 @@ class SleepManagerTest {
         return bukkit;
     }
 
-    // ========== isSkipScheduled ==========
-
     @Test
     void isSkipScheduled_ReturnsFalse_WhenNoSkipScheduled() {
         assertFalse(sleepManager.isSkipScheduled(world));
     }
-
-    // ========== isPlayerSleeping ==========
 
     @Test
     void isPlayerSleeping_ReturnsFalse_WhenPlayerNotSleeping() {
@@ -164,8 +148,6 @@ class SleepManagerTest {
         }
     }
 
-    // ========== getSleepingCount ==========
-
     @Test
     void getSleepingCount_ReturnsZero_WhenNoSleepingPlayers() {
         assertEquals(0, sleepManager.getSleepingCount(world));
@@ -191,16 +173,12 @@ class SleepManagerTest {
 
     @Test
     void getSleepingCount_ReturnsOne_EvenWhenIsSleepingFalse() {
-        // PlayerBedEnterEvent fires before the server sets the sleeping state,
-        // so Player.isSleeping() can return false at event time. We trust the
-        // sleepingPlayers set instead.
+
         try (MockedStatic<Bukkit> bukkit = mockBukkitForTwoPlayers()) {
             sleepManager.onPlayerBedEnter(player2);
             assertEquals(1, sleepManager.getSleepingCount(world));
         }
     }
-
-    // ========== getTotalPlayerCount ==========
 
     @Test
     void getTotalPlayerCount_ReturnsZero_WhenNoPlayersOnline() {
@@ -300,8 +278,6 @@ class SleepManagerTest {
         }
     }
 
-    // ========== getRequiredSleepingCount ==========
-
     @Test
     void getRequiredSleepingCount_ReturnsOne_WhenPercentageIsZero() {
         when(configManager.getSleepPercentage()).thenReturn(0);
@@ -343,8 +319,6 @@ class SleepManagerTest {
         }
     }
 
-    // ========== onPlayerBedEnter ==========
-
     @Test
     void onPlayerBedEnter_AddsPlayerToSleepingSet() {
         try (MockedStatic<Bukkit> bukkit = mockBukkitForTwoPlayers()) {
@@ -362,8 +336,6 @@ class SleepManagerTest {
         }
     }
 
-    // ========== onPlayerBedLeave ==========
-
     @Test
     void onPlayerBedLeave_RemovesPlayerFromSleepingSet() {
         try (MockedStatic<Bukkit> bukkit = mockBukkitForTwoPlayers()) {
@@ -377,8 +349,6 @@ class SleepManagerTest {
     void onPlayerBedLeave_DoesNotThrow_WhenPlayerNotInBed() {
         assertDoesNotThrow(() -> sleepManager.onPlayerBedLeave(player1));
     }
-
-    // ========== onPlayerQuit ==========
 
     @Test
     void onPlayerQuit_DoesNotThrow_WhenPlayerNotSleeping() {
@@ -396,8 +366,6 @@ class SleepManagerTest {
         }
     }
 
-    // ========== shutdown ==========
-
     @Test
     void shutdown_ClearsAllState() {
         try (MockedStatic<Bukkit> bukkit = mockBukkitForTwoPlayers()) {
@@ -414,8 +382,6 @@ class SleepManagerTest {
         assertDoesNotThrow(() -> sleepManager.shutdown());
     }
 
-    // ========== getSleepingPlayers ==========
-
     @Test
     void getSleepingPlayers_ReturnsNull_WhenNoneSleeping() {
         assertNull(sleepManager.getSleepingPlayers(world));
@@ -430,8 +396,6 @@ class SleepManagerTest {
             assertTrue(sleeping.contains(uuid1));
         }
     }
-
-    // ========== Edge cases ==========
 
     @Test
     void multipleWorlds_TrackSeparately() {
@@ -452,8 +416,8 @@ class SleepManagerTest {
             bukkit.when(Bukkit::getOnlinePlayers).thenReturn(java.util.Arrays.asList(player1, playerInWorld2));
             bukkit.when(Bukkit::getScheduler).thenReturn(scheduler);
 
-            sleepManager.onPlayerBedEnter(player1); // world
-            sleepManager.onPlayerBedEnter(playerInWorld2); // world2
+            sleepManager.onPlayerBedEnter(player1);
+            sleepManager.onPlayerBedEnter(playerInWorld2);
 
             assertTrue(sleepManager.isPlayerSleeping(player1));
             assertTrue(sleepManager.isPlayerSleeping(playerInWorld2));
@@ -660,7 +624,6 @@ class SleepManagerTest {
 
         try (MockedStatic<Bukkit> bukkit = mockStatic(Bukkit.class)) {
             bukkit.when(Bukkit::getWorlds).thenReturn(java.util.Collections.singletonList(world));
-
             sleepManager.applyGamerules();
 
             verify(world, never()).setGameRuleValue(anyString(), anyString());
@@ -778,5 +741,21 @@ class SleepManagerTest {
         sleepManager.cleanupWorld(world);
 
         verify(world).setGameRuleValue("playersSleepingPercentage", "75");
+    }
+
+    @Test
+    void skipNight_DoesNotClearThunder_WhenClearThunderDisabled() {
+        when(configManager.isClearWeather()).thenReturn(false);
+        when(configManager.isClearThunder()).thenReturn(false);
+        when(configManager.isPlaySounds()).thenReturn(false);
+        when(configManager.getSkipType()).thenReturn("instant");
+        when(configManager.isResetTime()).thenReturn(true);
+        lenient().when(world.hasStorm()).thenReturn(false);
+        lenient().when(world.isThundering()).thenReturn(true);
+
+        try (MockedStatic<Bukkit> bukkit = mockBukkitForTwoPlayers()) {
+            sleepManager.skipNightForTest(world);
+            verify(world, never()).setThundering(false);
+        }
     }
 }

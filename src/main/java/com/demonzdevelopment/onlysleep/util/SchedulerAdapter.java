@@ -9,10 +9,6 @@ import java.lang.reflect.Method;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
-/**
- * A scheduler adapter that works across Bukkit, Spigot, Paper, and Folia servers.
- * Uses Folia's region scheduler on Folia servers and falls back to Bukkit scheduler on others.
- */
 public final class SchedulerAdapter {
 
     private static boolean foliaChecked = false;
@@ -28,9 +24,6 @@ public final class SchedulerAdapter {
         return isFolia;
     }
 
-    /**
-     * Runs a task after a delay for a specific world.
-     */
     public static ScheduledTask runTaskLater(JavaPlugin plugin, World world, Runnable task, long delay) {
         if (isFolia()) {
             return runFoliaTask(plugin, world, task, delay, 0);
@@ -43,9 +36,6 @@ public final class SchedulerAdapter {
         return new BukkitScheduledTask(bt);
     }
 
-    /**
-     * Runs a repeating task for a specific world.
-     */
     public static ScheduledTask runTaskTimer(JavaPlugin plugin, World world, Runnable task, long delay, long period) {
         if (isFolia()) {
             return runFoliaTask(plugin, world, task, delay, period);
@@ -58,10 +48,6 @@ public final class SchedulerAdapter {
         return new BukkitScheduledTask(bt);
     }
 
-    /**
-     * Runs a global task (not tied to a specific world).
-     * On Folia, uses the global region scheduler.
-     */
     public static ScheduledTask runGlobalTask(JavaPlugin plugin, Runnable task) {
         if (isFolia()) {
             return runFoliaGlobalTask(plugin, task, 0, 0);
@@ -70,9 +56,6 @@ public final class SchedulerAdapter {
         return new BukkitScheduledTask(bt);
     }
 
-    /**
-     * Runs a global repeating task.
-     */
     public static ScheduledTask runGlobalTaskTimer(JavaPlugin plugin, Runnable task, long delay, long period) {
         if (isFolia()) {
             return runFoliaGlobalTask(plugin, task, delay, period);
@@ -80,8 +63,6 @@ public final class SchedulerAdapter {
         BukkitTask bt = Bukkit.getScheduler().runTaskTimer(plugin, task, delay, period);
         return new BukkitScheduledTask(bt);
     }
-
-    // --- Folia-specific implementations using reflection ---
 
     private static ScheduledTask runFoliaTask(JavaPlugin plugin, World world, Runnable task, long delay, long period) {
         try {
@@ -124,7 +105,7 @@ public final class SchedulerAdapter {
                 return new FoliaScheduledTask(taskRef);
             }
         } catch (Exception e) {
-            // Fallback to Bukkit scheduler if reflection fails
+
             if (period > 0) {
                 BukkitTask bt = Bukkit.getScheduler().runTaskTimer(plugin, task, delay, period);
                 return new BukkitScheduledTask(bt);
@@ -179,7 +160,7 @@ public final class SchedulerAdapter {
                 return new FoliaScheduledTask(taskRef);
             }
         } catch (Exception e) {
-            // Fallback
+
             if (period > 0) {
                 BukkitTask bt = Bukkit.getScheduler().runTaskTimer(plugin, task, delay, period);
                 return new BukkitScheduledTask(bt);
@@ -192,8 +173,6 @@ public final class SchedulerAdapter {
             }
         }
     }
-
-    // --- ScheduledTask wrapper interfaces ---
 
     public interface ScheduledTask {
         void cancel();

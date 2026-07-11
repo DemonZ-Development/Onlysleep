@@ -6,7 +6,7 @@
 
 ## [1.3.0] - 2026-07-11
 
-This beta upgrades the Paper API target, fixes gradual/speed skipping, expands sleep feedback, and makes Onlysleep fully own vanilla sleep calculations while enabled.
+This beta makes advertised features work, hardens Folia thread safety, fixes gradual skipping, and closes reload and memory leaks.
 
 ### Added
 
@@ -27,6 +27,23 @@ This beta upgrades the Paper API target, fixes gradual/speed skipping, expands s
   - Replaced the live `Bukkit.getPlayer(uuid)` lookup (which returned `null` after the player logged out, falling back to `"Unknown"`) with a per-world snapshot of the initiating player's name, populated at skip-start. The boss bar and deferred title both read from the snapshot, so attribution survives the player going offline.
 - **Sleeping players no longer wake up mid-skip in gradual mode**:
   - Rewrote `scheduleGradualSkip` to keep `world.getTime()` parked at the original night value for the entire animation. `setTime()` is now called exactly once — at the final tick — to snap to the morning target. This prevents vanilla's wake-up threshold (`world.getTime() > 23458`) from being crossed mid-animation, which previously caused players to be kicked out of bed before the skip's completion effects fired.
+- **Listener leak on `/onlysleep reload`**: `AfkTracker` and `OfflinePlayerTracker` no longer register duplicate event listeners on every reload (now properly unregistered).
+- **`OfflinePlayerTracker` stale cache after reload**: shutdown now resets the cached count so the "not loaded" sentinel works again.
+- **Off-thread Bukkit calls in update checker**: OP update notifications now dispatch to the main/global thread instead of running on the ForkJoinPool.
+- **Folia crash on `/onlysleep update`**: replaced `Bukkit.getScheduler().runTask()` (throws on Folia) with the `SchedulerAdapter` global task.
+- **"Good morning" broadcast no longer leaks server-wide**: skip/Weather-clearing messages are now scoped to the world that actually skipped, consistent with per-world sleep.
+- **AFK double-count fixed**: with `count-afk-as-sleeping`, a just-bed-entered player was counted twice (once in the sleeping set, once as AFK) because `isSleeping()` is still false right after the bed-enter event. Now deduped against the authoritative `sleepingPlayers` set.
+- **Off-thread `getOfflinePlayers()` call**: moved from ForkJoinPool to a scheduled global task (thread-safe on all server impls).
+- **Thread-safe state**: SleepManager maps and sets now use concurrent collections, preventing corruption on Folia region threads.
+
+### Technical Improvements
+
+- Broad server-version support: gamerule handling uses the portable string-based API (Spigot/Paper/Folia 1.16+).
+- Extracted shared night-time bounds (`12542`–`23458`) into `SleepManager.NIGHT_START_TICK` / `NIGHT_END_TICK` + `isNight()`, reused by the listener and PlaceholderAPI expansion.
+- `getSleepingPlayers()` returns an unmodifiable view for safe PAPI iteration under concurrency.
+- Added coverage for gamerule reconciliation, dynamic world lifecycle, disabled-gamemode exclusion, independent weather clearing, and gradual skip state.
+
+---
 
 ## [1.2.0] - 2026-05-21
 

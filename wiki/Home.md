@@ -1,93 +1,90 @@
-# 🌙 Onlysleep
+# Onlysleep
 
 <div align="center">
 
-![Onlysleep Banner](https://raw.githubusercontent.com/DemonZ-Development/Onlysleep/master/assets/banner.png)
+![Onlysleep](../assets/logo.png)
 
-**Skip the night with just one player sleeping** — or configure it your way.
+**One player sleeps. Everyone wakes up.**
 
-**Supports:** Bukkit · Spigot · Paper · Purpur · Folia · Any Paper fork  
+**Supports:** Bukkit, Spigot, Paper, Purpur, Folia, and any Paper fork
 **Minecraft:** 1.16.5+ · **Java:** 21+
 
 </div>
 
 ---
 
-## ✨ Features
+A lightweight sleep plugin that does one thing well: skip the night when a player goes to bed. No bloat, no wall of config you'll never touch. Just drop it in, and it works.
 
-- **One-Player Sleep** — Default mode lets a single player skip the night
-- **Configurable Percentage** — Require any % of players to sleep (50%, 75%, 100%)
-- **Per-World Sleep** — Configure per-world or global sleep counting
-- **Multi-Platform** — Works on Bukkit, Spigot, Paper, Folia, and all derivatives
-- **Weather Skip** — Automatically clear storms and thunderstorms
-- **Visual Feedback** — Boss bar, action bar, progress bar, and title support
-- **Sound Effects** — Configurable sounds when night is skipped
-- **Smart Player Filtering** — Ignores AFK, spectators, exempt players, and more
-- **AFK Detection** — Built-in AFK tracker with EssentialsX and CMI integration
-- **PlaceholderAPI Support** — 19+ placeholders for integrations
-- **Update Checker** — Automatic update checks via Modrinth API
-- **bStats Metrics** — Anonymous usage statistics (opt-out available)
-- **Disable Per World** — Disable sleep skipping in specific worlds
-- **Folia Support** — Full compatibility with Folia's regionized scheduler
+## Features
 
----
+- One-player sleep by default, or any percentage (0-100%)
+- Per-world sleep (each world tracks separately)
+- Weather skip: clear rain and thunder independently
+- Boss bar, action bar, progress bar, and title support
+- Sounds when someone starts sleeping and when night is skipped
+- AFK detection (built-in, plus EssentialsX and CMI)
+- Filters out spectators, creative, flying, and exempt players
+- Automatic gamerule management for `playersSleepingPercentage`
+- PlaceholderAPI: 12+ placeholders
+- Update checker and bStats (opt-out available)
+- Full Folia support with regionized scheduler
 
-## 📥 Quick Start
+## Quick Start
 
-1. **Download** the latest `Onlysleep-*.jar` from [Modrinth](https://modrinth.com/plugin/onlysleep), [Hangar](https://hangar.papermc.io/DemonzDevelopment/Onlysleep), or [Spigot](https://www.spigotmc.org/resources/onlysleep.12345/)
-2. **Place** it in your server's `plugins/` folder
-3. **Restart** your server (or reload with `/reload` — though restart is recommended)
-4. **Configure** `plugins/Onlysleep/config.yml` to your liking
-5. **Reload** with `/onlysleep reload`
+1. Download the latest `Onlysleep-*.jar` from [Modrinth](https://modrinth.com/plugin/onlysleep), [Hangar](https://hangar.papermc.io/DemonzDevelopment/Onlysleep), or [GitHub Releases](https://github.com/DemonZ-Development/Onlysleep/releases).
+2. Drop it into your server's `plugins/` folder.
+3. Restart your server.
+4. Edit `plugins/Onlysleep/config.yml` if you want to tweak anything.
+5. Apply changes with `/onlysleep reload`.
 
-> **No other plugins required!** Onlysleep works completely standalone. PlaceholderAPI is optional for placeholder support.
+> No dependencies required. PlaceholderAPI is optional.
 
----
-
-## 🎮 Basic Commands
+## Basic Commands
 
 | Command | Description |
 |---------|-------------|
 | `/onlysleep help` | Show help page |
 | `/onlysleep info` | Show plugin information |
-| `/onlysleep status` | Show detailed plugin status (requires `onlysleep.status`) |
+| `/onlysleep status` | Detailed status (requires `onlysleep.status`) |
 | `/onlysleep reload` | Reload configuration (requires `onlysleep.reload`) |
 
 **Aliases:** `/os`, `/sleep`
 
----
+## Wiki Pages
 
-## 🔗 Quick Links
-
-- [Installation Guide](Installation)
-- [Configuration Reference](Configuration)
-- [Messages Customization](Messages)
+- [Installation](Installation)
+- [Configuration](Configuration)
+- [Messages](Messages)
 - [Commands & Permissions](Commands-and-Permissions)
-- [PlaceholderAPI Placeholders](Placeholders)
+- [Placeholders](Placeholders)
 - [Developer API](Developer-API)
 - [FAQ & Troubleshooting](FAQ)
 - [Building from Source](Building)
 - [Changelog](Changelog)
 
----
+## bStats
 
-## 📊 bStats
+This plugin uses [bStats](https://bstats.org/plugin/bukkit/OnlySleep/31415) to collect anonymous usage statistics. No personal data is collected. You can opt out in `plugins/bStats/config.yml`.
 
-This plugin uses [bStats](https://bstats.org/plugin/bukkit/OnlySleep/31415) to collect anonymous usage statistics. No personal data is collected. You can opt-out in `plugins/bstats/config.yml`.
+[![bStats](https://bstats.org/signatures/bukkit/OnlySleep.svg)](https://bstats.org/plugin/bukkit/OnlySleep/31415)
 
-[![bStats Servers](https://bstats.org/signatures/bukkit/OnlySleep.svg)](https://bstats.org/plugin/bukkit/OnlySleep/31415)
+## Support
 
----
-
-## 🤝 Support
-
-- **Issues:** [GitHub Issues](https://github.com/DemonZ-Development/Onlysleep/issues)
-- **Discord:** [Join our Discord](https://discord.gg/demonzdevelopment)
+- [GitHub Issues](https://github.com/DemonZ-Development/Onlysleep/issues)
+- [Discord](https://discord.gg/qkvkEaPryF)
 
 ---
 
-## ❤️ Credits
+## Sponsored By
 
-Developed by **Demonz Development** with love for the Minecraft community.
+<div align="center">
+  <a href="https://nexeu.zip">
+    <img src="https://whodoesntloveavatars.s3.fra.databucket.eu/assets/promo.png" alt="Nexeu Sponsor" width="600px">
+  </a>
+  <br>
+  Looking for high-performance, budget-friendly game server hosting? Check out <a href="https://nexeu.zip"><b>Nexeu Hosting</b></a>!
+</div>
 
-Licensed under the [MIT License](https://github.com/DemonZ-Development/Onlysleep/blob/main/LICENSE).
+---
+
+Licensed under the [MIT License](https://github.com/DemonZ-Development/Onlysleep/blob/master/LICENSE).

@@ -11,9 +11,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * Checks for plugin updates against Modrinth's API.
- */
 public final class UpdateChecker {
 
     private static final String MODRINTH_API = "https://api.modrinth.com/v2/project/onlysleep/version";
@@ -27,9 +24,6 @@ public final class UpdateChecker {
         this.plugin = plugin;
     }
 
-    /**
-     * Checks for updates asynchronously against Modrinth API.
-     */
     public CompletableFuture<UpdateResult> checkAsync() {
         return CompletableFuture.supplyAsync(() -> {
             HttpURLConnection connection = null;
@@ -86,10 +80,6 @@ public final class UpdateChecker {
         });
     }
 
-    /**
-     * Compares two semantic versions.
-     * Returns negative if v1 < v2, positive if v1 > v2, 0 if equal.
-     */
     private int compareVersions(String v1, String v2) {
         Matcher m1 = VERSION_PATTERN.matcher(v1);
         Matcher m2 = VERSION_PATTERN.matcher(v2);

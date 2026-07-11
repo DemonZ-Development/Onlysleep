@@ -18,14 +18,6 @@ public final class ConfigUpdater {
 
     private ConfigUpdater() {}
 
-    /**
-     * Updates the destination YAML configuration file by merging default values and comments
-     * from the plugin's jar resource without overwriting the user's customized values.
-     *
-     * @param plugin The JavaPlugin instance.
-     * @param resourceName The name of the default YAML resource inside the jar.
-     * @param destination The target file on disk to update.
-     */
     public static void update(JavaPlugin plugin, String resourceName, File destination) {
         if (!destination.exists()) {
             try {
@@ -37,10 +29,9 @@ public final class ConfigUpdater {
         }
 
         try {
-            // Load user's current configuration values
+
             FileConfiguration userConfig = YamlConfiguration.loadConfiguration(destination);
 
-            // Read the default config from the jar line by line
             InputStream defaultStream = plugin.getResource(resourceName);
             if (defaultStream == null) return;
 
@@ -50,14 +41,13 @@ public final class ConfigUpdater {
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(defaultStream, StandardCharsets.UTF_8))) {
                 String line;
                 while ((line = reader.readLine()) != null) {
-                    // Check if it's a comment or empty line
+
                     String trimmed = line.trim();
                     if (trimmed.isEmpty() || trimmed.startsWith("#")) {
                         newLines.add(line);
                         continue;
                     }
 
-                    // Check if it contains a key
                     int colonIndex = line.indexOf(':');
                     if (colonIndex == -1) {
                         newLines.add(line);
@@ -67,39 +57,35 @@ public final class ConfigUpdater {
                     String key = line.substring(0, colonIndex).trim();
                     int indentation = getIndentation(line);
 
-                    // Pop keys from the stack that have greater or equal indentation
                     while (!keyStack.isEmpty() && keyStack.peek().indentation >= indentation) {
                         keyStack.pop();
                     }
 
-                    // Push the new key
                     keyStack.push(new KeyInfo(key, indentation));
 
-                    // Build full path
                     String fullPath = getFullPath(keyStack);
 
-                    // Check if there is a value after the colon
                     String valuePart = line.substring(colonIndex + 1).trim();
-                    // Remove inline comments (only outside of quoted strings)
+
                     valuePart = stripInlineComment(valuePart);
 
                     if (!valuePart.isEmpty() && !valuePart.equals("{") && !valuePart.equals("[")) {
-                        // It's a leaf node key-value pair!
+
                         if (userConfig.contains(fullPath)) {
-                            // Substitute with user's value
+
                             Object userValue = userConfig.get(fullPath);
                             String serialized = serializeValue(userValue);
-                            // Preserve leading whitespace
+
                             String leadingWhitespace = line.substring(0, line.indexOf(key));
                             newLines.add(leadingWhitespace + key + ": " + serialized);
                         } else {
-                            // Keep default value
+
                             newLines.add(line);
                         }
                     } else {
-                        // Section header or empty map/list
+
                         if (!valuePart.isEmpty() && userConfig.contains(fullPath)) {
-                            // It's an empty map or list that the user might have customized
+
                             Object userValue = userConfig.get(fullPath);
                             String serialized = serializeValue(userValue);
                             String leadingWhitespace = line.substring(0, line.indexOf(key));
@@ -111,7 +97,6 @@ public final class ConfigUpdater {
                 }
             }
 
-            // Write updated lines back to destination file
             try (PrintWriter writer = new PrintWriter(destination, "UTF-8")) {
                 for (String newLine : newLines) {
                     writer.println(newLine);
@@ -135,11 +120,6 @@ public final class ConfigUpdater {
         return count;
     }
 
-    /**
-     * Strips an inline YAML comment (text after an unquoted {@code #}).
-     * Respects single-quoted and double-quoted strings so that {@code #}
-     * characters inside quotes are not treated as comments.
-     */
     private static String stripInlineComment(String value) {
         boolean inSingle = false;
         boolean inDouble = false;
@@ -150,7 +130,7 @@ public final class ConfigUpdater {
             } else if (c == '"' && !inSingle) {
                 inDouble = !inDouble;
             } else if (c == '#' && !inSingle && !inDouble) {
-                // Found an unquoted # — strip everything from here
+
                 return value.substring(0, i).trim();
             }
         }
@@ -180,7 +160,7 @@ public final class ConfigUpdater {
                 if (item == null) {
                     sb.append("null");
                 } else if (item instanceof String) {
-                    // Escape double quotes and backslashes for YAML double-quoted string
+
                     String escaped = item.toString()
                             .replace("\\", "\\\\")
                             .replace("\"", "\\\"");

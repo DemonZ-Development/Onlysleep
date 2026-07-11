@@ -7,13 +7,6 @@ import java.lang.reflect.Field;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Tests for {@link PlatformAdapter}.
- * <p>
- * Resets the internal static caches before each test so detection runs fresh.
- * Tests verify that methods don't throw and return sensible defaults,
- * without assuming a specific server type is present on the classpath.
- */
 class PlatformAdapterTest {
 
     @BeforeEach
@@ -21,7 +14,6 @@ class PlatformAdapterTest {
         resetPlatformAdapterCache();
     }
 
-    /** Resets {@link PlatformAdapter}'s cached detection fields via reflection. */
     private void resetPlatformAdapterCache() throws Exception {
         setStaticField(PlatformAdapter.class, "platform", null);
         setStaticField(PlatformAdapter.class, "folia", null);
@@ -81,7 +73,7 @@ class PlatformAdapterTest {
 
     @Test
     void isFolia_DoesNotThrow() {
-        // Without a running server, Class.forName will be used (no exception)
+
         assertDoesNotThrow(PlatformAdapter::isFolia);
     }
 
@@ -92,7 +84,7 @@ class PlatformAdapterTest {
 
     @Test
     void isSpigot_DoesNotThrow() {
-        // Uses Class.forName internally — should never throw
+
         assertDoesNotThrow(PlatformAdapter::isSpigot);
     }
 
@@ -108,7 +100,7 @@ class PlatformAdapterTest {
 
     @Test
     void getPlatform_ReturnsKnownValue() {
-        // The platform should be one of the 4 known types
+
         PlatformAdapter.ServerPlatform p = PlatformAdapter.getPlatform();
         assertTrue(
             p == PlatformAdapter.ServerPlatform.FOLIA ||

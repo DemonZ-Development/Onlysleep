@@ -1,16 +1,4 @@
-# ============================================
-#  Onlysleep v${project.version} - Messages
-#  by Demonz Development
-# ============================================
-# Color codes: &0-&f, &l (bold), &o (italic),
-# &n (underline), &m (strikethrough), &k (magic)
-# Placeholders: %player%, %count%, %required%,
-# %bar%, %version%, %author%, %percent%, %platform%
-# ============================================
-
 prefix: "&8[&bOnlysleep&8] &r"
-
-# --- Sleep Messages ---
 
 sleep:
   start-sleep: "&a%player% &eis sleeping... &7(&b%count%&7/&b%required%&7)"
@@ -23,17 +11,11 @@ sleep:
   world-disabled: "&cSleep skipping is disabled in this world."
   already-skipping: "&eThe night is already being skipped!"
 
-# --- Weather Messages ---
-
 weather:
   clearing: "&a☀ The storm has been cleared by &b%player%"
 
-# --- Boss Bar ---
-
 boss-bar:
   title: "&b🌙 Night is being skipped by &f%player%"
-
-# --- Command Messages ---
 
 command:
   no-permission: "&cYou don't have permission to use this command."
@@ -53,17 +35,12 @@ command:
     link-discord: "&8» &7Discord: &bhttps://discord.gg/qkvkEaPryF"
     footer: "&8============================"
 
-# --- Update Checker ---
-
 update:
   checking: "&eChecking for updates..."
   available: "&e✨ A new version is available: &b%new% &e(Current: &7%current%&e)"
   available-links: "&8» &7Download: &bhttps://modrinth.com/plugin/onlysleep"
   current: "&aYou are running the latest version."
   check-fail: "&cFailed to check for updates."
-
-# --- Help Messages ---
-# %cmd% is replaced with the command name (e.g., "onlysleep")
 
 help:
   header: "&8=== &bOnlysleep Commands &8==="

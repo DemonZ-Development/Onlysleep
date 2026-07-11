@@ -1,4 +1,4 @@
-# ⚙️ Configuration
+# Configuration
 
 Onlysleep's configuration is located at `plugins/Onlysleep/config.yml`. The plugin works out-of-the-box with sensible defaults, so you only need to change what you want.
 
@@ -47,7 +47,7 @@ The type of night skip animation.
 | Value | Description |
 |-------|-------------|
 | `instant` | Time changes immediately to morning |
-| `speed` | Time fast-forwards (adds 24000 ticks to set to next day) |
+| `speed` | Time fast-forwards to morning (~2–3s timelapse) |
 | `gradual` | Time smoothly transitions (uses `gradual-skip-speed-ticks`) |
 
 ---
@@ -191,7 +191,7 @@ afk-detection:
 The AFK check order is:
 1. Built-in AFK tracker (movement + interaction based)
 2. EssentialsX metadata (`afk` metadata value)
-3. CMI API (`getCMIPlayer().getAfkData().isAfk()`)
+3. CMI static API (`CMI.getInstance().getPlayerManager().getUser(player).isAfk()`)
 
 ---
 

@@ -11,10 +11,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-/**
- * Tests for {@link UpdateChecker} — focuses on the UpdateResult model
- * and state transitions. Does not test real HTTP calls.
- */
 @ExtendWith(MockitoExtension.class)
 class UpdateCheckerTest {
 
@@ -42,8 +38,6 @@ class UpdateCheckerTest {
     void checkAsync_ReturnsNonNullFuture() {
         assertNotNull(updateChecker.checkAsync());
     }
-
-    // --- UpdateResult tests ---
 
     @Test
     void updateResult_UpdateAvailable_StoresValues() {

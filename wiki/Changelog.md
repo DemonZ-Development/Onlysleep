@@ -4,7 +4,7 @@
 
 ## [1.3.0] - 2026-07-11
 
-This beta upgrades the Paper API target, fixes gradual/speed skipping, expands sleep feedback, and makes Onlysleep fully own vanilla sleep calculations while enabled.
+This beta makes advertised features work, hardens Folia thread safety, fixes gradual skipping, and closes reload and memory leaks.
 
 ### Added
 
@@ -25,6 +25,16 @@ This beta upgrades the Paper API target, fixes gradual/speed skipping, expands s
   - The boss bar now reads from a snapshot of the initiating player's name (populated at skip-start) instead of a live `Bukkit.getPlayer(uuid)` lookup that returned `null` after logout.
 - **Sleeping players no longer wake up mid-skip in gradual mode**
   - World time now stays parked at the original night value for the entire gradual animation; `setTime()` is called exactly once at the final tick to snap to morning. This prevents vanilla's wake-up threshold (`world.getTime() > 23458`) from being crossed mid-animation.
+- Reloads no longer duplicate AFK or offline-player listeners, and the offline-player cache resets correctly.
+- Update notifications and offline-player discovery now use the global scheduler instead of making off-thread Bukkit calls.
+- Skip and weather messages are scoped to the world that skipped instead of broadcasting server-wide.
+- AFK sleepers are deduplicated against the authoritative sleeping-player set.
+
+### Technical Improvements
+
+- SleepManager state uses concurrent collections for Folia safety.
+- Shared night-time bounds are reused by listeners and PlaceholderAPI.
+- Sleeping-player views are unmodifiable for safe iteration.
 
 ## [1.0.0] - 2025-06-01
 
