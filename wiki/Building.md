@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-- **Java 21+** (required for compilation)
+- **Java 25+** (required for compilation against Paper 26.1.2)
 - **Git** (for cloning the repository)
 
 ---
@@ -182,7 +182,7 @@ The project uses GitHub Actions for continuous integration:
 
 | Dependency | Purpose |
 |------------|---------|
-| Paper API (1.21.4) | Bukkit/Paper server API |
+| Paper API (26.1.2 stable) | Bukkit/Paper server API |
 | PlaceholderAPI | Optional placeholder expansion |
 | bStats | Anonymous usage metrics |
 | Adventure API | Modern component-based chat |

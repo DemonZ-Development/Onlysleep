@@ -2,7 +2,7 @@
 
 ## Requirements
 
-- **Java 21+** (compiled for the latest Paper API)
+- **Java 21+** for the plugin; Paper 26.1+ servers require Java 25
 - **Minecraft 1.16.5+** (Bukkit, Spigot, Paper, Folia, or any compatible server)
 - **No other plugins required!** Onlysleep works standalone
 - **[Optional] PlaceholderAPI** for placeholder expansion support
