@@ -82,8 +82,8 @@ The plugin works out-of-the-box with sensible defaults. Just drop it in and go!
 | `skip-delay-ticks` | `60` | Delay before night skip (20 ticks = 1 second) |
 | `skip-type` | `instant` | `instant`, `speed`, or `gradual` |
 | `per-world-sleep` | `true` | Only count players in the same world |
-| `clear-weather` | `true` | Clear storms when sleeping |
-| `manage-gamerule` | `true` | Auto-manage `playersSleepingPercentage` gamerule |
+| `clear-weather` | `true` | Clear rain when sleeping; thunder is configured separately |
+| `manage-gamerule` | `true` | Temporarily override vanilla sleep math in enabled worlds |
 
 See the full [config.yml](src/main/resources/config.yml) for all options.
 

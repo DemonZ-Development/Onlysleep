@@ -15,6 +15,7 @@ import org.bstats.charts.SimplePie;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.event.world.WorldUnloadEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -45,11 +46,15 @@ public final class Onlysleep extends JavaPlugin {
         // Initialize sleep manager (uses scheduler adapter for Folia compatibility)
         this.sleepManager = new SleepManager(this, configManager);
 
+        // Override vanilla playersSleepingPercentage on enabled worlds so the
+        // plugin fully owns sleep math. Original values are restored on disable.
+        sleepManager.applyGamerules();
+
         // Register event listeners
         getServer().getPluginManager().registerEvents(new SleepListener(this, sleepManager, configManager), this);
 
-        // Register world unload listener (prevents memory leaks)
-        registerWorldUnloadListener();
+        // Keep gamerules and per-world state correct as worlds load/unload.
+        registerWorldLifecycleListener();
 
         // Register command
         OnlysleepCommand commandExecutor = new OnlysleepCommand(this, configManager);
@@ -93,6 +98,7 @@ public final class Onlysleep extends JavaPlugin {
             updateCheckerTask = null;
         }
         if (sleepManager != null) {
+            sleepManager.restoreGamerules();
             sleepManager.shutdown();
         }
         OfflinePlayerTracker.shutdown();
@@ -132,11 +138,18 @@ public final class Onlysleep extends JavaPlugin {
     }
 
     /**
-     * Registers the WorldUnloadEvent listener to clean up world state
-     * and prevent memory leaks from World references held in maps.
+     * Registers world lifecycle listeners so newly loaded worlds receive the
+     * gamerule override and unloaded worlds have their state restored/removed.
      */
-    private void registerWorldUnloadListener() {
+    private void registerWorldLifecycleListener() {
         getServer().getPluginManager().registerEvents(new Listener() {
+            @EventHandler
+            public void onWorldLoad(WorldLoadEvent event) {
+                if (sleepManager != null) {
+                    sleepManager.applyGamerule(event.getWorld());
+                }
+            }
+
             @EventHandler
             public void onWorldUnload(WorldUnloadEvent event) {
                 if (sleepManager != null) {

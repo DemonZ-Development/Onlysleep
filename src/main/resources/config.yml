@@ -39,13 +39,15 @@ require-all-players-online: false
 
 # --- Weather Settings ---
 
-# Clear weather (rain/thunder) when a player sleeps during a storm.
+# Clear rain (storms) when a player sleeps.
+# Note: rain and thunder are handled independently below.
 clear-weather: true
 
 # Reset rain to clear after skipping.
 reset-weather: true
 
-# Also clear thunder specifically.
+# Clear thunder (thunderstorms) when a player sleeps.
+# Independent of clear-weather, so you can clear only one.
 clear-thunder: true
 
 # Reset thunder to clear after skipping.
@@ -120,22 +122,25 @@ ui:
 sounds:
   # Master toggle for all sounds
   enabled: true
-  # Sound played when night is skipped
+  # Sound played to everyone when the night is skipped
   skip-sound: ENTITY_PLAYER_LEVELUP
   skip-sound-volume: 1.0
   skip-sound-pitch: 1.0
-  # Sound played at night skip (alternative)
-  night-sound: ENTITY_PLAYER_LEVELUP
+  # Sound played to everyone when a player gets into bed
+  night-sound: BLOCK_NOTE_BLOCK_PLING
   night-sound-volume: 0.5
   night-sound-pitch: 1.0
-  # Sound played during storm skip
+  # Sound played to everyone when a storm/thunderstorm is cleared by sleeping
   storm-sound: ENTITY_LIGHTNING_BOLT_THUNDER
   storm-sound-volume: 1.0
   storm-sound-pitch: 1.0
 
 # --- Gamerule Management ---
 
-# The gamerule playersSleepingPercentage will be automatically managed.
+# Automatically override vanilla's playersSleepingPercentage gamerule on
+# enabled worlds so this plugin fully controls sleep math (sets it above 100,
+# which prevents vanilla from skipping the night on its own).
+# The original value is restored when the plugin disables.
 manage-gamerule: true
 
 # --- Update Checker ---

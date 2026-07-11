@@ -121,9 +121,9 @@ Controls whether storms and thunderstorms are cleared when a player sleeps.
 
 | Setting | Description |
 |---------|-------------|
-| `clear-weather` | Clear rain/thunder when a player sleeps during a storm |
+| `clear-weather` | Handle rain clearing when a player sleeps |
 | `reset-weather` | Actually set rain to clear after skipping |
-| `clear-thunder` | Clear thunder specifically |
+| `clear-thunder` | Handle thunder clearing independently of rain |
 | `reset-thunder` | Actually set thunder to clear after skipping |
 | `reset-weather-cycle` | Reset the weather cycle duration (prevents immediate rain after clearing) |
 
@@ -280,7 +280,7 @@ sounds:
   skip-sound: ENTITY_PLAYER_LEVELUP
   skip-sound-volume: 1.0
   skip-sound-pitch: 1.0
-  night-sound: ENTITY_PLAYER_LEVELUP
+  night-sound: BLOCK_NOTE_BLOCK_PLING
   night-sound-volume: 0.5
   night-sound-pitch: 1.0
   storm-sound: ENTITY_LIGHTNING_BOLT_THUNDER
@@ -292,8 +292,8 @@ sounds:
 |---------|-------------|
 | `enabled` | Master toggle for all sounds |
 | `skip-sound` | Sound played when the night skip completes |
-| `night-sound` | Alternative night skip sound |
-| `storm-sound` | Sound played during storm skip |
+| `night-sound` | Sound played to the world when a player enters a bed |
+| `storm-sound` | Sound played to the world when rain or thunder is cleared |
 
 Any valid [Bukkit Sound](https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html) enum value can be used.
 
@@ -305,7 +305,7 @@ Any valid [Bukkit Sound](https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sou
 manage-gamerule: true
 ```
 
-If `true`, Onlysleep will automatically manage the `playersSleepingPercentage` gamerule. This is useful for servers where Onlysleep's custom logic should override Minecraft's default sleep behavior.
+If `true`, Onlysleep sets `playersSleepingPercentage` to `101` in enabled worlds so its configured sleep threshold cannot race vanilla behavior. The original per-world value is restored when management is disabled, the world becomes disabled or unloads, or the plugin shuts down.
 
 ---
 
@@ -421,7 +421,7 @@ sounds:
   skip-sound: ENTITY_PLAYER_LEVELUP
   skip-sound-volume: 1.0
   skip-sound-pitch: 1.0
-  night-sound: ENTITY_PLAYER_LEVELUP
+  night-sound: BLOCK_NOTE_BLOCK_PLING
   night-sound-volume: 0.5
   night-sound-pitch: 1.0
   storm-sound: ENTITY_LIGHTNING_BOLT_THUNDER

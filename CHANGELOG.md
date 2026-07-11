@@ -4,16 +4,25 @@
 
 ---
 
-## [1.3.0] - 2026-07-06
+## [1.3.0] - 2026-07-11
 
-This release upgrades the Paper API target to 1.21.11 and fixes two bugs in the gradual/speed skip system.
+This beta upgrades the Paper API target, fixes gradual/speed skipping, expands sleep feedback, and makes Onlysleep fully own vanilla sleep calculations while enabled.
 
-### ⚡ Changed
+### Added
 
-- **Paper API target**: bumped from 1.21.4 to 1.21.11
+- **Automatic gamerule management**: enabled worlds temporarily use `playersSleepingPercentage: 101` so vanilla cannot race the plugin's configured sleep threshold. Each world's original value is restored when management stops, the world unloads, or the plugin disables.
+- **World sleep sounds**: configurable sounds now play when a player enters a bed, when weather is cleared, and when the night skip completes.
 
-### 🐛 Bug Fixes
+### Changed
 
+- **Paper API target**: bumped from 1.21.4 to 1.21.11.
+- **Independent weather controls**: rain and thunder can now be cleared separately with `clear-weather` and `clear-thunder`.
+- **Disabled gamemode filtering**: disabled gamemodes are excluded from both the sleeping count and the eligible-player total.
+
+### Bug Fixes
+
+- **Safe gamerule reloads**: turning off `manage-gamerule` or adding a world to `disabled-worlds` now restores the original gamerule immediately instead of leaving it at `101`.
+- **Dynamic world lifecycle**: worlds loaded after plugin startup receive the configured override, while unloading worlds are restored and removed from tracked state.
 - **Boss bar no longer shows "Unknown" when the initiating sleeper logs off mid-skip**:
   - Replaced the live `Bukkit.getPlayer(uuid)` lookup (which returned `null` after the player logged out, falling back to `"Unknown"`) with a per-world snapshot of the initiating player's name, populated at skip-start. The boss bar and deferred title both read from the snapshot, so attribution survives the player going offline.
 - **Sleeping players no longer wake up mid-skip in gradual mode**:

@@ -20,6 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -35,6 +36,7 @@ import static org.mockito.Mockito.*;
  * and {@code Bukkit.getScheduler()} internally.
  */
 @ExtendWith(MockitoExtension.class)
+@SuppressWarnings("removal")
 class SleepManagerTest {
 
     @Mock
@@ -242,6 +244,19 @@ class SleepManagerTest {
     void getTotalPlayerCount_ExcludesCreative_WhenIgnoreCreativeEnabled() {
         when(configManager.isIgnoreCreativeMode()).thenReturn(true);
         when(player1.getGameMode()).thenReturn(GameMode.CREATIVE);
+
+        try (MockedStatic<Bukkit> bukkit = mockStatic(Bukkit.class)) {
+            bukkit.when(Bukkit::getOnlinePlayers).thenReturn(java.util.Collections.singletonList(player1));
+            assertEquals(0, sleepManager.getTotalPlayerCount(world));
+        }
+    }
+
+    @Test
+    void getTotalPlayerCount_ExcludesDisabledGameModes() {
+        // A player in a disabled gamemode must not count toward the total,
+        // otherwise the required count can become unsatisfiable.
+        when(configManager.isGameModeDisabled("ADVENTURE")).thenReturn(true);
+        when(player1.getGameMode()).thenReturn(GameMode.ADVENTURE);
 
         try (MockedStatic<Bukkit> bukkit = mockStatic(Bukkit.class)) {
             bukkit.when(Bukkit::getOnlinePlayers).thenReturn(java.util.Collections.singletonList(player1));
@@ -569,5 +584,199 @@ class SleepManagerTest {
 
             assertEquals(334, sleepManager.getGradualSkipTotalStepsForTest(world));
         }
+    }
+
+    // ========== skipNight weather clearing (clear-thunder independent) ==========
+
+    @Test
+    void skipNight_ClearsThunder_IndependentlyOfClearWeather() {
+        // clear-weather is OFF but clear-thunder is ON: thunder should be
+        // cleared while rain is left alone.
+        when(configManager.getSkipType()).thenReturn("instant");
+        lenient().when(configManager.isResetTime()).thenReturn(true);
+        when(configManager.isClearWeather()).thenReturn(false);
+        when(configManager.isClearThunder()).thenReturn(true);
+        when(configManager.isResetThunder()).thenReturn(true);
+        lenient().when(configManager.isResetWeatherCycle()).thenReturn(false);
+        lenient().when(configManager.isPlaySounds()).thenReturn(false);
+        lenient().when(configManager.isShowTitle()).thenReturn(false);
+        lenient().when(configManager.isShowBossBar()).thenReturn(false);
+        when(world.isThundering()).thenReturn(true);
+        lenient().when(world.hasStorm()).thenReturn(true);
+
+        try (MockedStatic<Bukkit> bukkit = mockBukkitForTwoPlayers()) {
+            sleepManager.onPlayerBedEnter(player1);
+            sleepManager.skipNightForTest(world);
+
+            verify(world).setThundering(false);
+            verify(world, never()).setStorm(false);
+        }
+    }
+
+    @Test
+    void skipNight_ClearsRain_WhenClearWeatherEnabled() {
+        when(configManager.getSkipType()).thenReturn("instant");
+        lenient().when(configManager.isResetTime()).thenReturn(true);
+        when(configManager.isClearWeather()).thenReturn(true);
+        when(configManager.isResetWeather()).thenReturn(true);
+        lenient().when(configManager.isResetWeatherCycle()).thenReturn(false);
+        when(configManager.isClearThunder()).thenReturn(false);
+        lenient().when(configManager.isPlaySounds()).thenReturn(false);
+        lenient().when(configManager.isShowTitle()).thenReturn(false);
+        lenient().when(configManager.isShowBossBar()).thenReturn(false);
+        when(world.hasStorm()).thenReturn(true);
+        lenient().when(world.isThundering()).thenReturn(false);
+
+        try (MockedStatic<Bukkit> bukkit = mockBukkitForTwoPlayers()) {
+            sleepManager.onPlayerBedEnter(player1);
+            sleepManager.skipNightForTest(world);
+
+            verify(world).setStorm(false);
+            verify(world, never()).setThundering(false);
+        }
+    }
+
+    // ========== applyGamerules / restoreGamerules ==========
+
+    @Test
+    void applyGamerules_SetsGameruleAbove100_WhenManageEnabled() {
+        when(configManager.isManageGamerule()).thenReturn(true);
+        when(configManager.isWorldEnabled("world")).thenReturn(true);
+        when(world.getGameRuleValue("playersSleepingPercentage")).thenReturn("50");
+
+        try (MockedStatic<Bukkit> bukkit = mockStatic(Bukkit.class)) {
+            bukkit.when(Bukkit::getWorlds).thenReturn(java.util.Collections.singletonList(world));
+
+            sleepManager.applyGamerules();
+
+            // Should set the gamerule above 100 so vanilla can't skip the night
+            verify(world).setGameRuleValue("playersSleepingPercentage", "101");
+        }
+    }
+
+    @Test
+    void applyGamerules_DoesNothing_WhenManageDisabled() {
+        when(configManager.isManageGamerule()).thenReturn(false);
+
+        try (MockedStatic<Bukkit> bukkit = mockStatic(Bukkit.class)) {
+            bukkit.when(Bukkit::getWorlds).thenReturn(java.util.Collections.singletonList(world));
+
+            sleepManager.applyGamerules();
+
+            verify(world, never()).setGameRuleValue(anyString(), anyString());
+        }
+    }
+
+    @Test
+    void applyGamerules_SkipsDisabledWorlds() {
+        when(configManager.isManageGamerule()).thenReturn(true);
+        when(configManager.isWorldEnabled("world")).thenReturn(false);
+
+        try (MockedStatic<Bukkit> bukkit = mockStatic(Bukkit.class)) {
+            bukkit.when(Bukkit::getWorlds).thenReturn(java.util.Collections.singletonList(world));
+
+            sleepManager.applyGamerules();
+
+            verify(world, never()).setGameRuleValue(anyString(), anyString());
+        }
+    }
+
+    @Test
+    void restoreGamerules_RestoresOriginalValue() {
+        when(configManager.isManageGamerule()).thenReturn(true);
+        when(configManager.isWorldEnabled("world")).thenReturn(true);
+        when(world.getGameRuleValue("playersSleepingPercentage")).thenReturn("50");
+
+        try (MockedStatic<Bukkit> bukkit = mockStatic(Bukkit.class)) {
+            bukkit.when(Bukkit::getWorlds).thenReturn(java.util.Collections.singletonList(world));
+
+            sleepManager.applyGamerules();
+            sleepManager.restoreGamerules();
+
+            // Original value should be restored, not left at 101
+            verify(world).setGameRuleValue("playersSleepingPercentage", "50");
+        }
+    }
+
+    @Test
+    void applyGamerules_OnReload_PreservesOriginalValue() {
+        // Simulate two reload cycles — putIfAbsent must not overwrite the
+        // captured original with our own "101" override value.
+        when(configManager.isManageGamerule()).thenReturn(true);
+        when(configManager.isWorldEnabled("world")).thenReturn(true);
+        when(world.getGameRuleValue("playersSleepingPercentage")).thenReturn("50");
+
+        try (MockedStatic<Bukkit> bukkit = mockStatic(Bukkit.class)) {
+            bukkit.when(Bukkit::getWorlds).thenReturn(java.util.Collections.singletonList(world));
+
+            sleepManager.applyGamerules();
+            sleepManager.applyGamerules(); // second call (reload)
+            sleepManager.restoreGamerules();
+
+            verify(world, times(1)).setGameRuleValue("playersSleepingPercentage", "50");
+        }
+    }
+
+    @Test
+    void applyGamerules_OnReload_RestoresValueWhenManagementDisabled() {
+        AtomicBoolean manageGamerule = new AtomicBoolean(true);
+        when(configManager.isManageGamerule()).thenAnswer(invocation -> manageGamerule.get());
+        when(configManager.isWorldEnabled("world")).thenReturn(true);
+        when(world.getGameRuleValue("playersSleepingPercentage")).thenReturn("50");
+
+        try (MockedStatic<Bukkit> bukkit = mockStatic(Bukkit.class)) {
+            bukkit.when(Bukkit::getWorlds).thenReturn(java.util.Collections.singletonList(world));
+
+            sleepManager.applyGamerules();
+            manageGamerule.set(false);
+            sleepManager.applyGamerules();
+
+            verify(world).setGameRuleValue("playersSleepingPercentage", "101");
+            verify(world).setGameRuleValue("playersSleepingPercentage", "50");
+        }
+    }
+
+    @Test
+    void applyGamerules_OnReload_RestoresValueWhenWorldBecomesDisabled() {
+        AtomicBoolean worldEnabled = new AtomicBoolean(true);
+        when(configManager.isManageGamerule()).thenReturn(true);
+        when(configManager.isWorldEnabled("world")).thenAnswer(invocation -> worldEnabled.get());
+        when(world.getGameRuleValue("playersSleepingPercentage")).thenReturn("50");
+
+        try (MockedStatic<Bukkit> bukkit = mockStatic(Bukkit.class)) {
+            bukkit.when(Bukkit::getWorlds).thenReturn(java.util.Collections.singletonList(world));
+
+            sleepManager.applyGamerules();
+            worldEnabled.set(false);
+            sleepManager.applyGamerules();
+
+            verify(world).setGameRuleValue("playersSleepingPercentage", "101");
+            verify(world).setGameRuleValue("playersSleepingPercentage", "50");
+        }
+    }
+
+    @Test
+    void applyGamerule_AppliesOverrideToNewlyLoadedWorld() {
+        when(configManager.isManageGamerule()).thenReturn(true);
+        when(configManager.isWorldEnabled("world")).thenReturn(true);
+        when(world.getGameRuleValue("playersSleepingPercentage")).thenReturn("25");
+
+        sleepManager.applyGamerule(world);
+
+        verify(world).setGameRuleValue("playersSleepingPercentage", "101");
+        sleepManager.restoreGamerules();
+        verify(world).setGameRuleValue("playersSleepingPercentage", "25");
+    }
+
+    @Test
+    void cleanupWorld_RestoresGameruleBeforeDroppingWorldState() {
+        when(configManager.isManageGamerule()).thenReturn(true);
+        when(configManager.isWorldEnabled("world")).thenReturn(true);
+        when(world.getGameRuleValue("playersSleepingPercentage")).thenReturn("75");
+
+        sleepManager.applyGamerule(world);
+        sleepManager.cleanupWorld(world);
+
+        verify(world).setGameRuleValue("playersSleepingPercentage", "75");
     }
 }

@@ -17,7 +17,9 @@
 
 # Shell scripts
 gradlew         text eol=lf
-gradlew.bat     text eol=crlf
+# The tracked wrapper already contains CRLF bytes; keep it byte-for-byte so
+# Git does not report a permanent line-ending-only modification on Windows.
+gradlew.bat     -text
 
 # Binary files (never touch line endings)
 *.jar           binary

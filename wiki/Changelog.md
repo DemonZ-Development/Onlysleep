@@ -2,16 +2,25 @@
 
 ---
 
-## [1.3.0] - 2026-07-06
+## [1.3.0] - 2026-07-11
 
-This release upgrades the Paper API target to 1.21.11 and fixes two bugs in the gradual/speed skip system.
+This beta upgrades the Paper API target, fixes gradual/speed skipping, expands sleep feedback, and makes Onlysleep fully own vanilla sleep calculations while enabled.
 
-### ⚡ Changed
+### Added
 
-- **Paper API target**: bumped from 1.21.4 to 1.21.11
+- **Automatic gamerule management**: enabled worlds temporarily use `playersSleepingPercentage: 101`, with their original values restored when management stops, the world unloads, or the plugin disables.
+- **World sleep sounds**: configurable sounds now play on bed entry, weather clearing, and completed night skips.
 
-### 🐛 Bug Fixes
+### Changed
 
+- The Paper API target is upgraded from 1.21.4 to 1.21.11.
+- Rain and thunder clearing can be configured independently.
+- Disabled gamemodes are excluded from both sleeping and eligible-player counts.
+
+### Bug Fixes
+
+- Reloading with gamerule management disabled, or with a newly disabled world, now restores the original gamerule immediately.
+- Worlds loaded after startup receive the configured override; unloading worlds are restored and removed from tracked state.
 - **Boss bar no longer shows "Unknown" when the initiating sleeper logs off mid-skip**
   - The boss bar now reads from a snapshot of the initiating player's name (populated at skip-start) instead of a live `Bukkit.getPlayer(uuid)` lookup that returned `null` after logout.
 - **Sleeping players no longer wake up mid-skip in gradual mode**

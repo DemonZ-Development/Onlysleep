@@ -67,6 +67,9 @@ public class OnlysleepCommand implements CommandExecutor, TabCompleter {
         try {
             configManager.reload();
 
+            // Reconcile gamerule overrides in case disabled-worlds / manage-gamerule changed
+            plugin.getSleepManager().applyGamerules();
+
             // Re-initialise AFK tracker if its config changed
             com.demonzdevelopment.onlysleep.util.AfkTracker.shutdown();
             if (configManager.getAfkTimeSeconds() > 0) {

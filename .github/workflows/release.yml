@@ -61,4 +61,4 @@ jobs:
           body_path: RELEASE_NOTES.md
           files: build/libs/Onlysleep-*.jar
           draft: false
-          prerelease: false
+          prerelease: true

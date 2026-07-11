@@ -35,6 +35,13 @@ public class SleepManager {
     private final Map<World, GradualSkipState> gradualSkipStates = new HashMap<>();
 
     /**
+     * The original {@code playersSleepingPercentage} gamerule value for each
+     * world before this plugin overrode it. Restored on disable so removing
+     * the plugin returns the server to its prior state.
+     */
+    private final Map<World, String> originalGameruleValues = new HashMap<>();
+
+    /**
      * Per-world state for an in-flight gradual (or speed) skip. Holds the
      * immutable inputs computed once at skip-start and a single-element array
      * for the mutable step counter so the timer runnable can update it without
@@ -51,6 +58,76 @@ public class SleepManager {
     public SleepManager(Onlysleep plugin, ConfigManager configManager) {
         this.plugin = plugin;
         this.configManager = configManager;
+    }
+
+    /**
+     * Sets the {@code playersSleepingPercentage} gamerule above 100 on every
+     * enabled world so vanilla can't race this plugin's own sleep math.
+     *
+     * <p>The original value is saved per-world and restored by {@link #restoreGamerules()}
+     * on disable. Safe to call on enable and after a config reload.</p>
+     */
+    public void applyGamerules() {
+        boolean manageGamerule = configManager.isManageGamerule();
+
+        // Reconcile worlds that were managed before the reload. If management
+        // was disabled, or an individual world is now disabled, restore that
+        // world's original value immediately instead of leaving it at 101.
+        for (World world : new HashSet<>(originalGameruleValues.keySet())) {
+            if (!manageGamerule || !configManager.isWorldEnabled(world.getName())) {
+                restoreGamerule(world);
+            }
+        }
+
+        if (!manageGamerule) {
+            return;
+        }
+
+        for (World world : Bukkit.getWorlds()) {
+            applyGamerule(world);
+        }
+    }
+
+    /**
+     * Applies the gamerule override to one newly loaded world when eligible.
+     */
+    @SuppressWarnings("removal") // String gamerule API keeps Minecraft 1.16 compatibility.
+    public void applyGamerule(World world) {
+        if (!configManager.isManageGamerule()
+                || !configManager.isWorldEnabled(world.getName())) {
+            restoreGamerule(world);
+            return;
+        }
+
+        String current = world.getGameRuleValue("playersSleepingPercentage");
+        if (current == null) {
+            return; // The gamerule is unavailable on this Minecraft version.
+        }
+
+        // Only capture the first time we touch a world so reload doesn't
+        // overwrite the original with our own override value.
+        originalGameruleValues.putIfAbsent(world, current);
+        // Any value >100 makes it impossible for vanilla to skip the night,
+        // handing full control to this plugin.
+        world.setGameRuleValue("playersSleepingPercentage", "101");
+    }
+
+    /**
+     * Restores the original {@code playersSleepingPercentage} values captured
+     * by {@link #applyGamerules()}. Called on disable.
+     */
+    public void restoreGamerules() {
+        for (World world : new HashSet<>(originalGameruleValues.keySet())) {
+            restoreGamerule(world);
+        }
+    }
+
+    @SuppressWarnings("removal") // String gamerule API keeps Minecraft 1.16 compatibility.
+    private void restoreGamerule(World world) {
+        String original = originalGameruleValues.remove(world);
+        if (original != null) {
+            world.setGameRuleValue("playersSleepingPercentage", original);
+        }
     }
 
     /**
@@ -72,6 +149,12 @@ public class SleepManager {
         String message = configManager.getMessage("sleep.start-sleep", placeholders);
         for (Player p : world.getPlayers()) {
             p.sendMessage(message);
+        }
+
+        // Play night-sound to everyone in the world when someone beds down
+        if (configManager.isPlaySounds()) {
+            playSoundToWorld(world, configManager.getNightSound(),
+                configManager.getNightSoundVolume(), configManager.getNightSoundPitch());
         }
 
         checkSleepStatus(world);
@@ -230,21 +313,39 @@ public class SleepManager {
      */
     private void skipNight(World world) {
         // Handle weather clearing (always immediate)
+        // clear-weather and clear-thunder are independent toggles so an admin
+        // can clear only one without the other.
         final boolean clearedWeather;
-        if (configManager.isClearWeather() && (world.hasStorm() || world.isThundering())) {
+        boolean clearedAnyWeather = false;
+
+        // --- Rain ---
+        if (configManager.isClearWeather() && world.hasStorm()) {
             if (configManager.isResetWeather()) {
                 world.setStorm(false);
             }
-            if (configManager.isResetThunder() && world.isThundering()) {
+            if (configManager.isResetWeatherCycle()) {
+                world.setWeatherDuration(Integer.MAX_VALUE);
+            }
+            clearedAnyWeather = true;
+        }
+
+        // --- Thunder ---
+        if (configManager.isClearThunder() && world.isThundering()) {
+            if (configManager.isResetThunder()) {
                 world.setThundering(false);
             }
             if (configManager.isResetWeatherCycle()) {
-                world.setWeatherDuration(Integer.MAX_VALUE);
                 world.setThunderDuration(Integer.MAX_VALUE);
             }
-            clearedWeather = true;
-        } else {
-            clearedWeather = false;
+            clearedAnyWeather = true;
+        }
+
+        clearedWeather = clearedAnyWeather;
+
+        // Play storm-sound when weather was actually cleared
+        if (clearedAnyWeather && configManager.isPlaySounds()) {
+            playSoundToWorld(world, configManager.getStormSound(),
+                configManager.getStormSoundVolume(), configManager.getStormSoundPitch());
         }
 
         // Capture player name before any cleanup (needed for deferred gradual/speed completion)
@@ -447,19 +548,26 @@ public class SleepManager {
     }
 
     /**
-     * Plays sounds when night is skipped.
+     * Plays the night-skip sound to everyone in the world.
      */
     private void playSkipSound(World world) {
-        try {
-            Sound sound = Sound.valueOf(configManager.getSkipSound());
-            float volume = configManager.getSkipSoundVolume();
-            float pitch = configManager.getSkipSoundPitch();
+        playSoundToWorld(world, configManager.getSkipSound(),
+            configManager.getSkipSoundVolume(), configManager.getSkipSoundPitch());
+    }
 
+    /**
+     * Plays the given sound to every player in the world. Logs a warning and
+     * does nothing if the sound name is invalid.
+     */
+    @SuppressWarnings("removal") // Enum lookup remains compatible with legacy Bukkit versions.
+    private void playSoundToWorld(World world, String soundName, float volume, float pitch) {
+        try {
+            Sound sound = Sound.valueOf(soundName);
             for (Player player : world.getPlayers()) {
                 player.playSound(player.getLocation(), sound, volume, pitch);
             }
         } catch (IllegalArgumentException e) {
-            plugin.getLogger().warning("Invalid sound: " + configManager.getSkipSound());
+            plugin.getLogger().warning("Invalid sound: " + soundName);
         }
     }
 
@@ -580,6 +688,11 @@ public class SleepManager {
             if (player.getGameMode() == GameMode.SPECTATOR && !configManager.isCountSpectators()) continue;
             if (player.getGameMode() == GameMode.CREATIVE && configManager.isIgnoreCreativeMode()) continue;
 
+            // Disabled gamemodes (must be excluded from the denominator too, not
+            // just from sleeping, or the required count can become unsatisfiable).
+            GameMode mode = player.getGameMode();
+            if (mode != null && configManager.isGameModeDisabled(mode.name())) continue;
+
             // Flying check
             if (player.isFlying() && !configManager.isCountFlying()) continue;
 
@@ -679,6 +792,8 @@ public class SleepManager {
 
         sleepingPlayers.clear();
         activeTransitions.clear();
+        gradualSkipStates.clear();
+        skippingPlayerNames.clear();
     }
 
     /**
@@ -686,6 +801,7 @@ public class SleepManager {
      * Prevents memory leaks from World references held in maps.
      */
     public void cleanupWorld(World world) {
+        restoreGamerule(world);
         cancelSkip(world);
         skippingPlayerNames.remove(world);
         sleepingPlayers.remove(world);
