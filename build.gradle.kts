@@ -13,6 +13,22 @@ val paperApiJvmVersion = providers.gradleProperty("paperApiJvmVersion")
 
 repositories {
     mavenCentral()
+    if (paperApiVersion.get() == "1.20.5-R0.1-SNAPSHOT") {
+        exclusiveContent {
+            forRepository {
+                maven("https://repo.papermc.io/repository/maven-public/") {
+                    name = "paperApiArchive"
+                    metadataSources {
+                        gradleMetadata()
+                        artifact()
+                    }
+                }
+            }
+            filter {
+                includeModule("io.papermc.paper", "paper-api")
+            }
+        }
+    }
     maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://oss.sonatype.org/content/groups/public/")
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
@@ -35,6 +51,24 @@ dependencies {
 
     testImplementation("org.mockito:mockito-core:5.23.0")
     testImplementation("org.mockito:mockito-junit-jupiter:5.23.0")
+
+    components {
+        withModule("io.papermc.paper:paper-api") {
+            allVariants {
+                withDependencies {
+                    filter {
+                        it.group == "net.kyori" &&
+                            it.name == "adventure-bom" &&
+                            it.versionConstraint.requiredVersion == "4.17.0-SNAPSHOT"
+                    }.forEach {
+                        it.version {
+                            require("4.17.0")
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 java {
