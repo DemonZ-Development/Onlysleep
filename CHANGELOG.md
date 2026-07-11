@@ -38,7 +38,7 @@ This beta makes advertised features work, hardens Folia thread safety, fixes gra
 
 ### Technical Improvements
 
-- Broad server-version support: gamerule handling uses the portable string-based API (Spigot/Paper/Folia 1.16+).
+- Broad server-version support: gamerule handling uses the portable string-based API across the supported Minecraft 1.20.4–26.2 range.
 - Extracted shared night-time bounds (`12542`–`23458`) into `SleepManager.NIGHT_START_TICK` / `NIGHT_END_TICK` + `isNight()`, reused by the listener and PlaceholderAPI expansion.
 - `getSleepingPlayers()` returns an unmodifiable view for safe PAPI iteration under concurrency.
 - Added coverage for gamerule reconciliation, dynamic world lifecycle, disabled-gamemode exclusion, independent weather clearing, and gradual skip state.
