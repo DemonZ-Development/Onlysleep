@@ -120,10 +120,6 @@ public final class Onlysleep extends JavaPlugin {
         }
     }
 
-    /**
-     * Registers world lifecycle listeners so newly loaded worlds receive the
-     * gamerule override and unloaded worlds have their state restored/removed.
-     */
     private void registerWorldLifecycleListener() {
         getServer().getPluginManager().registerEvents(new Listener() {
             @EventHandler

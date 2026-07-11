@@ -44,19 +44,8 @@ public class SleepManager {
     private final Map<World, String> skippingPlayerNames = new ConcurrentHashMap<>();
     private final Map<World, GradualSkipState> gradualSkipStates = new ConcurrentHashMap<>();
 
-    /**
-     * The original {@code playersSleepingPercentage} gamerule value for each
-     * world before this plugin overrode it. Restored on disable so removing
-     * the plugin returns the server to its prior state.
-     */
     private final Map<World, String> originalGameruleValues = new ConcurrentHashMap<>();
 
-    /**
-     * Per-world state for an in-flight gradual (or speed) skip. Holds the
-     * immutable inputs computed once at skip-start and a single-element array
-     * for the mutable step counter so the timer runnable can update it without
-     * a wrapper AtomicInteger.
-     */
     private record GradualSkipState(
         int totalSteps,
         int[] currentStep,
@@ -70,19 +59,9 @@ public class SleepManager {
         this.configManager = configManager;
     }
 
-    /**
-     * Sets the {@code playersSleepingPercentage} gamerule above 100 on every
-     * enabled world so vanilla can't race this plugin's own sleep math.
-     *
-     * <p>The original value is saved per-world and restored by {@link #restoreGamerules()}
-     * on disable. Safe to call on enable and after a config reload.</p>
-     */
     public void applyGamerules() {
         boolean manageGamerule = configManager.isManageGamerule();
 
-        // Reconcile worlds that were managed before the reload. If management
-        // was disabled, or an individual world is now disabled, restore that
-        // world's original value immediately instead of leaving it at 101.
         for (World world : new HashSet<>(originalGameruleValues.keySet())) {
             if (!manageGamerule || !configManager.isWorldEnabled(world.getName())) {
                 restoreGamerule(world);
@@ -98,10 +77,7 @@ public class SleepManager {
         }
     }
 
-    /**
-     * Applies the gamerule override to one newly loaded world when eligible.
-     */
-    @SuppressWarnings("removal") // String gamerule API keeps Minecraft 1.16 compatibility.
+    @SuppressWarnings("removal")
     public void applyGamerule(World world) {
         if (!configManager.isManageGamerule()
                 || !configManager.isWorldEnabled(world.getName())) {
@@ -111,28 +87,20 @@ public class SleepManager {
 
         String current = world.getGameRuleValue("playersSleepingPercentage");
         if (current == null) {
-            return; // The gamerule is unavailable on this Minecraft version.
+            return;
         }
 
-        // Only capture the first time we touch a world so reload doesn't
-        // overwrite the original with our own override value.
         originalGameruleValues.putIfAbsent(world, current);
-        // Any value >100 makes it impossible for vanilla to skip the night,
-        // handing full control to this plugin.
         world.setGameRuleValue("playersSleepingPercentage", "101");
     }
 
-    /**
-     * Restores the original {@code playersSleepingPercentage} values captured
-     * by {@link #applyGamerules()}. Called on disable.
-     */
     public void restoreGamerules() {
         for (World world : new HashSet<>(originalGameruleValues.keySet())) {
             restoreGamerule(world);
         }
     }
 
-    @SuppressWarnings("removal") // String gamerule API keeps Minecraft 1.16 compatibility.
+    @SuppressWarnings("removal")
     private void restoreGamerule(World world) {
         String original = originalGameruleValues.remove(world);
         if (original != null) {
@@ -140,9 +108,6 @@ public class SleepManager {
         }
     }
 
-    /**
-     * Called when a player enters a bed.
-     */
     public void onPlayerBedEnter(Player player) {
         World world = player.getWorld();
 
@@ -318,11 +283,6 @@ public class SleepManager {
 
             sleepingPlayers.remove(world);
             skipTasks.remove(world);
-            // Note: skippingPlayerNames is NOT cleared here. For instant mode
-            // this runnable runs synchronously before any consumer reads the
-            // snapshot, so clearing here would erase it before tests can assert.
-            // For gradual mode the snapshot stays valid through the loop and is
-            // cleared by cancelSkip() / cleanupWorld() when the world resets.
             removeBossBar(world);
         };
 
@@ -384,11 +344,6 @@ public class SleepManager {
             return null;
         }
 
-        // Time-freeze gradual skip: world time stays parked at startTime for the
-        // entire animation, then snaps to targetTime in a single setTime() call
-        // at the final tick. This is what fixes the "player gets up in the
-        // middle of the night" bug — vanilla's wake-up threshold (23458) is
-        // never crossed because world time never moves.
         final int totalSteps = (int) Math.ceil((double) totalDistance / speed);
         final int[] currentStep = {0};
 
@@ -400,11 +355,9 @@ public class SleepManager {
         taskHolder[0] = SchedulerAdapter.runTaskTimer(plugin, world, () -> {
             currentStep[0]++;
 
-            // Tick visual progression only — no world.setTime() yet.
             updateSleepStatus(world);
 
             if (currentStep[0] >= totalSteps) {
-                // Final snap: single setTime() for the entire gradual skip.
                 world.setTime(targetTime);
                 clearPhantoms(world);
                 gradualSkipStates.remove(world);
@@ -463,7 +416,7 @@ public class SleepManager {
         }
     }
 
-    @SuppressWarnings("removal") // Enum lookup remains compatible with legacy Bukkit versions.
+    @SuppressWarnings("removal")
     private void playSound(World world, String soundName, float volume, float pitch) {
         try {
             Sound sound = Sound.valueOf(soundName);
@@ -665,47 +618,32 @@ public class SleepManager {
         removeBossBar(world);
     }
 
-    /**
-     * Removes every Phantom entity in the given world. Called by the gradual
-     * skip completion path as cheap, defensive insurance against phantoms
-     * spawning during the time-freeze — if vanilla's phantom spawn check fires
-     * anyway, the player just slept through the night and shouldn't have to
-     * deal with the result.
-     */
     private void clearPhantoms(World world) {
         for (org.bukkit.entity.Phantom phantom : world.getEntitiesByClass(org.bukkit.entity.Phantom.class)) {
             phantom.remove();
         }
     }
 
-    // ========== Test hooks (package-private) ==========
-
-    /** Test hook: invoke the package-private skipNight. */
     void skipNightForTest(World world) {
         skipNight(world);
     }
 
-    /** Test hook: read the snapshot of the initiating player's name. */
     String getSkippingPlayerNameForTest(World world) {
         return skippingPlayerNames.get(world);
     }
 
-    /** Test hook: invoke the package-private showBossBarForWorld. */
     void showBossBarForWorldForTest(World world) {
         showBossBarForWorld(world);
     }
 
-    /** Test hook: invoke the package-private clearPhantoms. */
     void clearPhantomsForTest(World world) {
         clearPhantoms(world);
     }
 
-    /** Test hook: invoke the package-private scheduleGradualSkip. */
     ScheduledTask scheduleGradualSkipForTest(World world, long targetTime, int speed, Runnable onComplete) {
         return scheduleGradualSkip(world, targetTime, speed, onComplete);
     }
 
-    /** Test hook: read totalSteps from the gradual skip state for a world. Returns -1 if no state. */
     int getGradualSkipTotalStepsForTest(World world) {
         GradualSkipState state = gradualSkipStates.get(world);
         return state != null ? state.totalSteps() : -1;

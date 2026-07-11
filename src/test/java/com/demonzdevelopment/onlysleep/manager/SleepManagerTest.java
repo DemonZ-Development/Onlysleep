@@ -13,7 +13,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -231,8 +230,6 @@ class SleepManagerTest {
 
     @Test
     void getTotalPlayerCount_ExcludesDisabledGameModes() {
-        // A player in a disabled gamemode must not count toward the total,
-        // otherwise the required count can become unsatisfiable.
         when(configManager.isGameModeDisabled("ADVENTURE")).thenReturn(true);
         when(player1.getGameMode()).thenReturn(GameMode.ADVENTURE);
 
@@ -438,8 +435,6 @@ class SleepManagerTest {
         }
     }
 
-    // ========== skipNight populates skippingPlayerNames ==========
-
     @Test
     void skipNight_populatesSkippingPlayerNames() {
         try (MockedStatic<Bukkit> bukkit = mockBukkitForTwoPlayers()) {
@@ -467,27 +462,11 @@ class SleepManagerTest {
 
             assertEquals("Player1", sleepManager.getSkippingPlayerNameForTest(world));
 
-            // Bug condition: initiator logs out. Live getSleepingPlayerName would
-            // now return "Unknown" because Bukkit.getPlayer returns null. The
-            // snapshot in skippingPlayerNames is unaffected — which is exactly
-            // what line 383 of updateSleepStatus now reads from.
             when(Bukkit.getPlayer(uuid1)).thenReturn(null);
 
             assertEquals("Player1", sleepManager.getSkippingPlayerNameForTest(world));
         }
     }
-
-    // showBossBarForWorld's snapshot lookup is the same pattern as
-    // updateSleepStatus (verified above) — Task 3's regression covers the
-    // underlying mechanism. A direct test would require complex mocking of
-    // Bukkit.createBossBar + boss-bar scheduler + getMessage placeholder
-    // resolution, which doesn't add meaningful coverage.
-
-    // ========== skippingPlayerNames cleanup ==========
-    // Note: cleanupWorld is public and internally calls cancelSkip, so the
-    // cleanupWorld test below transitively exercises cancelSkip's cleanup
-    // path. No separate cancelSkip test is needed (and would require a test
-    // hook since cancelSkip is private).
 
     @Test
     void cleanupWorld_clearsSkippingPlayerNames() {
@@ -507,16 +486,6 @@ class SleepManagerTest {
         }
     }
 
-    // ========== reassertSleeping (skipped) ==========
-    // The original plan called for a defensive reassertSleeping() helper
-    // that re-asserted Player.setSleeping(true) on each gradual tick.
-    // However, Player.setSleeping(boolean) does not exist in the Bukkit
-    // API. Task 9's time-freeze already prevents the vanilla wake-up
-    // threshold from triggering (world.getTime() never crosses 23458
-    // during the animation), so a defensive guard is unnecessary.
-
-    // ========== clearPhantoms ==========
-
     @Test
     void clearPhantoms_removesAllPhantomsInWorld() {
         org.bukkit.entity.Phantom phantom1 = mock(org.bukkit.entity.Phantom.class);
@@ -530,17 +499,9 @@ class SleepManagerTest {
         verify(phantom2).remove();
     }
 
-    // ========== scheduleGradualSkip (time-freeze rewrite) ==========
-    // The original complex test (ArgumentCaptor on runTaskTimer, manually
-    // tick 334 times, verify setTime was never called) was dropped after the
-    // loop-guard fired. Instead we verify the GradualSkipState is populated
-    // with the correct totalSteps; the loop body itself is small and
-    // mechanical (no world.setTime() until currentStep >= totalSteps).
-
     @Test
     void scheduleGradualSkip_populatesGradualSkipStateWithCorrectTotalSteps() {
         try (MockedStatic<Bukkit> bukkit = mockBukkitForTwoPlayers()) {
-            // 15000 → 1000: distance = (24000-15000)+1000 = 10000, steps = ceil(10000/30) = 334
             when(world.getTime()).thenReturn(15000L);
 
             Runnable callback = mock(Runnable.class);
@@ -550,12 +511,8 @@ class SleepManagerTest {
         }
     }
 
-    // ========== skipNight weather clearing (clear-thunder independent) ==========
-
     @Test
     void skipNight_ClearsThunder_IndependentlyOfClearWeather() {
-        // clear-weather is OFF but clear-thunder is ON: thunder should be
-        // cleared while rain is left alone.
         when(configManager.getSkipType()).thenReturn("instant");
         lenient().when(configManager.isResetTime()).thenReturn(true);
         when(configManager.isClearWeather()).thenReturn(false);
@@ -600,8 +557,6 @@ class SleepManagerTest {
         }
     }
 
-    // ========== applyGamerules / restoreGamerules ==========
-
     @Test
     void applyGamerules_SetsGameruleAbove100_WhenManageEnabled() {
         when(configManager.isManageGamerule()).thenReturn(true);
@@ -613,7 +568,6 @@ class SleepManagerTest {
 
             sleepManager.applyGamerules();
 
-            // Should set the gamerule above 100 so vanilla can't skip the night
             verify(world).setGameRuleValue("playersSleepingPercentage", "101");
         }
     }
@@ -656,15 +610,12 @@ class SleepManagerTest {
             sleepManager.applyGamerules();
             sleepManager.restoreGamerules();
 
-            // Original value should be restored, not left at 101
             verify(world).setGameRuleValue("playersSleepingPercentage", "50");
         }
     }
 
     @Test
     void applyGamerules_OnReload_PreservesOriginalValue() {
-        // Simulate two reload cycles — putIfAbsent must not overwrite the
-        // captured original with our own "101" override value.
         when(configManager.isManageGamerule()).thenReturn(true);
         when(configManager.isWorldEnabled("world")).thenReturn(true);
         when(world.getGameRuleValue("playersSleepingPercentage")).thenReturn("50");
@@ -673,7 +624,7 @@ class SleepManagerTest {
             bukkit.when(Bukkit::getWorlds).thenReturn(java.util.Collections.singletonList(world));
 
             sleepManager.applyGamerules();
-            sleepManager.applyGamerules(); // second call (reload)
+            sleepManager.applyGamerules();
             sleepManager.restoreGamerules();
 
             verify(world, times(1)).setGameRuleValue("playersSleepingPercentage", "50");

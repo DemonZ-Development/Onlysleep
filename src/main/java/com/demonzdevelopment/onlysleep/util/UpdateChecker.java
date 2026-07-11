@@ -1,7 +1,6 @@
 package com.demonzdevelopment.onlysleep.util;
 
 import com.demonzdevelopment.onlysleep.Onlysleep;
-import org.bukkit.Bukkit;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
