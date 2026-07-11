@@ -28,7 +28,7 @@ No complicated setup. No wall of config. Drop the JAR in, restart, and players c
 
 ![Installation Steps](https://raw.githubusercontent.com/DemonZ-Development/Onlysleep/master/assets/modrinth/installation-steps.png)
 
-**Requirements:** Java 21+, Minecraft 1.16.5+. Works on its own. PlaceholderAPI is optional.
+**Requirements:** Minecraft 1.20.4–26.2 and Java 21+. Paper 26.1+ requires Java 25. Works on its own. PlaceholderAPI is optional.
 
 ---
 

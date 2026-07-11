@@ -12,7 +12,7 @@
 [![Build](https://github.com/DemonZ-Development/Onlysleep/actions/workflows/build.yml/badge.svg)](https://github.com/DemonZ-Development/Onlysleep/actions/workflows/build.yml)
 [![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
-**Supports:** Bukkit, Spigot, Paper, Purpur, Folia, and any Paper fork (1.16.5+, Java 21+)
+**Supports:** Bukkit, Spigot, Paper, Purpur, Folia, and compatible forks (Minecraft 1.20.4–26.2, Java 21+; Paper 26.1+ requires Java 25)
 
 </div>
 
@@ -45,7 +45,7 @@ One player sleeping is the default. If you want a different threshold, say half 
 4. Edit `plugins/Onlysleep/config.yml` to your liking.
 5. Apply changes with `/onlysleep reload`.
 
-**Requirements:** Java 21+, Minecraft 1.16.5+. No other plugins needed. PlaceholderAPI is optional.
+**Requirements:** Minecraft 1.20.4–26.2 and Java 21+. Paper 26.1+ requires Java 25. No other plugins needed. PlaceholderAPI is optional.
 
 ## Configuration
 

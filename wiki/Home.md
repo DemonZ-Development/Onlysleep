@@ -7,7 +7,7 @@
 **One player sleeps. Everyone wakes up.**
 
 **Supports:** Bukkit, Spigot, Paper, Purpur, Folia, and any Paper fork
-**Minecraft:** 1.16.5+ · **Java:** 21+
+**Minecraft:** 1.20.4–26.2 · **Java:** 21+ (Paper 26.1+ requires Java 25)
 
 </div>
 

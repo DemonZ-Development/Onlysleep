@@ -52,8 +52,8 @@ One player sleeping is the default. If you want a different threshold, say half 
 
 [size=4][color=#ffaa00]Requirements[/color][/size]
 [list]
-[*]Java 21+
-[*]Minecraft 1.16.5+
+[*]Java 21+ (Paper 26.1+ requires Java 25)
+[*]Minecraft 1.20.4–26.2
 [*]Works standalone — [b]no dependencies required[/b] (PlaceholderAPI is optional)
 [/list]
 

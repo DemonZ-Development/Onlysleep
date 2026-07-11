@@ -228,7 +228,7 @@ name: MyPlugin
 version: 1.0.0
 main: com.example.myplugin.MyPlugin
 softdepend: [Onlysleep]
-api-version: '1.16'
+api-version: '1.20'
 ```
 
 ### 2. Check for Onlysleep at runtime

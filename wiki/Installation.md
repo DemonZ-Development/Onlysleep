@@ -3,7 +3,7 @@
 ## Requirements
 
 - **Java 21+** for the plugin; Paper 26.1+ servers require Java 25
-- **Minecraft 1.16.5+** (Bukkit, Spigot, Paper, Folia, or any compatible server)
+- **Minecraft 1.20.4–26.2** (Bukkit, Spigot, Paper, Folia, or any compatible server)
 - **No other plugins required!** Onlysleep works standalone
 - **[Optional] PlaceholderAPI** for placeholder expansion support
 
@@ -80,7 +80,7 @@ To update Onlysleep:
 ## Troubleshooting
 
 **Problem:** Plugin doesn't load / "Plugin Onlysleep vX has failed to load"
-- Ensure you're running Minecraft 1.16.5 or newer
+- Ensure you're running Minecraft 1.20.4 through 26.2
 - Check that Java 21+ is installed (run `java -version` on your server)
 - Check the console for specific error messages
 

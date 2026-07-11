@@ -13,7 +13,7 @@ This beta makes advertised features work, hardens Folia thread safety, fixes gra
 
 ### Changed
 
-- The Paper API target is upgraded from 1.21.4 to 26.1.2 stable while retaining Java 21 plugin bytecode.
+- The release JAR now compiles against Paper 1.20.4 with Java 21 bytecode, while CI compiles and tests every available Paper API target through Paper 26.2 alpha.
 - Rain and thunder clearing can be configured independently.
 - Disabled gamemodes are excluded from both sleeping and eligible-player counts.
 

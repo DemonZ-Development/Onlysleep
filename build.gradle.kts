@@ -5,6 +5,12 @@ plugins {
 
 version = "1.3.0"
 
+val paperApiVersion = providers.gradleProperty("paperApiVersion")
+    .orElse("1.20.4-R0.1-SNAPSHOT")
+val paperApiJvmVersion = providers.gradleProperty("paperApiJvmVersion")
+    .map(String::toInt)
+    .orElse(21)
+
 repositories {
     mavenCentral()
     maven("https://repo.papermc.io/repository/maven-public/")
@@ -14,13 +20,13 @@ repositories {
 
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:26.1.2.build.74-stable")
+    compileOnly("io.papermc.paper:paper-api:${paperApiVersion.get()}")
 
     implementation("org.bstats:bstats-bukkit:3.1.0")
 
     compileOnly("me.clip:placeholderapi:2.11.6")
 
-    testImplementation("io.papermc.paper:paper-api:26.1.2.build.74-stable")
+    testImplementation("io.papermc.paper:paper-api:${paperApiVersion.get()}")
 
     testImplementation("me.clip:placeholderapi:2.11.6")
 
@@ -38,7 +44,7 @@ java {
 configurations.configureEach {
     attributes.attribute(
         org.gradle.api.attributes.java.TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE,
-        25
+        paperApiJvmVersion.get()
     )
 }
 

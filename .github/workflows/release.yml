@@ -40,12 +40,10 @@ jobs:
           version = '${{ steps.version.outputs.VERSION }}'
           with open('CHANGELOG.md', 'r', encoding='utf-8') as f:
               content = f.read()
-          # Match the block starting with ## [version] and stopping before the next ## [ block or end of file
           pattern = r'(## \[' + re.escape(version) + r'\].*?)(?=\n## \[|\Z)'
           match = re.search(pattern, content, re.DOTALL)
           if match:
               notes = match.group(1).strip()
-              # Remove trailing horizontal rule line if present
               notes = re.sub(r'\n---$', '', notes).strip()
               with open('RELEASE_NOTES.md', 'w', encoding='utf-8') as out:
                   out.write(notes)

@@ -50,7 +50,7 @@ A lightweight sleep plugin that does its job and gets out of the way. No complic
 4. Edit `plugins/Onlysleep/config.yml` if you want to tweak anything.
 5. Apply changes with `/onlysleep reload`.
 
-**Requirements:** Java 21+, Minecraft 1.16.5+. Works standalone. PlaceholderAPI is optional.
+**Requirements:** Minecraft 1.20.4–26.2 and Java 21+. Paper 26.1+ requires Java 25. Works standalone. PlaceholderAPI is optional.
 
 ## Configuration
 

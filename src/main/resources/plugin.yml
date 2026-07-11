@@ -1,7 +1,7 @@
 name: Onlysleep
 version: '${project.version}'
 main: com.demonzdevelopment.onlysleep.Onlysleep
-api-version: '1.16'
+api-version: '1.20'
 folia-supported: true
 author: Demonz Development
 description: One player sleep plugin - Skip the night with just one player sleeping
