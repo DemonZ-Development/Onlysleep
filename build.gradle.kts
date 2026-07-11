@@ -1,6 +1,6 @@
 plugins {
     id("java-library")
-    id("com.gradleup.shadow") version "8.3.5"
+    id("com.gradleup.shadow") version "9.5.0"
 }
 
 version = "1.3.0"
@@ -32,9 +32,6 @@ dependencies {
 }
 
 java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(25)
-    }
     withSourcesJar()
 }
 
