@@ -21,6 +21,7 @@ This beta makes advertised features work, hardens Folia thread safety, fixes gra
 
 ### Bug Fixes
 
+- **Paper 26.1 startup crash**: gamerule management now uses the typed `GameRule.PLAYERS_SLEEPING_PERCENTAGE` API instead of the removed legacy string lookup.
 - **Safe gamerule reloads**: turning off `manage-gamerule` or adding a world to `disabled-worlds` now restores the original gamerule immediately instead of leaving it at `101`.
 - **Dynamic world lifecycle**: worlds loaded after plugin startup receive the configured override, while unloading worlds are restored and removed from tracked state.
 - **Boss bar no longer shows "Unknown" when the initiating sleeper logs off mid-skip**:

@@ -11,6 +11,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
+import org.bukkit.GameRule;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.boss.BossBar;
@@ -36,6 +37,7 @@ public class SleepManager {
 
     private final Onlysleep plugin;
     private final ConfigManager configManager;
+    private final GameruleAccess gameruleAccess;
     private final Map<World, Set<UUID>> sleepingPlayers = new ConcurrentHashMap<>();
     private final Map<World, ScheduledTask> skipTasks = new ConcurrentHashMap<>();
     private final Map<World, BossBar> worldBossBars = new ConcurrentHashMap<>();
@@ -44,7 +46,7 @@ public class SleepManager {
     private final Map<World, String> skippingPlayerNames = new ConcurrentHashMap<>();
     private final Map<World, GradualSkipState> gradualSkipStates = new ConcurrentHashMap<>();
 
-    private final Map<World, String> originalGameruleValues = new ConcurrentHashMap<>();
+    private final Map<World, Integer> originalGameruleValues = new ConcurrentHashMap<>();
 
     private record GradualSkipState(
         int totalSteps,
@@ -55,8 +57,52 @@ public class SleepManager {
     ) {}
 
     public SleepManager(Onlysleep plugin, ConfigManager configManager) {
+        this(plugin, configManager, new BukkitGameruleAccess());
+    }
+
+    SleepManager(Onlysleep plugin, ConfigManager configManager, GameruleAccess gameruleAccess) {
         this.plugin = plugin;
         this.configManager = configManager;
+        this.gameruleAccess = gameruleAccess;
+    }
+
+    interface GameruleAccess {
+        Integer get(World world);
+
+        void set(World world, int value);
+    }
+
+    private static final class BukkitGameruleAccess implements GameruleAccess {
+        private GameRule<Integer> rule;
+
+        @Override
+        public Integer get(World world) {
+            return world.getGameRuleValue(rule());
+        }
+
+        @Override
+        public void set(World world, int value) {
+            world.setGameRule(rule(), value);
+        }
+
+        private GameRule<Integer> rule() {
+            if (rule == null) {
+                rule = resolve();
+            }
+            return rule;
+        }
+
+        @SuppressWarnings({"unchecked", "removal"})
+        private static GameRule<Integer> resolve() {
+            try {
+                Class<?> gameRules = Class.forName("org.bukkit.GameRules");
+                return (GameRule<Integer>) gameRules.getField("PLAYERS_SLEEPING_PERCENTAGE").get(null);
+            } catch (ClassNotFoundException e) {
+                return GameRule.PLAYERS_SLEEPING_PERCENTAGE;
+            } catch (ReflectiveOperationException e) {
+                throw new IllegalStateException("Unable to resolve players sleeping percentage gamerule", e);
+            }
+        }
     }
 
     public void applyGamerules() {
@@ -77,7 +123,6 @@ public class SleepManager {
         }
     }
 
-    @SuppressWarnings("removal")
     public void applyGamerule(World world) {
         if (!configManager.isManageGamerule()
                 || !configManager.isWorldEnabled(world.getName())) {
@@ -85,13 +130,13 @@ public class SleepManager {
             return;
         }
 
-        String current = world.getGameRuleValue("playersSleepingPercentage");
+        Integer current = gameruleAccess.get(world);
         if (current == null) {
             return;
         }
 
         originalGameruleValues.putIfAbsent(world, current);
-        world.setGameRuleValue("playersSleepingPercentage", "101");
+        gameruleAccess.set(world, 101);
     }
 
     public void restoreGamerules() {
@@ -100,11 +145,10 @@ public class SleepManager {
         }
     }
 
-    @SuppressWarnings("removal")
     private void restoreGamerule(World world) {
-        String original = originalGameruleValues.remove(world);
+        Integer original = originalGameruleValues.remove(world);
         if (original != null) {
-            world.setGameRuleValue("playersSleepingPercentage", original);
+            gameruleAccess.set(world, original);
         }
     }
 

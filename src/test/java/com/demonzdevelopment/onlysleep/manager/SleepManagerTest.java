@@ -13,6 +13,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -39,6 +40,9 @@ class SleepManagerTest {
 
     @Mock
     private World world;
+
+    @Mock
+    private SleepManager.GameruleAccess gameruleAccess;
 
     @Mock
     private Player player1;
@@ -94,7 +98,7 @@ class SleepManagerTest {
         lenient().when(configManager.isWorldEnabled(anyString())).thenReturn(true);
         lenient().when(configManager.getMessage(anyString(), any())).thenReturn("message");
 
-        sleepManager = new SleepManager(plugin, configManager);
+        sleepManager = new SleepManager(plugin, configManager, gameruleAccess);
     }
 
     @AfterEach
@@ -561,15 +565,40 @@ class SleepManagerTest {
     void applyGamerules_SetsGameruleAbove100_WhenManageEnabled() {
         when(configManager.isManageGamerule()).thenReturn(true);
         when(configManager.isWorldEnabled("world")).thenReturn(true);
-        when(world.getGameRuleValue("playersSleepingPercentage")).thenReturn("50");
+        when(gameruleAccess.get(world)).thenReturn(50);
 
         try (MockedStatic<Bukkit> bukkit = mockStatic(Bukkit.class)) {
             bukkit.when(Bukkit::getWorlds).thenReturn(java.util.Collections.singletonList(world));
 
             sleepManager.applyGamerules();
 
-            verify(world).setGameRuleValue("playersSleepingPercentage", "101");
+            verify(gameruleAccess).set(world, 101);
+            verify(world, never()).getGameRuleValue(anyString());
+            verify(world, never()).setGameRuleValue(anyString(), anyString());
         }
+    }
+
+    @Test
+    void applyGamerule_DoesNotUseLegacyStringApi() {
+        World modernWorld = mock(World.class, invocation -> {
+            if (invocation.getMethod().getName().equals("getName")) {
+                return "world";
+            }
+            if (invocation.getMethod().getName().equals("getGameRuleValue")) {
+                Object rule = invocation.getArgument(0);
+                if (rule instanceof String) {
+                    throw new IllegalArgumentException("Unknown gamerule: " + rule);
+                }
+            }
+            return Answers.RETURNS_DEFAULTS.answer(invocation);
+        });
+        when(configManager.isManageGamerule()).thenReturn(true);
+        when(configManager.isWorldEnabled("world")).thenReturn(true);
+        when(gameruleAccess.get(modernWorld)).thenReturn(50);
+
+        assertDoesNotThrow(() -> sleepManager.applyGamerule(modernWorld));
+
+        verify(gameruleAccess).set(modernWorld, 101);
     }
 
     @Test
@@ -580,7 +609,7 @@ class SleepManagerTest {
             bukkit.when(Bukkit::getWorlds).thenReturn(java.util.Collections.singletonList(world));
             sleepManager.applyGamerules();
 
-            verify(world, never()).setGameRuleValue(anyString(), anyString());
+            verify(gameruleAccess, never()).set(any(), anyInt());
         }
     }
 
@@ -594,7 +623,7 @@ class SleepManagerTest {
 
             sleepManager.applyGamerules();
 
-            verify(world, never()).setGameRuleValue(anyString(), anyString());
+            verify(gameruleAccess, never()).set(any(), anyInt());
         }
     }
 
@@ -602,7 +631,7 @@ class SleepManagerTest {
     void restoreGamerules_RestoresOriginalValue() {
         when(configManager.isManageGamerule()).thenReturn(true);
         when(configManager.isWorldEnabled("world")).thenReturn(true);
-        when(world.getGameRuleValue("playersSleepingPercentage")).thenReturn("50");
+        when(gameruleAccess.get(world)).thenReturn(50);
 
         try (MockedStatic<Bukkit> bukkit = mockStatic(Bukkit.class)) {
             bukkit.when(Bukkit::getWorlds).thenReturn(java.util.Collections.singletonList(world));
@@ -610,7 +639,7 @@ class SleepManagerTest {
             sleepManager.applyGamerules();
             sleepManager.restoreGamerules();
 
-            verify(world).setGameRuleValue("playersSleepingPercentage", "50");
+            verify(gameruleAccess).set(world, 50);
         }
     }
 
@@ -618,7 +647,7 @@ class SleepManagerTest {
     void applyGamerules_OnReload_PreservesOriginalValue() {
         when(configManager.isManageGamerule()).thenReturn(true);
         when(configManager.isWorldEnabled("world")).thenReturn(true);
-        when(world.getGameRuleValue("playersSleepingPercentage")).thenReturn("50");
+        when(gameruleAccess.get(world)).thenReturn(50);
 
         try (MockedStatic<Bukkit> bukkit = mockStatic(Bukkit.class)) {
             bukkit.when(Bukkit::getWorlds).thenReturn(java.util.Collections.singletonList(world));
@@ -627,7 +656,7 @@ class SleepManagerTest {
             sleepManager.applyGamerules();
             sleepManager.restoreGamerules();
 
-            verify(world, times(1)).setGameRuleValue("playersSleepingPercentage", "50");
+            verify(gameruleAccess, times(1)).set(world, 50);
         }
     }
 
@@ -636,7 +665,7 @@ class SleepManagerTest {
         AtomicBoolean manageGamerule = new AtomicBoolean(true);
         when(configManager.isManageGamerule()).thenAnswer(invocation -> manageGamerule.get());
         when(configManager.isWorldEnabled("world")).thenReturn(true);
-        when(world.getGameRuleValue("playersSleepingPercentage")).thenReturn("50");
+        when(gameruleAccess.get(world)).thenReturn(50);
 
         try (MockedStatic<Bukkit> bukkit = mockStatic(Bukkit.class)) {
             bukkit.when(Bukkit::getWorlds).thenReturn(java.util.Collections.singletonList(world));
@@ -645,8 +674,8 @@ class SleepManagerTest {
             manageGamerule.set(false);
             sleepManager.applyGamerules();
 
-            verify(world).setGameRuleValue("playersSleepingPercentage", "101");
-            verify(world).setGameRuleValue("playersSleepingPercentage", "50");
+            verify(gameruleAccess).set(world, 101);
+            verify(gameruleAccess).set(world, 50);
         }
     }
 
@@ -655,7 +684,7 @@ class SleepManagerTest {
         AtomicBoolean worldEnabled = new AtomicBoolean(true);
         when(configManager.isManageGamerule()).thenReturn(true);
         when(configManager.isWorldEnabled("world")).thenAnswer(invocation -> worldEnabled.get());
-        when(world.getGameRuleValue("playersSleepingPercentage")).thenReturn("50");
+        when(gameruleAccess.get(world)).thenReturn(50);
 
         try (MockedStatic<Bukkit> bukkit = mockStatic(Bukkit.class)) {
             bukkit.when(Bukkit::getWorlds).thenReturn(java.util.Collections.singletonList(world));
@@ -664,8 +693,8 @@ class SleepManagerTest {
             worldEnabled.set(false);
             sleepManager.applyGamerules();
 
-            verify(world).setGameRuleValue("playersSleepingPercentage", "101");
-            verify(world).setGameRuleValue("playersSleepingPercentage", "50");
+            verify(gameruleAccess).set(world, 101);
+            verify(gameruleAccess).set(world, 50);
         }
     }
 
@@ -673,25 +702,25 @@ class SleepManagerTest {
     void applyGamerule_AppliesOverrideToNewlyLoadedWorld() {
         when(configManager.isManageGamerule()).thenReturn(true);
         when(configManager.isWorldEnabled("world")).thenReturn(true);
-        when(world.getGameRuleValue("playersSleepingPercentage")).thenReturn("25");
+        when(gameruleAccess.get(world)).thenReturn(25);
 
         sleepManager.applyGamerule(world);
 
-        verify(world).setGameRuleValue("playersSleepingPercentage", "101");
+        verify(gameruleAccess).set(world, 101);
         sleepManager.restoreGamerules();
-        verify(world).setGameRuleValue("playersSleepingPercentage", "25");
+        verify(gameruleAccess).set(world, 25);
     }
 
     @Test
     void cleanupWorld_RestoresGameruleBeforeDroppingWorldState() {
         when(configManager.isManageGamerule()).thenReturn(true);
         when(configManager.isWorldEnabled("world")).thenReturn(true);
-        when(world.getGameRuleValue("playersSleepingPercentage")).thenReturn("75");
+        when(gameruleAccess.get(world)).thenReturn(75);
 
         sleepManager.applyGamerule(world);
         sleepManager.cleanupWorld(world);
 
-        verify(world).setGameRuleValue("playersSleepingPercentage", "75");
+        verify(gameruleAccess).set(world, 75);
     }
 
     @Test

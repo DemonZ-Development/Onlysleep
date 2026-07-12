@@ -19,6 +19,7 @@ This beta makes advertised features work, hardens Folia thread safety, fixes gra
 
 ### Bug Fixes
 
+- Paper 26.1 no longer crashes during startup because gamerule management uses the typed `GameRule.PLAYERS_SLEEPING_PERCENTAGE` API.
 - Reloading with gamerule management disabled, or with a newly disabled world, now restores the original gamerule immediately.
 - Worlds loaded after startup receive the configured override; unloading worlds are restored and removed from tracked state.
 - **Boss bar no longer shows "Unknown" when the initiating sleeper logs off mid-skip**
