@@ -4,9 +4,9 @@
 
 ---
 
-## [1.3.0] - 2026-07-11
+## [1.3.0] - 2026-07-12
 
-This beta makes advertised features work, hardens Folia thread safety, fixes gradual skipping, and closes reload and memory leaks.
+This release makes advertised features work, hardens Folia thread safety, fixes gradual skipping, and closes reload and memory leaks.
 
 ### Added
 
@@ -39,7 +39,7 @@ This beta makes advertised features work, hardens Folia thread safety, fixes gra
 
 ### Technical Improvements
 
-- Broad server-version support: gamerule handling uses the portable string-based API across the supported Minecraft 1.20.4–26.2 range.
+- Broad server-version support: gamerule handling uses a version-aware typed API across the supported Minecraft 1.20.4–26.2 range.
 - Extracted shared night-time bounds (`12542`–`23458`) into `SleepManager.NIGHT_START_TICK` / `NIGHT_END_TICK` + `isNight()`, reused by the listener and PlaceholderAPI expansion.
 - `getSleepingPlayers()` returns an unmodifiable view for safe PAPI iteration under concurrency.
 - Added coverage for gamerule reconciliation, dynamic world lifecycle, disabled-gamemode exclusion, independent weather clearing, and gradual skip state.

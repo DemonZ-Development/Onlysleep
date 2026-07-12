@@ -2,9 +2,9 @@
 
 ---
 
-## [1.3.0] - 2026-07-11
+## [1.3.0] - 2026-07-12
 
-This beta makes advertised features work, hardens Folia thread safety, fixes gradual skipping, and closes reload and memory leaks.
+This release makes advertised features work, hardens Folia thread safety, fixes gradual skipping, and closes reload and memory leaks.
 
 ### Added
 
