@@ -39,7 +39,7 @@ class NightMathTest {
     @Test
     void distanceTo_WrapsAroundMidnight() {
         assertEquals(11000L, NightMath.distanceTo(13000, 0));
-        assertEquals(11000L, NightMath.distanceTo(13000, 1000));
+        assertEquals(12000L, NightMath.distanceTo(13000, 1000));
         assertEquals(500L, NightMath.distanceTo(13000, 13500));
     }
 
@@ -55,7 +55,7 @@ class NightMathTest {
         String bar = NightMath.progressBar(5, 10, "X", 20);
         assertTrue(bar.startsWith("&a"));
         assertTrue(bar.contains("&7"));
-        assertEquals(22, bar.length());
+        assertEquals(24, bar.length());
     }
 
     @Test
