@@ -1,4 +1,4 @@
-# 🔌 Developer API
+# Developer API
 
 Onlysleep provides a public API for other plugins to integrate with. This allows you to check sleep status, query player counts, and hook into sleep events.
 

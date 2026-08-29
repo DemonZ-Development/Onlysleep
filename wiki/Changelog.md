@@ -1,4 +1,4 @@
-# 📋 Changelog
+# Changelog
 
 ---
 
@@ -39,13 +39,13 @@ This release makes advertised features work, hardens Folia thread safety, fixes 
 
 ## [1.0.0] - 2025-06-01
 
-### 🚀 Major Changes
+### Major Changes
 - **Complete rewrite** with modular package structure
 - **Folia support** — Full compatibility with Folia's regionized scheduler
 - **bStats integration** — Anonymous usage statistics (ID: 31415)
 - **Platform detection** — Auto-detects Bukkit, Spigot, Paper, Folia
 
-### ✨ New Features
+### New Features
 - **One-Player Sleep** — Default mode, or configure any percentage
 - **Custom skip types** — Support for `instant`, `speed`, and `gradual` night skips
 - **Per-World Sleep** — Per-world or global sleep counting
@@ -62,7 +62,7 @@ This release makes advertised features work, hardens Folia thread safety, fixes 
 - **Progress bar customization** — Configurable symbols and length
 - **Smart Player Filtering** — Ignores AFK, spectators, exempt players, and more
 
-### 🛠️ Technical Improvements
+### Technical Improvements
 - **SchedulerAdapter** — Folia-compatible task scheduling with fallback
 - **Multi-version compatible** — Works on Minecraft 1.16.5+
 - **Dedicated config package** — ConfigManager in `config` package
@@ -73,7 +73,7 @@ This release makes advertised features work, hardens Folia thread safety, fixes 
 - **bStats shading** — Proper bStats relocation to avoid conflicts
 - **Resource filtering** — Dynamic version in plugin.yml
 
-### 📝 Documentation
+### Documentation
 - Comprehensive README.md with banner image
 - Modrinth description (MODRINTH.md)
 - Spigot BBCode listing (SPIGOT.md)

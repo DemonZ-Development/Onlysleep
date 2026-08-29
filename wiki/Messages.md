@@ -1,4 +1,4 @@
-# 💬 Messages
+# Messages
 
 Onlysleep's messages are fully customizable in `plugins/Onlysleep/messages.yml`. You can change every message the plugin sends to players.
 
@@ -75,7 +75,7 @@ sleep:
 Sent to all players in the world when someone enters a bed.
 
 ```yaml
-  enough-sleeping: "&a✅ Good morning! Night skipped by &b%player%"
+  enough-sleeping: "&a Good morning! Night skipped by &b%player%"
 ```
 Broadcast to all players when the night is successfully skipped.
 
@@ -113,7 +113,7 @@ Sent to players trying to sleep in a disabled world.
 
 ```yaml
 weather:
-  clearing: "&a☀ The storm has been cleared by &b%player%"
+  clearing: "&a The storm has been cleared by &b%player%"
 ```
 Broadcast when a storm is cleared by sleeping.
 
@@ -126,7 +126,7 @@ Sent to a player trying to sleep during a storm when weather is already clear.
 
 ```yaml
 boss-bar:
-  title: "&b🌙 Night is being skipped by &f%player%"
+  title: "&b Night is being skipped by &f%player%"
 ```
 The boss bar title shown to all players during a pending night skip.
 
@@ -164,7 +164,7 @@ Messages for `/onlysleep info`.
 
 ```yaml
 update:
-  available: "&e✨ A new version is available: &b%new% &e(Current: &7%current%&e) &f- &b/modrinth download"
+  available: "&e A new version is available: &b%new% &e(Current: &7%current%&e) &f- &b/modrinth download"
   current: "&aYou are running the latest version."
   check-fail: "&cFailed to check for updates."
 ```
@@ -193,7 +193,7 @@ Messages for `/onlysleep help`. The `%cmd%` placeholder is replaced with the com
 prefix: "&8[&bSleep&8] "
 sleep:
   start-sleep: "&b%player% &7is sleeping... &8(&7%count%&8/&7%required%&8)"
-  enough-sleeping: "&a☀ Good morning!"
+  enough-sleeping: "&a Good morning!"
 ```
 
 ### Colorful Theme
@@ -202,7 +202,7 @@ sleep:
 prefix: "&dᴏɴʟʏsʟᴇᴇᴘ &7» "
 sleep:
   start-sleep: "&d%player% &5is sleeping... &7%bar%"
-  enough-sleeping: "&d✦ &5Good Morning! &d✦ &7Skipped by &5%player%"
+  enough-sleeping: "&d &5Good Morning! &d &7Skipped by &5%player%"
   progress-bar: "&5Sleeping... &d%bar%"
 ```
 

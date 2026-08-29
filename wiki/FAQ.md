@@ -1,4 +1,4 @@
-# ❓ FAQ & Troubleshooting
+# FAQ & Troubleshooting
 
 ## Frequently Asked Questions
 

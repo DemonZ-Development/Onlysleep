@@ -144,7 +144,7 @@ This is useful for:
 Players with this permission receive a direct message when Onlysleep detects a new version is available on startup:
 
 ```
-✨ A new version is available: 1.1.0 (Current: 1.0.0) - /modrinth download
+ A new version is available: 1.1.0 (Current: 1.0.0) - /modrinth download
 ```
 
 ---

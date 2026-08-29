@@ -1,4 +1,4 @@
-# 📊 PlaceholderAPI Placeholders
+# PlaceholderAPI Placeholders
 
 Onlysleep provides **19+ placeholders** when [PlaceholderAPI](https://placeholderapi.com/) is installed. Placeholders are automatically registered when Onlysleep detects PlaceholderAPI on your server.
 

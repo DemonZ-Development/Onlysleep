@@ -1,33 +1,33 @@
-# 🌙 Onlysleep Wiki
+# Onlysleep Wiki
 
-## 📖 Getting Started
+## Getting Started
 
 - [Home](Home)
 - [Installation](Installation)
 - [Building from Source](Building)
 
-## ⚙️ Configuration
+## Configuration
 
 - [Configuration Reference](Configuration)
 - [Messages Customization](Messages)
 
-## 🎮 Usage
+## Usage
 
 - [Commands & Permissions](Commands-and-Permissions)
 - [PlaceholderAPI Placeholders](Placeholders)
 
-## 🔌 Development
+## Development
 
 - [Developer API](Developer-API)
 
-## ❓ Help
+## Help
 
 - [FAQ & Troubleshooting](FAQ)
 - [Changelog](Changelog)
 
 ---
 
-## 🔗 External Links
+## External Links
 
 - [Modrinth](https://modrinth.com/plugin/onlysleep)
 - [Hangar](https://hangar.papermc.io/DemonzDevelopment/Onlysleep)
