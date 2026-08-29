@@ -16,8 +16,6 @@ public final class UpdateChecker {
     private static final Pattern VERSION_PATTERN = Pattern.compile("(\\d+)\\.(\\d+)\\.(\\d+)");
 
     private final Onlysleep plugin;
-    private String latestVersion;
-    private boolean updateAvailable = false;
 
     public UpdateChecker(Onlysleep plugin) {
         this.plugin = plugin;
@@ -53,15 +51,13 @@ public final class UpdateChecker {
                         startIdx += versionField.length();
                         int endIdx = json.indexOf("\"", startIdx);
                         if (endIdx != -1) {
-                            this.latestVersion = json.substring(startIdx, endIdx);
-                            this.updateAvailable = compareVersions(
-                                plugin.getDescription().getVersion(),
-                                this.latestVersion
-                            ) < 0;
+                            String latestVersion = json.substring(startIdx, endIdx);
+                            boolean updateAvailable =
+                                compareVersions(plugin.getDescription().getVersion(), latestVersion) < 0;
                             return new UpdateResult(
-                                this.updateAvailable,
-                                this.latestVersion,
-                                this.updateAvailable ? "Update available: " + this.latestVersion : "Up to date"
+                                updateAvailable,
+                                latestVersion,
+                                updateAvailable ? "Update available: " + latestVersion : "Up to date"
                             );
                         }
                     }

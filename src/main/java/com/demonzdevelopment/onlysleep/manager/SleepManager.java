@@ -159,6 +159,22 @@ public class SleepManager {
 
         sleepingPlayers.computeIfAbsent(world, k -> ConcurrentHashMap.newKeySet()).add(player.getUniqueId());
 
+
+        try {
+            int cur = getSleepingCount(world);
+            int req = getRequiredSleepingCount(world);
+            com.demonzdevelopment.onlysleep.api.events.SleepStartEvent startEvent = new com.demonzdevelopment.onlysleep.api.events.SleepStartEvent(player, cur, req);
+            Bukkit.getPluginManager().callEvent(startEvent);
+            if (startEvent.isCancelled()) {
+                Set<UUID> set = sleepingPlayers.get(world);
+                if (set != null) {
+                    set.remove(player.getUniqueId());
+                    if (set.isEmpty()) sleepingPlayers.remove(world);
+                }
+                return;
+            }
+        } catch (Exception ignored) {}
+
         Map<String, String> placeholders = new HashMap<>();
         placeholders.put("player", player.getDisplayName());
         placeholders.put("count", String.valueOf(getSleepingCount(world)));
@@ -188,6 +204,25 @@ public class SleepManager {
         }
 
         if (activeTransitions.contains(world)) {
+
+            if (skipTasks.containsKey(world)) {
+                int required = getRequiredSleepingCount(world);
+                int current = getSleepingCount(world);
+                if (current < required) {
+                    Map<String, String> placeholders = new HashMap<>();
+                    placeholders.put("player", player.getDisplayName());
+                    String message = configManager.getMessage("sleep.cancelled", placeholders);
+                    for (Player p : world.getPlayers()) {
+                        p.sendMessage(message);
+                    }
+                    try {
+                        com.demonzdevelopment.onlysleep.api.events.SleepCancelEvent cancelEvent = new com.demonzdevelopment.onlysleep.api.events.SleepCancelEvent(player, com.demonzdevelopment.onlysleep.api.events.SleepCancelEvent.Cause.BED_LEAVE, current, required);
+                        Bukkit.getPluginManager().callEvent(cancelEvent);
+                    } catch (Exception ignored) {}
+                    cancelSkip(world);
+                    gradualSkipStates.remove(world);
+                }
+            }
             return;
         }
 
@@ -202,6 +237,10 @@ public class SleepManager {
                 for (Player p : world.getPlayers()) {
                     p.sendMessage(message);
                 }
+                try {
+                    com.demonzdevelopment.onlysleep.api.events.SleepCancelEvent cancelEvent = new com.demonzdevelopment.onlysleep.api.events.SleepCancelEvent(player, com.demonzdevelopment.onlysleep.api.events.SleepCancelEvent.Cause.BED_LEAVE, current, required);
+                    Bukkit.getPluginManager().callEvent(cancelEvent);
+                } catch (Exception ignored) {}
                 cancelSkip(world);
             }
         }
@@ -218,6 +257,18 @@ public class SleepManager {
         }
 
         if (activeTransitions.contains(world)) {
+            if (skipTasks.containsKey(world)) {
+                int required = getRequiredSleepingCount(world);
+                int current = getSleepingCount(world);
+                if (current < required) {
+                    try {
+                        com.demonzdevelopment.onlysleep.api.events.SleepCancelEvent cancelEvent = new com.demonzdevelopment.onlysleep.api.events.SleepCancelEvent(player, com.demonzdevelopment.onlysleep.api.events.SleepCancelEvent.Cause.QUIT, current, required);
+                        Bukkit.getPluginManager().callEvent(cancelEvent);
+                    } catch (Exception ignored) {}
+                    cancelSkip(world);
+                    gradualSkipStates.remove(world);
+                }
+            }
             return;
         }
 
@@ -225,6 +276,10 @@ public class SleepManager {
             int required = getRequiredSleepingCount(world);
             int current = getSleepingCount(world);
             if (current < required) {
+                try {
+                    com.demonzdevelopment.onlysleep.api.events.SleepCancelEvent cancelEvent = new com.demonzdevelopment.onlysleep.api.events.SleepCancelEvent(player, com.demonzdevelopment.onlysleep.api.events.SleepCancelEvent.Cause.QUIT, current, required);
+                    Bukkit.getPluginManager().callEvent(cancelEvent);
+                } catch (Exception ignored) {}
                 cancelSkip(world);
             }
         } else {
@@ -278,14 +333,29 @@ public class SleepManager {
     }
 
     private void skipNight(World world) {
+
+        try {
+            Player initiator = null;
+            Set<UUID> sleeping = sleepingPlayers.get(world);
+            if (sleeping != null && !sleeping.isEmpty()) {
+                initiator = Bukkit.getPlayer(sleeping.iterator().next());
+            }
+            com.demonzdevelopment.onlysleep.api.events.NightSkipEvent skipEvent = new com.demonzdevelopment.onlysleep.api.events.NightSkipEvent(world, initiator, getSleepingCount(world), getRequiredSleepingCount(world), getTotalPlayerCount(world));
+            Bukkit.getPluginManager().callEvent(skipEvent);
+            if (skipEvent.isCancelled()) {
+                cancelSkip(world);
+                return;
+            }
+        } catch (Exception ignored) {}
+
         boolean clearedRain = false;
         if (configManager.isClearWeather() && world.hasStorm()) {
             if (configManager.isResetWeather()) {
                 world.setStorm(false);
                 clearedRain = true;
-            }
-            if (configManager.isResetWeatherCycle()) {
-                world.setWeatherDuration(Integer.MAX_VALUE);
+                if (configManager.isResetWeatherCycle()) {
+                    world.setWeatherDuration(Integer.MAX_VALUE);
+                }
             }
         }
 
@@ -294,9 +364,9 @@ public class SleepManager {
             if (configManager.isResetThunder()) {
                 world.setThundering(false);
                 clearedThunder = true;
-            }
-            if (configManager.isResetWeatherCycle()) {
-                world.setThunderDuration(Integer.MAX_VALUE);
+                if (configManager.isResetWeatherCycle()) {
+                    world.setThunderDuration(Integer.MAX_VALUE);
+                }
             }
         }
 
@@ -397,6 +467,13 @@ public class SleepManager {
         final ScheduledTask[] taskHolder = new ScheduledTask[1];
 
         taskHolder[0] = SchedulerAdapter.runTaskTimer(plugin, world, () -> {
+
+            if (getSleepingCount(world) < getRequiredSleepingCount(world)) {
+                gradualSkipStates.remove(world);
+                cancelSkip(world);
+                if (taskHolder[0] != null) taskHolder[0].cancel();
+                return;
+            }
             currentStep[0]++;
 
             updateSleepStatus(world);
@@ -666,6 +743,11 @@ public class SleepManager {
         for (org.bukkit.entity.Phantom phantom : world.getEntitiesByClass(org.bukkit.entity.Phantom.class)) {
             phantom.remove();
         }
+    }
+
+    public void forceSkipNight(World world) {
+        if (world == null) throw new IllegalArgumentException("world cannot be null");
+        skipNight(world);
     }
 
     void skipNightForTest(World world) {

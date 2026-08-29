@@ -106,7 +106,7 @@ public class ConfigManager {
 
     private void loadSettings() {
 
-        this.sleepPercentage = config.getInt("sleep-percentage", 50);
+        this.sleepPercentage = config.getInt("sleep-percentage", 0);
         this.skipDelayTicks = config.getInt("skip-delay-ticks", 60);
         this.morningTime = config.getInt("morning-time", 1000);
         this.resetTime = config.getBoolean("reset-time", true);
@@ -294,6 +294,61 @@ public class ConfigManager {
     public boolean isGameModeDisabled(String gameMode) {
         return disabledGameModes.contains(gameMode.toUpperCase());
     }
+
+    public void setValue(String path, Object value) {
+        File configFile = new File(plugin.getDataFolder(), "config.yml");
+
+        plugin.getConfig().set(path, value);
+        try {
+            plugin.saveConfig();
+        } catch (Exception e) {
+
+            try {
+                config.set(path, value);
+                config.save(configFile);
+            } catch (Exception ex) {
+                plugin.getLogger().warning("Failed to save config value " + path + ": " + ex.getMessage());
+            }
+        }
+        plugin.reloadConfig();
+        this.config = plugin.getConfig();
+        loadSettings();
+    }
+
+    public String getValueAsString(String path) {
+        if (config == null || !config.contains(path)) return null;
+        Object val = config.get(path);
+        if (val instanceof List) {
+            List<?> list = (List<?>) val;
+            if (list.isEmpty()) return "[]";
+            return String.join(", ", list.stream().map(Object::toString).collect(java.util.stream.Collectors.toList()));
+        }
+        return val == null ? "null" : val.toString();
+    }
+
+    public boolean setSleepPercentage(int value) {
+        if (value < 0 || value > 100) return false;
+        setValue("sleep-percentage", value);
+        return true;
+    }
+
+    public boolean setSkipType(String type) {
+        String lower = type.toLowerCase();
+        if (!lower.equals("instant") && !lower.equals("gradual") && !lower.equals("speed")) return false;
+        setValue("skip-type", lower);
+        return true;
+    }
+
+    public void setPerWorldSleep(boolean value) { setValue("per-world-sleep", value); }
+    public void setSkipDelayTicks(int value) { setValue("skip-delay-ticks", value); }
+    public void setMorningTime(int value) { setValue("morning-time", value); }
+    public void setResetTime(boolean value) { setValue("reset-time", value); }
+    public void setGradualSkipSpeedTicks(int value) { setValue("gradual-skip-speed-ticks", value); }
+    public void setClearWeather(boolean value) { setValue("clear-weather", value); }
+    public void setClearThunder(boolean value) { setValue("clear-thunder", value); }
+    public void setResetWeather(boolean value) { setValue("reset-weather", value); }
+    public void setResetThunder(boolean value) { setValue("reset-thunder", value); }
+    public void setManageGamerule(boolean value) { setValue("manage-gamerule", value); }
 
     public FileConfiguration getConfig() { return config; }
     public FileConfiguration getMessages() { return messages; }

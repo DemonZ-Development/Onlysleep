@@ -3,13 +3,13 @@ plugins {
     id("com.gradleup.shadow") version "9.5.0"
 }
 
-version = "1.3.0"
+version = "1.3.1"
 
 val paperApiVersion = providers.gradleProperty("paperApiVersion")
-    .orElse("1.20.4-R0.1-SNAPSHOT")
+    .orElse("26.2-R0.1-SNAPSHOT")
 val paperApiJvmVersion = providers.gradleProperty("paperApiJvmVersion")
     .map(String::toInt)
-    .orElse(21)
+    .orElse(25)
 
 repositories {
     mavenCentral()
@@ -85,12 +85,12 @@ configurations.configureEach {
 tasks {
     compileJava {
         options.encoding = "UTF-8"
-        options.release = 21
+        options.release = 25
     }
 
     compileTestJava {
         options.encoding = "UTF-8"
-        options.release = 21
+        options.release = 25
     }
 
     processResources {

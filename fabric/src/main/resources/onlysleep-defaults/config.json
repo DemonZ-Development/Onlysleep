@@ -1,0 +1,59 @@
+{
+  "sleep-percentage": 0,
+  "skip-delay-ticks": 60,
+  "skip-type": "instant",
+  "gradual-skip-speed-ticks": 30,
+  "morning-time": 1000,
+  "reset-time": true,
+  "per-world-sleep": true,
+  "require-all-players-online": false,
+
+  "clear-weather": true,
+  "reset-weather": true,
+  "clear-thunder": true,
+  "reset-thunder": true,
+  "reset-weather-cycle": true,
+
+  "count-afk-as-sleeping": false,
+  "exclude-afk-from-total": true,
+  "count-spectators": false,
+  "count-flying": true,
+  "ignore-creative-mode": false,
+
+  "afk-detection": {
+    "time-seconds": 300
+  },
+
+  "ui": {
+    "action-bar": { "enabled": true },
+    "boss-bar": { "enabled": true, "color": "BLUE", "style": "SOLID" },
+    "progress-bar": { "enabled": true, "symbol": "\u25a0", "length": 20 },
+    "title": {
+      "enabled": false,
+      "title": "&bGood Morning!",
+      "subtitle": "&fNight skipped by &b%player%",
+      "fade-in": 10,
+      "stay": 70,
+      "fade-out": 20
+    }
+  },
+
+  "sounds": {
+    "enabled": true,
+    "skip-sound": "minecraft:entity.player.levelup",
+    "skip-sound-volume": 1.0,
+    "skip-sound-pitch": 1.0,
+    "night-sound": "minecraft:block.note_block.pling",
+    "night-sound-volume": 0.5,
+    "night-sound-pitch": 1.0,
+    "storm-sound": "minecraft:entity.lightning_bolt.thunder",
+    "storm-sound-volume": 1.0,
+    "storm-sound-pitch": 1.0
+  },
+
+  "manage-gamerule": true,
+  "check-for-updates": true,
+
+  "disabled-worlds": [],
+  "disabled-gamemodes": []
+}

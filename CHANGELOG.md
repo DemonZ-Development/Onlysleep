@@ -4,6 +4,22 @@
 
 ---
 
+## [1.3.1] - 2026-08-26
+
+Maintenance patch: scheduler leaks and weather edge cases.
+
+### Bug Fixes
+
+- **Scheduler task leak on `/onlysleep reload`**: re-initialising `AfkTracker` cancelled its old event listeners but not its old cleanup timer, so every reload orphaned another repeating task that ran forever. The stale task is now cancelled before a new one is scheduled (same fix applied to `OfflinePlayerTracker`'s refresh timer).
+- **Permanent rain with `reset-weather: false` + `reset-weather-cycle: true`**: `setWeatherDuration(Integer.MAX_VALUE)` / `setThunderDuration(Integer.MAX_VALUE)` were applied even when the ongoing storm was intentionally left alone, pinning active rain or thunder indefinitely. The duration is now only pinned after that weather type was actually cleared.
+- **Cross-thread state in `UpdateChecker`**: check results were written to instance fields from the async thread but never read back; they are now locals, removing the shared mutable state.
+
+### Technical Improvements
+
+- Removed dead timeout bookkeeping from the AFK cleanup task (the timeout is computed on read in `AfkTracker.isAfk`).
+
+---
+
 ## [1.3.0] - 2026-07-12
 
 This release makes advertised features work, hardens Folia thread safety, fixes gradual skipping, and closes reload and memory leaks.

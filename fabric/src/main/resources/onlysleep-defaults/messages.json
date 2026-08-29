@@ -1,0 +1,66 @@
+{
+  "prefix": "&8[&bOnlysleep&8] &r",
+
+  "sleep": {
+    "start-sleep": "&a%player% &eis sleeping... &7(&b%count%&7/&b%required%&7)",
+    "enough-sleeping": "&aGood morning! Night skipped by &b%player%",
+    "already-day": "&cYou can only sleep during the night or a thunderstorm.",
+    "not-required": "&eNo one needs to sleep right now.",
+    "cancelled": "&c%player% &ehas stopped sleeping.",
+    "progress-bar": "&bSleeping... &7%bar% &7(&b%count%&7/&b%required%&7)",
+    "world-disabled": "&cSleep skipping is disabled in this world.",
+    "already-skipping": "&eThe night is already being skipped!"
+  },
+
+  "weather": {
+    "clearing": "&aThe storm has been cleared by &b%player%"
+  },
+
+  "boss-bar": {
+    "title": "&bNight is being skipped by &f%player%"
+  },
+
+  "command": {
+    "no-permission": "&cYou don't have permission to use this command.",
+    "reload-success": "&aConfiguration reloaded successfully!",
+    "reload-fail": "&cFailed to reload configuration. Check console for errors.",
+    "info": {
+      "header": "&8=== &bOnlysleep v%version% (Fabric) &8===",
+      "version": "&7Version: &b%version%",
+      "author": "&7Author: &b%author%",
+      "status-enabled": "&7Status: &aEnabled",
+      "sleep-pct": "&7Sleep Required: &b%percent%%",
+      "platform": "&7Platform: &bFabric %mcversion%",
+      "links-header": "&8--- &bLinks &8---",
+      "link-modrinth": "&8» &7Modrinth: &bhttps://modrinth.com/plugin/onlysleep",
+      "link-github": "&8» &7GitHub: &bhttps://github.com/DemonZ-Development/Onlysleep",
+      "link-website": "&8» &7Website: &bhttps://demonzdevelopment.online",
+      "link-discord": "&8» &7Discord: &bhttps://discord.gg/qkvkEaPryF",
+      "footer": "&8============================"
+    }
+  },
+
+  "update": {
+    "checking": "&eChecking for updates...",
+    "available": "&eA new version is available: &b%new% &e(Current: &7%current%&e)",
+    "available-links": "&8» &7Download: &bhttps://modrinth.com/mod/onlysleep",
+    "current": "&aYou are running the latest version.",
+    "check-fail": "&cFailed to check for updates."
+  },
+
+  "help": {
+    "header": "&8=== &bOnlysleep Commands &8===",
+    "reload": "&7/%cmd% reload &8- &bReload configuration",
+    "info": "&7/%cmd% info &8- &bShow mod information",
+    "status": "&7/%cmd% status &8- &bShow mod status",
+    "update": "&7/%cmd% update &8- &bCheck for updates",
+    "set": "&7/%cmd% set <option> <value> &8- &bChange config in-game",
+    "get": "&7/%cmd% get <option> &8- &bView config value",
+    "toggle": "&7/%cmd% toggle <option> &8- &bToggle boolean option",
+    "world": "&7/%cmd% world <enable|disable|list> [world] &8- &bManage disabled worlds",
+    "gamemode": "&7/%cmd% gamemode <enable|disable|list> [type] &8- &bManage disabled gamemodes",
+    "dump": "&7/%cmd% dump [paste] &8- &bCreate debug dump",
+    "help": "&7/%cmd% help &8- &bShow this help",
+    "footer": "&8========================"
+  }
+}

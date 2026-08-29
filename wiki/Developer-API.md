@@ -42,7 +42,33 @@ softdepend: [Onlysleep]
 
 ## API Reference
 
-### Getting the Plugin Instance
+### New Facade: OnlysleepAPI (v1.3.1+ - recommended)
+
+```java
+import com.demonzdevelopment.onlysleep.api.OnlysleepAPI;
+
+// Static facade - no null checks if you check isAvailable() first
+if (OnlysleepAPI.isAvailable()) {
+    int required = OnlysleepAPI.getRequiredSleepingCount(world);
+    int sleeping = OnlysleepAPI.getSleepingCount(world);
+    int total = OnlysleepAPI.getTotalPlayerCount(world);
+    boolean skipping = OnlysleepAPI.isSkipScheduled(world);
+
+    // Change config at runtime (persists to config.yml)
+    OnlysleepAPI.setSleepPercentage(0);      // 0 = one player (default)
+    OnlysleepAPI.setSleepPercentage(50);     // 50% -> 3/5 with 5 online
+    OnlysleepAPI.setSkipType("gradual");     // instant | gradual | speed
+    OnlysleepAPI.setPerWorldSleep(true);
+
+    // Force a skip (fires NightSkipEvent)
+    OnlysleepAPI.forceSkipNight(world);
+}
+
+// Or hook style
+OnlysleepAPI.hook(this, api -> getLogger().info("Hooked Onlysleep " + api.getDescription().getVersion()));
+```
+
+### Legacy: Getting the Plugin Instance
 
 ```java
 import com.demonzdevelopment.onlysleep.Onlysleep;
@@ -205,15 +231,44 @@ public class MyPlugin extends JavaPlugin {
 
 ---
 
-## Events
+## Custom Events (v1.3.1+)
 
-Onlysleep fires standard Bukkit events when game states change. You can listen for:
+Onlysleep now fires its own cancellable Bukkit events:
+
+```java
+import com.demonzdevelopment.onlysleep.api.events.NightSkipEvent;
+import com.demonzdevelopment.onlysleep.api.events.SleepStartEvent;
+import com.demonzdevelopment.onlysleep.api.events.SleepCancelEvent;
+
+@EventHandler
+public void onNightSkip(NightSkipEvent e) {
+    World world = e.getWorld();
+    Player initiator = e.getInitiator(); // may be null if forced
+    if (world.getName().equals("event_world")) {
+        e.setCancelled(true); // prevent skip in this world
+    }
+}
+
+@EventHandler
+public void onSleepStart(SleepStartEvent e) {
+    // e.isCancelled() = true prevents player from being counted as sleeping
+    if (e.getPlayer().hasPermission("myplugin.no-sleep-count")) {
+        e.setCancelled(true);
+    }
+}
+
+@EventHandler
+public void onSleepCancel(SleepCancelEvent e) {
+    getLogger().info(e.getPlayer().getName() + " cancelled sleep: " + e.getCause());
+    // e.getCause() = BED_LEAVE, QUIT
+}
+```
+
+Legacy Bukkit events still fire:
 
 - `PlayerBedEnterEvent` — When a player enters a bed (cancellable, Onlysleep uses HIGHEST priority)
 - `PlayerBedLeaveEvent` — When a player leaves a bed
 - `PlayerQuitEvent` — When a player disconnects
-
-Onlysleep doesn't currently fire custom events, but you can observe these standard events to detect sleep-related state changes.
 
 ---
 
@@ -248,6 +303,33 @@ public void onEnable() {
 
 ---
 
+## Full Example with New API + Events
+
+```java
+import com.demonzdevelopment.onlysleep.api.OnlysleepAPI;
+import com.demonzdevelopment.onlysleep.api.events.NightSkipEvent;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+
+public class MyListener implements Listener {
+    @EventHandler
+    public void onNightSkip(NightSkipEvent e) {
+        // Example: require 100% in "hardcore" world
+        if (e.getWorld().getName().equals("hardcore") && e.getSleepingCount() < e.getTotalEligible()) {
+            e.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onCommand(org.bukkit.event.player.PlayerCommandPreprocessEvent e) {
+        if (e.getMessage().startsWith("/sleepinfo")) {
+            int req = OnlysleepAPI.getRequiredSleepingCount(e.getPlayer().getWorld());
+            e.getPlayer().sendMessage("Need " + req + " sleepers");
+        }
+    }
+}
+```
+
 ## Internal Architecture
 
 For developers who want to understand the plugin's structure:
@@ -255,10 +337,16 @@ For developers who want to understand the plugin's structure:
 ```
 com.demonzdevelopment.onlysleep/
 ├── Onlysleep.java                  # Main plugin class
+├── api/
+│   ├── OnlysleepAPI.java           # Public facade (v1.3.1+)
+│   └── events/
+│       ├── NightSkipEvent.java     # Cancellable before skip
+│       ├── SleepStartEvent.java    # Cancellable on bed enter
+│       └── SleepCancelEvent.java   # After cancel
 ├── config/
 │   └── ConfigManager.java          # Configuration management
 ├── command/
-│   └── OnlysleepCommand.java       # Command execution
+│   └── OnlysleepCommand.java       # Command execution (now with /os set/get/toggle)
 ├── listener/
 │   └── SleepListener.java          # Event handling
 ├── manager/

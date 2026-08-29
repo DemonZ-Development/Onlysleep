@@ -1,7 +1,7 @@
 name: Onlysleep
 version: '${project.version}'
 main: com.demonzdevelopment.onlysleep.Onlysleep
-api-version: '1.20'
+api-version: '1.21'
 folia-supported: true
 author: Demonz Development
 description: One player sleep plugin - Skip the night with just one player sleeping
@@ -11,7 +11,7 @@ softdepend: [PlaceholderAPI]
 commands:
   onlysleep:
     description: Main Onlysleep command
-    usage: /<command> <reload|info|status|help>
+    usage: /<command> <reload|info|status|help|set|get|toggle|world|gamemode|dump>
     aliases: [os, sleep]
     permission: onlysleep.command
 
@@ -25,6 +25,10 @@ permissions:
       onlysleep.reload: true
       onlysleep.status: true
       onlysleep.update: true
+      onlysleep.config: true
+      onlysleep.world: true
+      onlysleep.gamemode: true
+      onlysleep.dump: true
   onlysleep.info:
     description: Allows viewing plugin information via /onlysleep info
     default: op
@@ -42,4 +46,19 @@ permissions:
     default: false
   onlysleep.update:
     description: Receives update notifications
+    default: op
+  onlysleep.config:
+    description: Allows changing config via /onlysleep set/get/toggle
+    default: op
+  onlysleep.world:
+    description: Allows managing disabled worlds
+    default: op
+  onlysleep.gamemode:
+    description: Allows managing disabled gamemodes
+    default: op
+  onlysleep.admin:
+    description: Alias for all admin permissions
+    default: op
+  onlysleep.dump:
+    description: Allows creating debug dumps
     default: op

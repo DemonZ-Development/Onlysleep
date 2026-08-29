@@ -53,7 +53,7 @@ class ConfigUpdaterTest {
         );
         Files.write(destination.toPath(), userLines, StandardCharsets.UTF_8);
 
-        String defaultJarContent = 
+        String defaultJarContent =
             "# Default Config Header\n" +
             "sleep-percentage: 50\n" +
             "skip-delay-ticks: 60\n" +

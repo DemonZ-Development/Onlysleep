@@ -24,6 +24,11 @@ public class OfflinePlayerTracker implements Listener {
     public static void init(Onlysleep instance) {
         plugin = instance;
 
+        if (refreshTask != null) {
+            refreshTask.cancel();
+            refreshTask = null;
+        }
+
         if (registeredListener != null) {
             HandlerList.unregisterAll(registeredListener);
             registeredListener = null;

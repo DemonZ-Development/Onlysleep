@@ -27,6 +27,11 @@ public class AfkTracker implements Listener {
 
         if (plugin.getConfigManager().getAfkTimeSeconds() <= 0) return;
 
+        if (cleanupTask != null) {
+            cleanupTask.cancel();
+            cleanupTask = null;
+        }
+
         if (registeredListener != null) {
             HandlerList.unregisterAll(registeredListener);
             registeredListener = null;
@@ -36,14 +41,11 @@ public class AfkTracker implements Listener {
         plugin.getServer().getPluginManager().registerEvents(listener, plugin);
         registeredListener = listener;
 
-        cleanupTask = SchedulerAdapter.runGlobalTaskTimer(plugin, () -> {
-            long now = System.currentTimeMillis();
-            long timeout = plugin.getConfigManager().getAfkTimeSeconds() * 1000L;
+        cleanupTask = SchedulerAdapter.runGlobalTaskTimer(plugin, () ->
             lastActivity.entrySet().removeIf(entry -> {
                 Player p = org.bukkit.Bukkit.getPlayer(entry.getKey());
                 return p == null || !p.isOnline();
-            });
-        }, 100L, 100L);
+            }), 100L, 100L);
     }
 
     public static void shutdown() {
