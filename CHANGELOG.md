@@ -4,6 +4,29 @@
 
 ---
 
+## [1.4.0] - 2026-08-29
+
+Latest-only `1.26.x` - Java 25, Minecraft 26.2 (Paper & Fabric). Full parity + new APIs.
+
+### Added
+
+- **In-game config commands**: `/onlysleep set <percentage|skiptype|perworld|skipdelay|morningtime|resettime|gradualspeed|clearweather|clearthunder|bossbar|actionbar|progressbar|title|sounds|managegamerule|afktime> <value>` with persistence, `/onlysleep get <key>`, `/onlysleep toggle <key>`, `/onlysleep world <enable|disable|list> [world]`, `/onlysleep gamemode <enable|disable|list> [type]` - all with tab-complete
+- **Dump command**: `/onlysleep dump [paste]` - writes `plugins/Onlysleep/dumps/dump-*.txt` with config, worlds, eligible/sleeping/required, gamerules, players (AFK/exempt), messages; `paste` uploads to `paste.mcsrv.top`
+- **Developer API**: `api/OnlysleepAPI.java` (`setSleepPercentage`, `setSkipType`, `getRequiredSleepingCount`, `forceSkipNight`, `getDiscordMessage`/`stripColor` for ZDiscord), `api/events/NightSkipEvent`/`SleepStartEvent`/`SleepCancelEvent` (cancellable, `fabric/api/*` parity)
+- **Fabric parity**: `sleep-percentage 0` default, setters, `api/OnlysleepFabricAPI`, same events, full command parity, `FabricConfigManager` persistence, `PermissionHandler` `onlysleep.config/dump/world/gamemode`
+- **Discord helpers**: `OnlysleepAPI.getSleepStartDiscordMessage` / `getEnoughSleepingDiscordMessage` / `getCancelledDiscordMessage` for ZDiscord bridge
+
+### Changed
+
+- **Default to 1.26.x only**: `build.gradle.kts` `paperApi 26.2-R0.1-SNAPSHOT` / `Java 25`, `plugin.yml` `api-version 1.21`, `fabric 26.2` / `java >=25` / `fabric-loader >=0.19.3`, `README` `26.2, Java 25+`, `sleep-percentage 0` (was 50) for true one-player default
+- **Help** now lists `set/get/toggle/world/gamemode/dump` with `set` options footer
+
+### Fixed
+
+- **Gradual mode not cancellable**: leaving bed during `gradual`/`speed` (`activeTransitions`) now cancels if `sleeping < required` - both Paper `manager/SleepManager.java:206,230,469` and Fabric `fabric/SleepManager.java:184,201,419` + timer check each tick
+
+---
+
 ## [1.3.1] - 2026-08-26
 
 Maintenance patch: scheduler leaks and weather edge cases.

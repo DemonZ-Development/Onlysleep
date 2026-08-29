@@ -3,7 +3,7 @@ plugins {
     id("com.gradleup.shadow") version "9.5.0"
 }
 
-version = "1.3.1"
+version = "1.4.0"
 
 val paperApiVersion = providers.gradleProperty("paperApiVersion")
     .orElse("26.2-R0.1-SNAPSHOT")
