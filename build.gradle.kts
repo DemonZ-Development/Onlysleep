@@ -6,7 +6,7 @@ plugins {
 version = "1.4.0"
 
 val paperApiVersion = providers.gradleProperty("paperApiVersion")
-    .orElse("26.2-R0.1-SNAPSHOT")
+    .orElse("26.2.build.56-alpha")
 val paperApiJvmVersion = providers.gradleProperty("paperApiJvmVersion")
     .map(String::toInt)
     .orElse(25)
