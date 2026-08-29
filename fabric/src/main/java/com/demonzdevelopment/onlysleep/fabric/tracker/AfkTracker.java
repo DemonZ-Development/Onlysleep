@@ -29,15 +29,15 @@ public class AfkTracker {
 
         if (!registered) {
             registered = true;
-            AttackBlockCallback.register((player, world, hand, pos, direction) -> {
+            AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) -> {
                 touch(player);
                 return InteractionResult.PASS;
             });
-            UseBlockCallback.register((player, world, hand, hitResult) -> {
+            UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
                 touch(player);
                 return InteractionResult.PASS;
             });
-            UseItemCallback.register((player, world, hand) -> {
+            UseItemCallback.EVENT.register((player, world, hand) -> {
                 touch(player);
                 return InteractionResult.PASS;
             });

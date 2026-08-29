@@ -149,8 +149,8 @@ public class OnlysleepCommands {
     private LiteralArgumentBuilder<CommandSourceStack> worldCommand() {
         return Commands.literal("world")
             .then(Commands.literal("list").executes(ctx -> { handleWorld(ctx.getSource(), "list", null); return Command.SINGLE_SUCCESS; }))
-            .then(Commands.literal("enable").then(Commands.argument("world", StringArgumentType.word()).suggests((ctx,b)-> SharedSuggestionProvider.suggest(mod.server()!=null ? mod.server().getAllLevels().stream().map(l -> SleepManager.worldKey(l)).toList() : List.of(), b)).executes(ctx -> { handleWorld(ctx.getSource(), "enable", StringArgumentType.getString(ctx, "world")); return Command.SINGLE_SUCCESS; })))
-            .then(Commands.literal("disable").then(Commands.argument("world", StringArgumentType.word()).suggests((ctx,b)-> SharedSuggestionProvider.suggest(mod.server()!=null ? mod.server().getAllLevels().stream().map(l -> SleepManager.worldKey(l)).toList() : List.of(), b)).executes(ctx -> { handleWorld(ctx.getSource(), "disable", StringArgumentType.getString(ctx, "world")); return Command.SINGLE_SUCCESS; })));
+            .then(Commands.literal("enable").then(Commands.argument("world", StringArgumentType.word()).suggests((ctx,b)-> SharedSuggestionProvider.suggest(mod.server()!=null ? java.util.stream.StreamSupport.stream(mod.server().getAllLevels().spliterator(), false).map(l -> SleepManager.worldKey(l)).toList() : List.of(), b)).executes(ctx -> { handleWorld(ctx.getSource(), "enable", StringArgumentType.getString(ctx, "world")); return Command.SINGLE_SUCCESS; })))
+            .then(Commands.literal("disable").then(Commands.argument("world", StringArgumentType.word()).suggests((ctx,b)-> SharedSuggestionProvider.suggest(mod.server()!=null ? java.util.stream.StreamSupport.stream(mod.server().getAllLevels().spliterator(), false).map(l -> SleepManager.worldKey(l)).toList() : List.of(), b)).executes(ctx -> { handleWorld(ctx.getSource(), "disable", StringArgumentType.getString(ctx, "world")); return Command.SINGLE_SUCCESS; })));
     }
 
     private LiteralArgumentBuilder<CommandSourceStack> gamemodeCommand() {
@@ -469,7 +469,7 @@ public class OnlysleepCommands {
                 for (net.minecraft.server.level.ServerLevel lvl : mod.server().getAllLevels()) {
                     String wk = SleepManager.worldKey(lvl);
                     sb.append(" ").append(wk).append(" enabled=").append(mod.config().isWorldEnabled(wk));
-                    sb.append(" time=").append(lvl.getDayTime()).append(" players=").append(lvl.players().size());
+                    sb.append(" time=").append(mod.sleepManager().dayTimeOf(lvl)).append(" players=").append(lvl.players().size());
                     try { sb.append(" eligible=").append(mod.sleepManager().getTotalPlayerCount(lvl)).append(" sleeping=").append(mod.sleepManager().getSleepingCount(lvl)).append(" required=").append(mod.sleepManager().getRequiredSleepingCount(lvl)); } catch (Exception e) {}
                     sb.append("\n");
                 }

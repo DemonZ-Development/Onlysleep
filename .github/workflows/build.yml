@@ -3,9 +3,9 @@ name: Build
 on:
   workflow_dispatch:
   push:
-    branches: [ master ]
+    branches: [ master, 1.26.x ]
   pull_request:
-    branches: [ master ]
+    branches: [ master, 1.26.x ]
   release:
     types: [ published ]
 
@@ -19,48 +19,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - minecraft: '1.20.4'
-            paper-api: '1.20.4-R0.1-SNAPSHOT'
-            paper-api-jvm: '21'
-          - minecraft: '1.20.5'
-            paper-api: '1.20.5-R0.1-SNAPSHOT'
-            paper-api-jvm: '21'
-          - minecraft: '1.20.6'
-            paper-api: '1.20.6-R0.1-SNAPSHOT'
-            paper-api-jvm: '21'
-          - minecraft: '1.21'
-            paper-api: '1.21-R0.1-SNAPSHOT'
-            paper-api-jvm: '21'
-          - minecraft: '1.21.1'
-            paper-api: '1.21.1-R0.1-SNAPSHOT'
-            paper-api-jvm: '21'
-          - minecraft: '1.21.3'
-            paper-api: '1.21.3-R0.1-SNAPSHOT'
-            paper-api-jvm: '21'
-          - minecraft: '1.21.4'
-            paper-api: '1.21.4-R0.1-SNAPSHOT'
-            paper-api-jvm: '21'
-          - minecraft: '1.21.5'
-            paper-api: '1.21.5-R0.1-SNAPSHOT'
-            paper-api-jvm: '21'
-          - minecraft: '1.21.6'
-            paper-api: '1.21.6-R0.1-SNAPSHOT'
-            paper-api-jvm: '21'
-          - minecraft: '1.21.7'
-            paper-api: '1.21.7-R0.1-SNAPSHOT'
-            paper-api-jvm: '21'
-          - minecraft: '1.21.8'
-            paper-api: '1.21.8-R0.1-SNAPSHOT'
-            paper-api-jvm: '21'
-          - minecraft: '1.21.9'
-            paper-api: '1.21.9-R0.1-SNAPSHOT'
-            paper-api-jvm: '21'
-          - minecraft: '1.21.10'
-            paper-api: '1.21.10-R0.1-SNAPSHOT'
-            paper-api-jvm: '21'
-          - minecraft: '1.21.11'
-            paper-api: '1.21.11-R0.1-SNAPSHOT'
-            paper-api-jvm: '21'
           - minecraft: '26.1.2'
             paper-api: '26.1.2.build.74-stable'
             paper-api-jvm: '25'
@@ -84,8 +42,10 @@ jobs:
         run: ./gradlew clean build --no-daemon -PpaperApiVersion=${{ matrix.paper-api }} -PpaperApiJvmVersion=${{ matrix.paper-api-jvm }}
 
       - name: Upload build artifacts
-        if: matrix.minecraft == '1.20.4'
+        if: matrix.minecraft == '26.2'
         uses: actions/upload-artifact@v4
         with:
           name: Onlysleep
-          path: build/libs/Onlysleep-*.jar
+          path: |
+            build/libs/Onlysleep-*.jar
+            fabric/build/libs/Onlysleep-Fabric-*.jar

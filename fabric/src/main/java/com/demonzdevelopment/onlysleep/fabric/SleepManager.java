@@ -613,7 +613,7 @@ public class SleepManager {
         if (config.isCountAfkAsSleeping()) {
             for (ServerPlayer player : eligiblePlayers(level)) {
                 if (mod.permissions().isExempt(player)) continue;
-                boolean alreadyCounted = sleeping != null && sleeping.contains(player.getUniqueId());
+                boolean alreadyCounted = sleeping != null && sleeping.contains(player.getUUID());
                 if (AfkTracker.isAfk(player) && !alreadyCounted) count++;
             }
         }
@@ -676,7 +676,7 @@ public class SleepManager {
         phantoms.forEach(Entity::discard);
     }
 
-    static String worldKey(ServerLevel level) {
+    public static String worldKey(ServerLevel level) {
         return level.dimension().identifier().toString();
     }
 }
