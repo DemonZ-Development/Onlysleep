@@ -2,6 +2,22 @@
 
 ---
 
+## [1.4.1] - 2026-08-30
+
+- Fabric API events are now dispatched and cancellable as documented.
+- Fixed Paper/Folia world and game-mode list commands and command help placeholders.
+- Added safe validation for in-game numeric config changes.
+- Fixed the `onlysleep.admin` alias, dedicated world/game-mode permissions, API shutdown state, security policy, and runtime-only release assets.
+
+## [1.4.0] - 2026-08-29
+
+- Added in-game configuration, world, game-mode, and dump commands.
+- Added Paper/Folia and Fabric developer APIs and sleep lifecycle events.
+- Added Fabric 26.2 support and made one-player sleep the default.
+- Fixed cancellation of gradual and speed transitions when sleepers leave.
+
+---
+
 ## [1.3.0] - 2026-07-12
 
 This release makes advertised features work, hardens Folia thread safety, fixes gradual skipping, and closes reload and memory leaks.

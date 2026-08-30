@@ -30,8 +30,8 @@ Displays plugin version information and current settings.
 
 **Output:**
 ```
-=== Onlysleep v1.3.0 ===
-Version: 1.3.0
+=== Onlysleep v1.4.1 ===
+Version: 1.4.1
 Author: Demonz Development
 Status: Enabled | Paper
 Sleep Required: 50%
@@ -51,9 +51,9 @@ Shows detailed plugin status including platform, version, and all major settings
 ```
 === Onlysleep Status ===
 Platform: Paper
-Minecraft: 1.21.4
-Version: 1.0.0
-Sleep %: 50%
+Minecraft: 26.2
+Version: 1.4.1
+Sleep %: 0%
 Per-World: Yes
 Boss Bar: Enabled
 Skip Type: instant
@@ -84,6 +84,18 @@ Configuration reloaded successfully!
 Failed to reload configuration. Check console for errors.
 ```
 
+### Configuration and diagnostics
+
+| Command | Permission | Purpose |
+| --- | --- | --- |
+| `/onlysleep update` | `onlysleep.update` | Check for a newer release |
+| `/onlysleep set <option> <value>` | `onlysleep.config` | Change and persist a setting |
+| `/onlysleep get <option>` | `onlysleep.status` | Read a setting |
+| `/onlysleep toggle <option>` | `onlysleep.config` | Toggle a boolean setting |
+| `/onlysleep world <enable\|disable\|list> [world]` | `onlysleep.world` | Manage disabled worlds |
+| `/onlysleep gamemode <enable\|disable\|list> [type]` | `onlysleep.gamemode` | Manage disabled game modes |
+| `/onlysleep dump [paste]` | `onlysleep.dump` | Create or optionally upload a diagnostic dump |
+
 ---
 
 ## Tab Completion
@@ -91,7 +103,7 @@ Failed to reload configuration. Check console for errors.
 The `/onlysleep` command includes tab completion support. Typing `/onlysleep ` and pressing Tab will show available subcommands:
 
 ```
-/onlysleep <reload|info|status|help>
+/onlysleep <reload|info|status|help|update|set|get|toggle|world|gamemode|dump>
 ```
 
 ---
@@ -103,9 +115,15 @@ The `/onlysleep` command includes tab completion support. Typing `/onlysleep ` a
 ```
 onlysleep.* (OP)
 ├── onlysleep.command (Everyone)
+├── onlysleep.info (OP)
 ├── onlysleep.reload (OP)
 ├── onlysleep.status (OP)
-└── onlysleep.update (OP)
+├── onlysleep.update (OP)
+├── onlysleep.config (OP)
+├── onlysleep.world (OP)
+├── onlysleep.gamemode (OP)
+├── onlysleep.dump (OP)
+└── onlysleep.admin (OP alias)
 
 onlysleep.exempt (None - operators sleep by default)
 ```
@@ -114,12 +132,18 @@ onlysleep.exempt (None - operators sleep by default)
 
 | Permission | Default | Description |
 |------------|---------|-------------|
-| `onlysleep.*` | OP | Grants all Onlysleep permissions (wildcard) |
-| `onlysleep.command` | **Everyone** | Allows use of `/onlysleep` command and all subcommands except `status` |
+| `onlysleep.*` | OP | Grants all administrative permissions; intentionally does not grant `onlysleep.exempt` |
+| `onlysleep.command` | **Everyone** | Opens `/onlysleep` and its help; protected subcommands keep their own permissions |
+| `onlysleep.info` | OP | Allows using `/onlysleep info` |
 | `onlysleep.reload` | OP | Allows using `/onlysleep reload` to reload the configuration |
 | `onlysleep.status` | OP | Allows using `/onlysleep status` to view detailed plugin status |
 | `onlysleep.exempt` | None | Exempts the player from sleep calculations entirely (operators sleep by default) |
 | `onlysleep.update` | OP | Receives update notifications when a new version is available |
+| `onlysleep.config` | OP | Allows in-game config changes |
+| `onlysleep.world` | OP | Allows disabled-world management |
+| `onlysleep.gamemode` | OP | Allows disabled-game-mode management |
+| `onlysleep.dump` | OP | Allows diagnostic dump creation |
+| `onlysleep.admin` | OP | Grants every admin permission above |
 
 ---
 

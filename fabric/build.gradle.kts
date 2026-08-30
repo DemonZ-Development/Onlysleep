@@ -2,7 +2,7 @@ plugins {
     id("net.fabricmc.fabric-loom") version "1.18.0-alpha.17"
 }
 
-version = "1.4.0"
+version = "1.4.1"
 base.archivesName = "Onlysleep-Fabric"
 
 val minecraftVersion = "26.2"

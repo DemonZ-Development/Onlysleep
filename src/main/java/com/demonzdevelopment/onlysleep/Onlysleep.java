@@ -90,6 +90,7 @@ public final class Onlysleep extends JavaPlugin {
         }
         OfflinePlayerTracker.shutdown();
         AfkTracker.shutdown();
+        instance = null;
         getLogger().info("Onlysleep v" + getDescription().getVersion() + " disabled!");
     }
 

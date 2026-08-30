@@ -204,12 +204,12 @@ public class OnlysleepCommand implements CommandExecutor, TabCompleter {
             case "skip-delay":
             case "skip-delay-ticks":
             case "skip_delay_ticks":
-                configManager.setSkipDelayTicks(parseInt(value, "skipdelay"));
+                configManager.setSkipDelayTicks(parseNonNegativeInt(value, "skipdelay"));
                 return true;
             case "morningtime":
             case "morning-time":
             case "morning_time":
-                configManager.setMorningTime(parseInt(value, "morningtime"));
+                configManager.setMorningTime(parseTime(value, "morningtime"));
                 return true;
             case "resettime":
             case "reset-time":
@@ -220,7 +220,7 @@ public class OnlysleepCommand implements CommandExecutor, TabCompleter {
             case "gradual-speed":
             case "gradual-skip-speed-ticks":
             case "gradual_skip_speed_ticks":
-                configManager.setGradualSkipSpeedTicks(parseInt(value, "gradualspeed"));
+                configManager.setGradualSkipSpeedTicks(parsePositiveInt(value, "gradualspeed"));
                 return true;
             case "clearweather":
             case "clear-weather":
@@ -269,10 +269,10 @@ public class OnlysleepCommand implements CommandExecutor, TabCompleter {
             case "afktime":
             case "afk-time":
             case "afk-detection.time-seconds":
-                configManager.setValue("afk-detection.time-seconds", parseInt(value, "afktime"));
-
+                int afkTime = parseNonNegativeInt(value, "afktime");
+                configManager.setValue("afk-detection.time-seconds", afkTime);
                 com.demonzdevelopment.onlysleep.util.AfkTracker.shutdown();
-                if (parseInt(value, "afktime") > 0) com.demonzdevelopment.onlysleep.util.AfkTracker.init(plugin);
+                if (afkTime > 0) com.demonzdevelopment.onlysleep.util.AfkTracker.init(plugin);
                 return true;
             case "countafk":
             case "count-afk-as-sleeping":
@@ -380,11 +380,11 @@ public class OnlysleepCommand implements CommandExecutor, TabCompleter {
     }
 
     private void handleWorld(CommandSender sender, String[] args) {
-        if (!hasConfigPermission(sender)) {
+        if (!sender.hasPermission("onlysleep.world") && !hasConfigPermission(sender)) {
             sender.sendMessage(configManager.getMessage("command.no-permission"));
             return;
         }
-        if (args.length < 3) {
+        if (args.length < 2) {
             sender.sendMessage(ChatColor.RED + "Usage: /onlysleep world <enable|disable|list> [world]");
             sender.sendMessage(ChatColor.GRAY + "Current disabled: " + (configManager.getConfig().getStringList("disabled-worlds").isEmpty() ? "none" : String.join(", ", configManager.getConfig().getStringList("disabled-worlds"))));
             return;
@@ -393,6 +393,10 @@ public class OnlysleepCommand implements CommandExecutor, TabCompleter {
         if (action.equals("list")) {
             List<String> list = configManager.getConfig().getStringList("disabled-worlds");
             sender.sendMessage(ChatColor.YELLOW + "Disabled worlds: " + (list.isEmpty() ? "none" : String.join(", ", list)));
+            return;
+        }
+        if (args.length < 3) {
+            sender.sendMessage(ChatColor.RED + "Usage: /onlysleep world <enable|disable> <world>");
             return;
         }
         String world = args[2];
@@ -420,11 +424,11 @@ public class OnlysleepCommand implements CommandExecutor, TabCompleter {
     }
 
     private void handleGamemode(CommandSender sender, String[] args) {
-        if (!hasConfigPermission(sender)) {
+        if (!sender.hasPermission("onlysleep.gamemode") && !hasConfigPermission(sender)) {
             sender.sendMessage(configManager.getMessage("command.no-permission"));
             return;
         }
-        if (args.length < 3) {
+        if (args.length < 2) {
             sender.sendMessage(ChatColor.RED + "Usage: /onlysleep gamemode <enable|disable|list> [gamemode]");
             sender.sendMessage(ChatColor.GRAY + "Disabled: " + (configManager.getConfig().getStringList("disabled-gamemodes").isEmpty() ? "none" : String.join(", ", configManager.getConfig().getStringList("disabled-gamemodes"))));
             return;
@@ -433,6 +437,10 @@ public class OnlysleepCommand implements CommandExecutor, TabCompleter {
         if (action.equals("list")) {
             List<String> list = configManager.getConfig().getStringList("disabled-gamemodes");
             sender.sendMessage(ChatColor.YELLOW + "Disabled gamemodes: " + (list.isEmpty() ? "none" : String.join(", ", list)));
+            return;
+        }
+        if (args.length < 3) {
+            sender.sendMessage(ChatColor.RED + "Usage: /onlysleep gamemode <enable|disable> <gamemode>");
             return;
         }
         String gm = args[2].toUpperCase();
@@ -566,8 +574,7 @@ public class OnlysleepCommand implements CommandExecutor, TabCompleter {
 
         } catch (Exception e) {
             sender.sendMessage(ChatColor.RED + "Dump failed: " + e.getMessage());
-            plugin.getLogger().severe("Dump failed: " + e.getMessage());
-            e.printStackTrace();
+            plugin.getLogger().log(java.util.logging.Level.SEVERE, "Dump failed", e);
         }
     }
 
@@ -601,6 +608,21 @@ public class OnlysleepCommand implements CommandExecutor, TabCompleter {
     }
     private int parseInt(String v, String field) {
         try { return Integer.parseInt(v); } catch (NumberFormatException e) { throw new IllegalArgumentException(field + " must be a number"); }
+    }
+    private int parseNonNegativeInt(String v, String field) {
+        int parsed = parseInt(v, field);
+        if (parsed < 0) throw new IllegalArgumentException(field + " must be 0 or greater");
+        return parsed;
+    }
+    private int parsePositiveInt(String v, String field) {
+        int parsed = parseInt(v, field);
+        if (parsed <= 0) throw new IllegalArgumentException(field + " must be greater than 0");
+        return parsed;
+    }
+    private int parseTime(String v, String field) {
+        int parsed = parseInt(v, field);
+        if (parsed < 0 || parsed > 23999) throw new IllegalArgumentException(field + " must be between 0 and 23999");
+        return parsed;
     }
     private Object inferValue(String v) {
         if (v.equalsIgnoreCase("true") || v.equalsIgnoreCase("false")) return Boolean.parseBoolean(v);
@@ -699,12 +721,12 @@ public class OnlysleepCommand implements CommandExecutor, TabCompleter {
         sender.sendMessage(configManager.getMessage("help.info", placeholders));
         sender.sendMessage(configManager.getMessage("help.status", placeholders));
         sender.sendMessage(configManager.getMessage("help.update", placeholders));
-        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7/%cmd% set <option> <value> &8- &bChange config (try /%cmd% set)"));
-        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7/%cmd% get <option> &8- &bView config value"));
-        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7/%cmd% toggle <option> &8- &bToggle boolean"));
-        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7/%cmd% world <enable|disable|list> [world] &8- &bManage disabled worlds"));
-        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7/%cmd% gamemode <enable|disable|list> [type] &8- &bManage disabled gamemodes"));
-        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7/%cmd% dump [paste] &8- &bCreate debug dump"));
+        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7/" + cmd + " set <option> <value> &8- &bChange config (try /" + cmd + " set)"));
+        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7/" + cmd + " get <option> &8- &bView config value"));
+        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7/" + cmd + " toggle <option> &8- &bToggle boolean"));
+        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7/" + cmd + " world <enable|disable|list> [world] &8- &bManage disabled worlds"));
+        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7/" + cmd + " gamemode <enable|disable|list> [type] &8- &bManage disabled gamemodes"));
+        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7/" + cmd + " dump [paste] &8- &bCreate debug dump"));
         sender.sendMessage(configManager.getMessage("help.help", placeholders));
         sender.sendMessage(configManager.getMessage("help.footer", placeholders));
         if (sender.hasPermission("onlysleep.config") || sender.hasPermission("onlysleep.reload")) {

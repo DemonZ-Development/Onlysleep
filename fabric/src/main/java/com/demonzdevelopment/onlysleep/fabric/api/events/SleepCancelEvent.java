@@ -1,8 +1,21 @@
 package com.demonzdevelopment.onlysleep.fabric.api.events;
 
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.server.level.ServerPlayer;
 
 public class SleepCancelEvent {
+    public interface Listener {
+        void onSleepCancel(SleepCancelEvent event);
+    }
+
+    public static final Event<Listener> EVENT = EventFactory.createArrayBacked(
+        Listener.class,
+        listeners -> event -> {
+            for (Listener listener : listeners) listener.onSleepCancel(event);
+        }
+    );
+
     public enum Cause { BED_LEAVE, QUIT }
 
     private final ServerPlayer player;

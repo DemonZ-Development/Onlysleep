@@ -19,7 +19,7 @@ import java.util.UUID;
  * <p>
  * Example:
  * <pre>{@code
- * OnlysleepAPI.setSleepPercentage(0); // one-player sleep
+ * OnlysleepAPI.setSleepPercentage(0);
  * int required = OnlysleepAPI.getRequiredSleepingCount(world);
  * }</pre>
  * <p>
@@ -52,8 +52,6 @@ public final class OnlysleepAPI {
         return requireInstance().getConfigManager();
     }
 
-    // --- Config shortcuts ---
-
     /** @return sleep percentage 0-100 (0 = one player) */
     public static int getSleepPercentage() {
         return getConfigManager().getSleepPercentage();
@@ -83,8 +81,6 @@ public final class OnlysleepAPI {
     public static void setPerWorldSleep(boolean value) {
         getConfigManager().setPerWorldSleep(value);
     }
-
-    // --- Sleep queries ---
 
     public static int getRequiredSleepingCount(World world) {
         return getSleepManager().getRequiredSleepingCount(world);
@@ -118,18 +114,13 @@ public final class OnlysleepAPI {
         return isWorldEnabled(world.getName());
     }
 
-    // --- Actions ---
-
     /**
      * Force a night skip for a world using current config's skip logic.
      * Fires {@link com.demonzdevelopment.onlysleep.api.events.NightSkipEvent} (cancellable).
      */
     public static void forceSkipNight(World world) {
-        // delegate to SleepManager via reflection-friendly public helper
         getSleepManager().forceSkipNight(world);
     }
-
-    // --- Messages (for Discord etc.) ---
 
     /**
      * Get a formatted message from messages.yml with placeholders.
@@ -155,7 +146,9 @@ public final class OnlysleepAPI {
 
     /** Strip Minecraft color codes (§/&). Use for Discord. */
     public static String stripColor(String minecraftMessage) {
-        return org.bukkit.ChatColor.stripColor(minecraftMessage);
+        if (minecraftMessage == null) return null;
+        String translated = org.bukkit.ChatColor.translateAlternateColorCodes('&', minecraftMessage);
+        return org.bukkit.ChatColor.stripColor(translated);
     }
 
     /** Get message ready for Discord (prefix included, colors stripped). */

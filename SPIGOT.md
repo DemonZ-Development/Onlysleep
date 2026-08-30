@@ -34,6 +34,10 @@ One player sleeping is the default. If you want a different threshold, say half 
 [*][b]/onlysleep reload[/b] — Reload config ([i]requires onlysleep.reload[/i])
 [*][b]/onlysleep info[/b] — Plugin information
 [*][b]/onlysleep status[/b] — Detailed status overview
+[*][b]/onlysleep update[/b] — Check for updates
+[*][b]/onlysleep set|get|toggle[/b] — Manage configuration in game
+[*][b]/onlysleep world|gamemode[/b] — Manage excluded worlds and game modes
+[*][b]/onlysleep dump [paste][/b] — Create a diagnostic dump
 [*][b]Aliases:[/b] /os, /sleep
 [/list]
 
@@ -52,8 +56,8 @@ One player sleeping is the default. If you want a different threshold, say half 
 
 [size=4][color=#ffaa00]Requirements[/color][/size]
 [list]
-[*]Java 21+ (Paper 26.1+ requires Java 25)
-[*]Minecraft 1.20.4–26.2
+[*]Java 25+
+[*]Minecraft 26.2
 [*]Works standalone — [b]no dependencies required[/b] (PlaceholderAPI is optional)
 [/list]
 

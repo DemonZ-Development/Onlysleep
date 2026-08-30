@@ -1,21 +1,21 @@
 # Security Policy
 
-## Supported Versions
+## Supported versions
 
-Use this section to tell people about which versions of your project are
-currently being supported with security updates.
+Only the latest Onlysleep release receives security fixes.
 
-| Version | Supported          |
-| ------- | ------------------ |
-| 5.1.x   | :white_check_mark: |
-| 5.0.x   | :x:                |
-| 4.0.x   | :white_check_mark: |
-| < 4.0   | :x:                |
+| Version | Supported |
+| --- | --- |
+| 1.4.x | Yes |
+| 1.3.x and older | No |
 
-## Reporting a Vulnerability
+## Reporting a vulnerability
 
-Use this section to tell people how to report a vulnerability.
+Please report vulnerabilities privately through GitHub Security Advisories:
 
-Tell them where to go, how often they can expect to get an update on a
-reported vulnerability, what to expect if the vulnerability is accepted or
-declined, etc.
+<https://github.com/DemonZ-Development/Onlysleep/security/advisories/new>
+
+Include the affected version and platform, reproduction steps, impact, and any
+suggested mitigation. Please do not open a public issue until a fix is available.
+We will acknowledge a report within seven days and provide status updates while
+it is being investigated.

@@ -42,7 +42,7 @@ softdepend: [Onlysleep]
 
 ## API Reference
 
-### New Facade: OnlysleepAPI (v1.3.1+ - recommended)
+### OnlysleepAPI facade (v1.4.0+ - recommended)
 
 ```java
 import com.demonzdevelopment.onlysleep.api.OnlysleepAPI;
@@ -231,7 +231,7 @@ public class MyPlugin extends JavaPlugin {
 
 ---
 
-## Custom Events (v1.3.1+)
+## Custom Events (v1.4.0+)
 
 Onlysleep now fires its own cancellable Bukkit events:
 
@@ -338,7 +338,7 @@ For developers who want to understand the plugin's structure:
 com.demonzdevelopment.onlysleep/
 ├── Onlysleep.java                  # Main plugin class
 ├── api/
-│   ├── OnlysleepAPI.java           # Public facade (v1.3.1+)
+│   ├── OnlysleepAPI.java           # Public facade (v1.4.0+)
 │   └── events/
 │       ├── NightSkipEvent.java     # Cancellable before skip
 │       ├── SleepStartEvent.java    # Cancellable on bed enter

@@ -72,6 +72,13 @@ See the full [`config.yml`](src/main/resources/config.yml) for all options and [
 | `/onlysleep info` | Plugin information | `onlysleep.info` |
 | `/onlysleep status` | Detailed status | `onlysleep.status` |
 | `/onlysleep reload` | Reload configuration | `onlysleep.reload` |
+| `/onlysleep update` | Check for a newer release | `onlysleep.update` |
+| `/onlysleep set <option> <value>` | Change and persist a config value | `onlysleep.config` |
+| `/onlysleep get <option>` | Read a config value | `onlysleep.status` |
+| `/onlysleep toggle <option>` | Toggle a boolean config value | `onlysleep.config` |
+| `/onlysleep world <enable\|disable\|list> [world]` | Manage disabled worlds | `onlysleep.world` |
+| `/onlysleep gamemode <enable\|disable\|list> [type]` | Manage disabled game modes | `onlysleep.gamemode` |
+| `/onlysleep dump [paste]` | Create a diagnostic dump | `onlysleep.dump` |
 
 **Aliases:** `/os`, `/sleep`
 
@@ -79,13 +86,18 @@ See the full [`config.yml`](src/main/resources/config.yml) for all options and [
 
 | Permission | Default | Description |
 |------------|---------|-------------|
-| `onlysleep.*` | OP | All permissions |
-| `onlysleep.command` | Everyone | Use `/onlysleep` |
+| `onlysleep.*` | OP | All administrative permissions (does not grant sleep exemption) |
+| `onlysleep.command` | Everyone | Open `/onlysleep` and its help; protected subcommands keep their own permissions |
 | `onlysleep.info` | OP | View plugin info |
 | `onlysleep.reload` | OP | Reload config |
 | `onlysleep.status` | OP | View status |
 | `onlysleep.exempt` | None | Excluded from sleep calculations (operators sleep by default) |
 | `onlysleep.update` | OP | Receives update notifications |
+| `onlysleep.config` | OP | Read and change configuration in game |
+| `onlysleep.world` | OP | Manage disabled worlds |
+| `onlysleep.gamemode` | OP | Manage disabled game modes |
+| `onlysleep.dump` | OP | Create diagnostic dumps |
+| `onlysleep.admin` | OP | Alias for every admin permission |
 
 ## PlaceholderAPI
 

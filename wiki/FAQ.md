@@ -90,8 +90,8 @@ It's **not recommended** to use Onlysleep alongside other sleep plugins. They wi
 **Symptoms:** Plugin jar loads but fails with a red error in console.
 
 **Causes & Solutions:**
-1. **Unsupported Minecraft version** — Onlysleep supports Minecraft 1.20.4–26.2
-2. **Incompatible Java version** — Onlysleep requires Java 21+
+1. **Unsupported Minecraft version** — the current Onlysleep release supports Minecraft 26.2
+2. **Incompatible Java version** — the current release requires Java 25+
 3. **Corrupted jar file** — Re-download the jar file
 4. **Missing dependencies** — Onlysleep has no hard dependencies, but ensure you're running a supported server software
 

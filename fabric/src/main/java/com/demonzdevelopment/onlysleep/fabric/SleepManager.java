@@ -1,5 +1,8 @@
 package com.demonzdevelopment.onlysleep.fabric;
 
+import com.demonzdevelopment.onlysleep.fabric.api.events.NightSkipEvent;
+import com.demonzdevelopment.onlysleep.fabric.api.events.SleepCancelEvent;
+import com.demonzdevelopment.onlysleep.fabric.api.events.SleepStartEvent;
 import com.demonzdevelopment.onlysleep.fabric.config.FabricConfigManager;
 import com.demonzdevelopment.onlysleep.fabric.scheduler.TaskScheduler;
 import com.demonzdevelopment.onlysleep.fabric.tracker.AfkTracker;
@@ -156,15 +159,16 @@ public class SleepManager {
         try {
             int cur = getSleepingCount(level);
             int req = getRequiredSleepingCount(level);
-            com.demonzdevelopment.onlysleep.fabric.api.events.SleepStartEvent ev = new com.demonzdevelopment.onlysleep.fabric.api.events.SleepStartEvent(player, cur, req);
-
-
+            SleepStartEvent ev = new SleepStartEvent(player, cur, req);
+            SleepStartEvent.EVENT.invoker().onSleepStart(ev);
             if (ev.isCancelled()) {
                 var set = sleepingPlayers.get(level);
                 if (set != null) { set.remove(player.getUUID()); if (set.isEmpty()) sleepingPlayers.remove(level); }
                 return;
             }
-        } catch (Exception ignored) {}
+        } catch (RuntimeException exception) {
+            mod.logger().warn("SleepStartEvent listener failed", exception);
+        }
 
         Map<String, String> ph = new HashMap<>();
         ph.put("player", player.getName().getString());
@@ -187,9 +191,7 @@ public class SleepManager {
 
         if (activeTransitions.contains(level)) {
             if (skipTasks.containsKey(level) && getSleepingCount(level) < getRequiredSleepingCount(level)) {
-                try {
-                    var ev = new com.demonzdevelopment.onlysleep.fabric.api.events.SleepCancelEvent(player, com.demonzdevelopment.onlysleep.fabric.api.events.SleepCancelEvent.Cause.BED_LEAVE, getSleepingCount(level), getRequiredSleepingCount(level));
-                } catch (Exception ignored) {}
+                fireSleepCancel(player, SleepCancelEvent.Cause.BED_LEAVE);
                 broadcastCancelled(level, player.getName().getString());
             }
             return;
@@ -197,10 +199,7 @@ public class SleepManager {
 
         if (skipTasks.containsKey(level)) {
             if (getSleepingCount(level) < getRequiredSleepingCount(level)) {
-                try {
-                    var ev = new com.demonzdevelopment.onlysleep.fabric.api.events.SleepCancelEvent(player, com.demonzdevelopment.onlysleep.fabric.api.events.SleepCancelEvent.Cause.BED_LEAVE, getSleepingCount(level), getRequiredSleepingCount(level));
-
-                } catch (Exception ignored) {}
+                fireSleepCancel(player, SleepCancelEvent.Cause.BED_LEAVE);
                 broadcastCancelled(level, player.getName().getString());
             }
         }
@@ -212,9 +211,7 @@ public class SleepManager {
 
         if (activeTransitions.contains(level)) {
             if (skipTasks.containsKey(level) && getSleepingCount(level) < getRequiredSleepingCount(level)) {
-                try {
-                    var ev = new com.demonzdevelopment.onlysleep.fabric.api.events.SleepCancelEvent(player, com.demonzdevelopment.onlysleep.fabric.api.events.SleepCancelEvent.Cause.QUIT, getSleepingCount(level), getRequiredSleepingCount(level));
-                } catch (Exception ignored) {}
+                fireSleepCancel(player, SleepCancelEvent.Cause.QUIT);
                 cancelSkip(level);
             }
             return;
@@ -222,9 +219,7 @@ public class SleepManager {
 
         if (skipTasks.containsKey(level)) {
             if (getSleepingCount(level) < getRequiredSleepingCount(level)) {
-                try {
-                    var ev = new com.demonzdevelopment.onlysleep.fabric.api.events.SleepCancelEvent(player, com.demonzdevelopment.onlysleep.fabric.api.events.SleepCancelEvent.Cause.QUIT, getSleepingCount(level), getRequiredSleepingCount(level));
-                } catch (Exception ignored) {}
+                fireSleepCancel(player, SleepCancelEvent.Cause.QUIT);
                 cancelSkip(level);
             }
         } else {
@@ -237,6 +232,21 @@ public class SleepManager {
         if (players != null) {
             players.remove(uuid);
             if (players.isEmpty()) sleepingPlayers.remove(level);
+        }
+    }
+
+    private void fireSleepCancel(ServerPlayer player, SleepCancelEvent.Cause cause) {
+        ServerLevel level = player.level();
+        try {
+            SleepCancelEvent event = new SleepCancelEvent(
+                player,
+                cause,
+                getSleepingCount(level),
+                getRequiredSleepingCount(level)
+            );
+            SleepCancelEvent.EVENT.invoker().onSleepCancel(event);
+        } catch (RuntimeException exception) {
+            mod.logger().warn("SleepCancelEvent listener failed", exception);
         }
     }
 
@@ -297,9 +307,18 @@ public class SleepManager {
             ServerPlayer initiator = null;
             var sleeping = sleepingPlayers.get(level);
             if (sleeping != null && !sleeping.isEmpty()) initiator = level.getServer().getPlayerList().getPlayer(sleeping.iterator().next());
-            com.demonzdevelopment.onlysleep.fabric.api.events.NightSkipEvent ev = new com.demonzdevelopment.onlysleep.fabric.api.events.NightSkipEvent(level, initiator, getSleepingCount(level), getRequiredSleepingCount(level), getTotalPlayerCount(level));
+            NightSkipEvent ev = new NightSkipEvent(
+                level,
+                initiator,
+                getSleepingCount(level),
+                getRequiredSleepingCount(level),
+                getTotalPlayerCount(level)
+            );
+            NightSkipEvent.EVENT.invoker().onNightSkip(ev);
             if (ev.isCancelled()) { cancelSkip(level); return; }
-        } catch (Exception ignored) {}
+        } catch (RuntimeException exception) {
+            mod.logger().warn("NightSkipEvent listener failed", exception);
+        }
 
         WeatherData weather = level.getServer().getWeatherData();
 

@@ -27,6 +27,10 @@ A lightweight sleep plugin that does its job and gets out of the way. No complic
 - `/onlysleep reload` - Reload configuration
 - `/onlysleep info` - Show plugin information
 - `/onlysleep status` - Show detailed plugin status
+- `/onlysleep update` - Check for updates
+- `/onlysleep set|get|toggle` - Manage configuration in game
+- `/onlysleep world|gamemode` - Manage excluded worlds and game modes
+- `/onlysleep dump [paste]` - Create a diagnostic dump
 
 **Aliases:** `/os`, `/sleep`
 
@@ -50,7 +54,7 @@ A lightweight sleep plugin that does its job and gets out of the way. No complic
 4. Edit `plugins/Onlysleep/config.yml` if you want to tweak anything.
 5. Apply changes with `/onlysleep reload`.
 
-**Requirements:** Minecraft 1.20.4–26.2 and Java 21+. Paper 26.1+ requires Java 25. Works standalone. PlaceholderAPI is optional.
+**Requirements:** Minecraft 26.2 and Java 25+. Works standalone. PlaceholderAPI is optional.
 
 ## Configuration
 

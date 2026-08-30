@@ -4,6 +4,30 @@
 
 ---
 
+## [1.4.1] - 2026-08-30
+
+Maintenance release for the Paper/Folia and Fabric 1.4 API line.
+
+### Fixed
+
+- Fabric sleep events now have real Fabric event buses and are dispatched, so listeners can observe and cancel `SleepStartEvent` and `NightSkipEvent` as documented.
+- `/onlysleep world list` and `/onlysleep gamemode list` work without a third argument on Paper/Folia.
+- The dedicated `onlysleep.world` and `onlysleep.gamemode` permissions now authorize their Paper/Folia commands as documented.
+- New command help renders `/onlysleep` instead of the literal `/%cmd%` placeholder.
+- Numeric config commands reject negative delays/AFK time, zero transition speed, and invalid morning ticks.
+- `onlysleep.admin` now grants every advertised admin permission.
+- Developer API availability is cleared when the plugin/mod shuts down, and color stripping handles both `&` and section-sign codes.
+- Release uploads contain runtime JARs only rather than also publishing sources JARs as downloads.
+- Release automation validates tag/version alignment and publishes SHA-256 checksums for both platform JARs.
+- Diagnostic dump failures now retain their stack trace in the plugin logger.
+- Fabric event listener failures are logged without interrupting sleep processing.
+
+### Documentation
+
+- Replaced the placeholder security policy and aligned marketplace/wiki requirements with the 26.2 / Java 25 release line.
+
+---
+
 ## [1.4.0] - 2026-08-29
 
 Latest-only `1.26.x` - Java 25, Minecraft 26.2 (Paper & Fabric). Full parity + new APIs.

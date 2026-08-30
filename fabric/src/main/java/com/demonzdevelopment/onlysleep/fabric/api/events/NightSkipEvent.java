@@ -1,18 +1,28 @@
 package com.demonzdevelopment.onlysleep.fabric.api.events;
 
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 
 /**
  * Fabric equivalent of NightSkipEvent - cancellable before night is skipped.
- * Fired from SleepManager.skipNight. For Fabric this is a plain object; listeners should use
- * a custom event bus or check via mixin. Currently cancellable via explicit API: if you need
- * cancellation, use OnlysleepFabricAPI and check before skip via your own logic, or request
- * Fabric's event API integration. This class is the data holder for parity.
+ * Register a listener with {@code NightSkipEvent.EVENT.register(...)}.
  */
 public class NightSkipEvent {
+    public interface Listener {
+        void onNightSkip(NightSkipEvent event);
+    }
+
+    public static final Event<Listener> EVENT = EventFactory.createArrayBacked(
+        Listener.class,
+        listeners -> event -> {
+            for (Listener listener : listeners) listener.onNightSkip(event);
+        }
+    );
+
     private final ServerLevel level;
-    private final ServerPlayer initiator; // may be null
+    private final ServerPlayer initiator;
     private final int sleepingCount;
     private final int requiredCount;
     private final int totalEligible;

@@ -41,11 +41,11 @@ public class OnlysleepMod implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        instance = this;
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
             LOGGER.info("Onlysleep is server-side only, skipping client init");
             return;
         }
+        instance = this;
 
         configManager.load();
         LOGGER.info("Onlysleep {} for Fabric loaded, config ready", version());
@@ -99,6 +99,7 @@ public class OnlysleepMod implements ModInitializer {
         AfkTracker.shutdown();
         scheduler.cancelAll();
         server = null;
+        instance = null;
         LOGGER.info("Onlysleep v{} disabled", version());
     }
 
@@ -108,7 +109,7 @@ public class OnlysleepMod implements ModInitializer {
         updateChecker.checkAsync().thenAccept(result -> {
             if (result.updateAvailable()) {
                 LOGGER.info("Update available: {} (Current: {})", result.latestVersion(), version());
-                LOGGER.info("Download at: https://modrinth.com/mod/onlysleep");
+                LOGGER.info("Download at: https://modrinth.com/plugin/onlysleep");
 
                 String latest = result.latestVersion();
                 scheduler.runSync(() -> {

@@ -20,7 +20,7 @@ public class NightSkipEvent extends Event implements Cancellable {
     private static final HandlerList HANDLERS = new HandlerList();
 
     private final World world;
-    private final Player initiator; // may be null if forced / no sleeper found
+    private final Player initiator;
     private final int sleepingCount;
     private final int requiredCount;
     private final int totalEligible;
@@ -36,6 +36,9 @@ public class NightSkipEvent extends Event implements Cancellable {
 
     public World getWorld() { return world; }
 
+    /**
+     * @return the player who initiated the skip, or {@code null} for a forced skip
+     */
     public Player getInitiator() { return initiator; }
 
     public int getSleepingCount() { return sleepingCount; }

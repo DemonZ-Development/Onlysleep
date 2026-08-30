@@ -327,10 +327,10 @@ public class OnlysleepCommands {
                 yield true;
             }
             case "perworld", "per-world-sleep" -> { mod.config().setPerWorldSleep(parseBool(value)); yield true; }
-            case "skipdelay", "skip-delay-ticks" -> { mod.config().setSkipDelayTicks(parseInt(value)); yield true; }
-            case "morningtime", "morning-time" -> { mod.config().setMorningTime(parseInt(value)); yield true; }
+            case "skipdelay", "skip-delay-ticks" -> { mod.config().setSkipDelayTicks(parseNonNegativeInt(value, "skipdelay")); yield true; }
+            case "morningtime", "morning-time" -> { mod.config().setMorningTime(parseTime(value)); yield true; }
             case "resettime", "reset-time" -> { mod.config().setResetTime(parseBool(value)); yield true; }
-            case "gradualspeed", "gradual-skip-speed-ticks" -> { mod.config().setGradualSkipSpeedTicks(parseInt(value)); yield true; }
+            case "gradualspeed", "gradual-skip-speed-ticks" -> { mod.config().setGradualSkipSpeedTicks(parsePositiveInt(value, "gradualspeed")); yield true; }
             case "clearweather", "clear-weather" -> { mod.config().setClearWeather(parseBool(value)); yield true; }
             case "clearthunder", "clear-thunder" -> { mod.config().setClearThunder(parseBool(value)); yield true; }
             case "resetweather", "reset-weather" -> { mod.config().setResetWeather(parseBool(value)); yield true; }
@@ -341,7 +341,7 @@ public class OnlysleepCommands {
             case "title" -> { mod.config().setValue("ui.title.enabled", parseBool(value)); yield true; }
             case "sounds" -> { mod.config().setValue("sounds.enabled", parseBool(value)); yield true; }
             case "managegamerule", "manage-gamerule" -> { mod.config().setManageGamerule(parseBool(value)); yield true; }
-            case "afktime" -> { mod.config().setValue("afk-detection.time-seconds", parseInt(value)); AfkTracker.shutdown(); int v = parseInt(value); if (v>0) AfkTracker.init(v); yield true; }
+            case "afktime" -> { int v = parseNonNegativeInt(value, "afktime"); mod.config().setValue("afk-detection.time-seconds", v); AfkTracker.shutdown(); if (v > 0) AfkTracker.init(v); yield true; }
             case "countafk" -> { mod.config().setValue("count-afk-as-sleeping", parseBool(value)); yield true; }
             case "excludeafk" -> { mod.config().setValue("exclude-afk-from-total", parseBool(value)); yield true; }
             default -> {
@@ -515,6 +515,21 @@ public class OnlysleepCommands {
         throw new IllegalArgumentException("Value must be true/false");
     }
     private int parseInt(String v) { try { return Integer.parseInt(v); } catch (NumberFormatException e) { throw new IllegalArgumentException("Must be a number"); } }
+    private int parseNonNegativeInt(String v, String field) {
+        int parsed = parseInt(v);
+        if (parsed < 0) throw new IllegalArgumentException(field + " must be 0 or greater");
+        return parsed;
+    }
+    private int parsePositiveInt(String v, String field) {
+        int parsed = parseInt(v);
+        if (parsed <= 0) throw new IllegalArgumentException(field + " must be greater than 0");
+        return parsed;
+    }
+    private int parseTime(String v) {
+        int parsed = parseInt(v);
+        if (parsed < 0 || parsed > 23999) throw new IllegalArgumentException("morningtime must be between 0 and 23999");
+        return parsed;
+    }
     private Object inferValue(String v) {
         if (v.equalsIgnoreCase("true")||v.equalsIgnoreCase("false")) return Boolean.parseBoolean(v);
         try { return Integer.parseInt(v); } catch (NumberFormatException ignored) {}

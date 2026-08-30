@@ -12,26 +12,37 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
 
       - name: Set up JDK 25
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v6
         with:
           java-version: 25
           distribution: temurin
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: Validate release version
+        id: version
+        shell: bash
+        run: |
+          VERSION=$(sed -n 's/^version = "\([^"]*\)"/\1/p' build.gradle.kts)
+          FABRIC_VERSION=$(sed -n 's/^version = "\([^"]*\)"/\1/p' fabric/build.gradle.kts)
+          if [[ -z "$VERSION" || "$VERSION" != "$FABRIC_VERSION" ]]; then
+            echo "Paper and Fabric versions do not match"
+            exit 1
+          fi
+          if [[ "$GITHUB_REF_NAME" != "v$VERSION" ]]; then
+            echo "Tag $GITHUB_REF_NAME does not match project version v$VERSION"
+            exit 1
+          fi
+          echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Build with Gradle
         run: ./gradlew build --no-daemon -PpaperApiVersion=26.2.build.56-alpha -PpaperApiJvmVersion=25
-
-      - name: Run tests
-        run: ./gradlew test --no-daemon -PpaperApiVersion=26.2.build.56-alpha -PpaperApiJvmVersion=25
-
-      - name: Get version from tag
-        id: version
-        run: echo "VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
 
       - name: Extract Release Notes
         run: |
@@ -52,13 +63,22 @@ jobs:
                   out.write('Release notes for version ' + version)
           "
 
+      - name: Generate checksums
+        shell: bash
+        run: |
+          sha256sum \
+            "build/libs/Onlysleep-${{ steps.version.outputs.VERSION }}.jar" \
+            "fabric/build/libs/Onlysleep-Fabric-${{ steps.version.outputs.VERSION }}.jar" \
+            > checksums-sha256.txt
+
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           name: Onlysleep ${{ steps.version.outputs.VERSION }}
           body_path: RELEASE_NOTES.md
           files: |
-            build/libs/Onlysleep-*.jar
-            fabric/build/libs/Onlysleep-Fabric-*.jar
+            build/libs/Onlysleep-${{ steps.version.outputs.VERSION }}.jar
+            fabric/build/libs/Onlysleep-Fabric-${{ steps.version.outputs.VERSION }}.jar
+            checksums-sha256.txt
           draft: false
           prerelease: false

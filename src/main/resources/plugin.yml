@@ -17,7 +17,7 @@ commands:
 
 permissions:
   onlysleep.*:
-    description: Grants all Onlysleep permissions
+    description: Grants all Onlysleep administrative permissions
     default: op
     children:
       onlysleep.command: true
@@ -29,6 +29,7 @@ permissions:
       onlysleep.world: true
       onlysleep.gamemode: true
       onlysleep.dump: true
+      onlysleep.admin: true
   onlysleep.info:
     description: Allows viewing plugin information via /onlysleep info
     default: op
@@ -59,6 +60,16 @@ permissions:
   onlysleep.admin:
     description: Alias for all admin permissions
     default: op
+    children:
+      onlysleep.command: true
+      onlysleep.info: true
+      onlysleep.reload: true
+      onlysleep.status: true
+      onlysleep.update: true
+      onlysleep.config: true
+      onlysleep.world: true
+      onlysleep.gamemode: true
+      onlysleep.dump: true
   onlysleep.dump:
     description: Allows creating debug dumps
     default: op

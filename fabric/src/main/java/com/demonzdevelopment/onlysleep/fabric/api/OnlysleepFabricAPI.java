@@ -47,13 +47,12 @@ public final class OnlysleepFabricAPI {
 
     public static boolean isAvailable() { return OnlysleepMod.getInstance() != null; }
 
-    // --- Discord / message helpers ---
     public static String stripColor(String msg) {
-        return msg.replaceAll("§[0-9a-fk-or]", "").replaceAll("&[0-9a-fk-or]", "");
+        if (msg == null) return null;
+        return msg.replaceAll("(?i)§[0-9a-fk-or]", "").replaceAll("(?i)&[0-9a-fk-or]", "");
     }
 
     public static String getDiscordMessage(String path, java.util.Map<String,String> ph) {
-        // Fabric messages are MutableComponent - convert to string with legacy text handling
         try {
             net.minecraft.network.chat.MutableComponent comp = getConfigManager().getMessage(path, ph);
             String raw = comp.getString();
