@@ -185,15 +185,26 @@ public class SleepManager {
         checkSleepStatus(level);
     }
 
+    private static final long DAWN_COMPLETE_WINDOW_TICKS = 1500;
+
     private boolean isMorningArrived(ServerLevel level) {
         return !NightMath.isNight(dayTimeOf(level)) && !level.isRaining() && !level.isThundering();
+    }
+
+    private long skipTargetTime() {
+        return config.isResetTime() ? 0 : config.getMorningTime();
+    }
+
+    private boolean isSkipCompleting(ServerLevel level, long targetTime) {
+        if (isMorningArrived(level)) return true;
+        return NightMath.distanceTo(dayTimeOf(level), targetTime) <= DAWN_COMPLETE_WINDOW_TICKS;
     }
 
     public void onBedLeave(ServerPlayer player) {
         ServerLevel level = player.level();
         removeSleeper(level, player.getUUID());
 
-        if ((activeTransitions.contains(level) || skipTasks.containsKey(level)) && isMorningArrived(level)) {
+        if ((activeTransitions.contains(level) || skipTasks.containsKey(level)) && isSkipCompleting(level, skipTargetTime())) {
             return;
         }
 
@@ -217,7 +228,7 @@ public class SleepManager {
         ServerLevel level = player.level();
         removeSleeper(level, player.getUUID());
 
-        if ((activeTransitions.contains(level) || skipTasks.containsKey(level)) && isMorningArrived(level)) {
+        if ((activeTransitions.contains(level) || skipTasks.containsKey(level)) && isSkipCompleting(level, skipTargetTime())) {
             return;
         }
 
@@ -458,7 +469,7 @@ public class SleepManager {
                 if (onComplete != null) onComplete.run();
                 return;
             }
-            if (getSleepingCount(level) < getRequiredSleepingCount(level) && remaining > speed) {
+            if (getSleepingCount(level) < getRequiredSleepingCount(level) && !isSkipCompleting(level, targetTime)) {
                 cancelSkip(level);
                 if (taskHolder[0] != null) taskHolder[0].cancel();
                 return;

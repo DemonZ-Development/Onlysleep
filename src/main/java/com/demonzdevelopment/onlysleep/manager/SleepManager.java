@@ -193,8 +193,21 @@ public class SleepManager {
         checkSleepStatus(world);
     }
 
+    private static final long DAWN_COMPLETE_WINDOW_TICKS = 1500;
+
     private static boolean isMorningArrived(World world) {
         return !isNight(world.getTime()) && !world.hasStorm() && !world.isThundering();
+    }
+
+    private long skipTargetTime() {
+        return configManager.isResetTime() ? 0 : configManager.getMorningTime();
+    }
+
+    private static boolean isSkipCompleting(World world, long targetTime) {
+        if (isMorningArrived(world)) return true;
+        long now = world.getTime() % 24000;
+        long remaining = targetTime <= now ? (24000 - now) + targetTime : targetTime - now;
+        return remaining <= DAWN_COMPLETE_WINDOW_TICKS;
     }
 
     public void onPlayerBedLeave(Player player) {
@@ -207,7 +220,7 @@ public class SleepManager {
             }
         }
 
-        if ((activeTransitions.contains(world) || skipTasks.containsKey(world)) && isMorningArrived(world)) {
+        if ((activeTransitions.contains(world) || skipTasks.containsKey(world)) && isSkipCompleting(world, skipTargetTime())) {
             return;
         }
 
@@ -264,7 +277,7 @@ public class SleepManager {
             }
         }
 
-        if ((activeTransitions.contains(world) || skipTasks.containsKey(world)) && isMorningArrived(world)) {
+        if ((activeTransitions.contains(world) || skipTasks.containsKey(world)) && isSkipCompleting(world, skipTargetTime())) {
             return;
         }
 
@@ -500,7 +513,7 @@ public class SleepManager {
                 }
                 return;
             }
-            if (getSleepingCount(world) < getRequiredSleepingCount(world) && remaining > speed) {
+            if (getSleepingCount(world) < getRequiredSleepingCount(world) && !isSkipCompleting(world, targetTime)) {
                 gradualSkipStates.remove(world);
                 cancelSkip(world);
                 if (taskHolder[0] != null) taskHolder[0].cancel();
