@@ -463,7 +463,7 @@ public class SleepManager {
             long now = dayTimeOf(level);
             long remaining = NightMath.distanceTo(now, targetTime);
 
-            if (remaining <= 0) {
+            if (covered[0] >= totalDistance) {
                 finishSkipInstant(level, targetTime);
                 if (taskHolder[0] != null) taskHolder[0].cancel();
                 if (onComplete != null) onComplete.run();

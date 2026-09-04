@@ -501,7 +501,7 @@ public class SleepManager {
                 ? (24000 - now) + targetTime
                 : targetTime - now;
 
-            if (remaining <= 0) {
+            if (covered[0] >= totalDistance) {
                 world.setTime(targetTime);
                 clearPhantoms(world);
                 gradualSkipStates.remove(world);
