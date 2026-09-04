@@ -467,19 +467,16 @@ public class SleepManager {
 
         final ScheduledTask[] taskHolder = new ScheduledTask[1];
 
+        final long[] covered = {0};
+
         taskHolder[0] = SchedulerAdapter.runTaskTimer(plugin, world, () -> {
 
-            if (getSleepingCount(world) < getRequiredSleepingCount(world)) {
-                gradualSkipStates.remove(world);
-                cancelSkip(world);
-                if (taskHolder[0] != null) taskHolder[0].cancel();
-                return;
-            }
-            currentStep[0]++;
+            long now = world.getTime() % 24000;
+            long remaining = targetTime <= now
+                ? (24000 - now) + targetTime
+                : targetTime - now;
 
-            updateSleepStatus(world);
-
-            if (currentStep[0] >= totalSteps) {
+            if (remaining <= 0) {
                 world.setTime(targetTime);
                 clearPhantoms(world);
                 gradualSkipStates.remove(world);
@@ -489,6 +486,24 @@ public class SleepManager {
                 if (onComplete != null) {
                     onComplete.run();
                 }
+                return;
+            }
+            if (getSleepingCount(world) < getRequiredSleepingCount(world) && remaining > speed) {
+                gradualSkipStates.remove(world);
+                cancelSkip(world);
+                if (taskHolder[0] != null) taskHolder[0].cancel();
+                return;
+            }
+
+            long step = Math.min(speed, remaining);
+            world.setTime((now + step) % 24000);
+            covered[0] += step;
+
+            updateSleepStatus(world);
+
+            BossBar bar = worldBossBars.get(world);
+            if (bar != null && totalDistance > 0) {
+                bar.setProgress(Math.min(1.0, (double) covered[0] / totalDistance));
             }
         }, 1L, 1L);
 

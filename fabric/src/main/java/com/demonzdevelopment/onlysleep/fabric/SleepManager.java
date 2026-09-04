@@ -432,24 +432,35 @@ public class SleepManager {
         }
 
         final int totalSteps = NightMath.gradualSteps(totalDistance, speed);
-        final int[] currentStep = {0};
+        final long[] covered = {0};
 
         final TaskScheduler.Task[] taskHolder = new TaskScheduler.Task[1];
 
         taskHolder[0] = scheduler.runTimer(1L, 1L, () -> {
-            if (getSleepingCount(level) < getRequiredSleepingCount(level)) {
+            long now = dayTimeOf(level);
+            long remaining = NightMath.distanceTo(now, targetTime);
+
+            if (remaining <= 0) {
+                finishSkipInstant(level, targetTime);
+                if (taskHolder[0] != null) taskHolder[0].cancel();
+                if (onComplete != null) onComplete.run();
+                return;
+            }
+            if (getSleepingCount(level) < getRequiredSleepingCount(level) && remaining > speed) {
                 cancelSkip(level);
                 if (taskHolder[0] != null) taskHolder[0].cancel();
                 return;
             }
-            currentStep[0]++;
+
+            long step = Math.min(speed, remaining);
+            setDayTime(level, (now + step) % DAY_LENGTH);
+            covered[0] += step;
 
             updateSleepStatus(level);
 
-            if (currentStep[0] >= totalSteps) {
-                finishSkipInstant(level, targetTime);
-                if (taskHolder[0] != null) taskHolder[0].cancel();
-                if (onComplete != null) onComplete.run();
+            ServerBossEvent bar = worldBossBars.get(level);
+            if (bar != null && totalDistance > 0) {
+                bar.setProgress((float) Math.min(1.0, (double) covered[0] / totalDistance));
             }
         });
 
