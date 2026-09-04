@@ -193,6 +193,10 @@ public class SleepManager {
         checkSleepStatus(world);
     }
 
+    private static boolean isMorningArrived(World world) {
+        return !isNight(world.getTime()) && !world.hasStorm() && !world.isThundering();
+    }
+
     public void onPlayerBedLeave(Player player) {
         World world = player.getWorld();
         Set<UUID> players = sleepingPlayers.get(world);
@@ -201,6 +205,10 @@ public class SleepManager {
             if (players.isEmpty()) {
                 sleepingPlayers.remove(world);
             }
+        }
+
+        if ((activeTransitions.contains(world) || skipTasks.containsKey(world)) && isMorningArrived(world)) {
+            return;
         }
 
         if (activeTransitions.contains(world)) {
@@ -254,6 +262,10 @@ public class SleepManager {
             if (players.isEmpty()) {
                 sleepingPlayers.remove(world);
             }
+        }
+
+        if ((activeTransitions.contains(world) || skipTasks.containsKey(world)) && isMorningArrived(world)) {
+            return;
         }
 
         if (activeTransitions.contains(world)) {

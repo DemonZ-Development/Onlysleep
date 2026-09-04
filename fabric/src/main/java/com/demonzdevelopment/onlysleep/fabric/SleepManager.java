@@ -185,9 +185,17 @@ public class SleepManager {
         checkSleepStatus(level);
     }
 
+    private boolean isMorningArrived(ServerLevel level) {
+        return !NightMath.isNight(dayTimeOf(level)) && !level.isRaining() && !level.isThundering();
+    }
+
     public void onBedLeave(ServerPlayer player) {
         ServerLevel level = player.level();
         removeSleeper(level, player.getUUID());
+
+        if ((activeTransitions.contains(level) || skipTasks.containsKey(level)) && isMorningArrived(level)) {
+            return;
+        }
 
         if (activeTransitions.contains(level)) {
             if (skipTasks.containsKey(level) && getSleepingCount(level) < getRequiredSleepingCount(level)) {
@@ -208,6 +216,10 @@ public class SleepManager {
     public void onQuit(ServerPlayer player) {
         ServerLevel level = player.level();
         removeSleeper(level, player.getUUID());
+
+        if ((activeTransitions.contains(level) || skipTasks.containsKey(level)) && isMorningArrived(level)) {
+            return;
+        }
 
         if (activeTransitions.contains(level)) {
             if (skipTasks.containsKey(level) && getSleepingCount(level) < getRequiredSleepingCount(level)) {
