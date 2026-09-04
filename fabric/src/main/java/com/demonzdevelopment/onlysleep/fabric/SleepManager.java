@@ -281,6 +281,7 @@ public class SleepManager {
     }
 
     private void scheduleSkip(ServerLevel level) {
+        skippingPlayerNames.put(level, getSleepingPlayerName(level));
         if (config.isShowBossBar()) {
             showBossBarForWorld(level);
         }

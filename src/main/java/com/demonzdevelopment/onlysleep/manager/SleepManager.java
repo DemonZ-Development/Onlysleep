@@ -311,6 +311,7 @@ public class SleepManager {
     private void scheduleSkip(World world) {
         int delay = configManager.getSkipDelayTicks();
 
+        skippingPlayerNames.put(world, getSleepingPlayerName(world));
         if (configManager.isShowBossBar()) {
             showBossBarForWorld(world);
         }

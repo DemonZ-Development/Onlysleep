@@ -28,13 +28,13 @@ public final class TaskScheduler {
 
     public Task runLater(long delayTicks, Runnable action) {
         Task task = new Task(tick + Math.max(1, delayTicks), -1, action);
-        tasks.add(task);
+        if (capturing) pending.add(task); else tasks.add(task);
         return task;
     }
 
     public Task runTimer(long delayTicks, long period, Runnable action) {
         Task task = new Task(tick + Math.max(1, delayTicks), period, action);
-        tasks.add(task);
+        if (capturing) pending.add(task); else tasks.add(task);
         return task;
     }
 
@@ -44,6 +44,7 @@ public final class TaskScheduler {
 
     public void tickServer() {
         tick++;
+        capturing = true;
         Iterator<Task> it = tasks.iterator();
         while (it.hasNext()) {
             Task task = it.next();
@@ -63,7 +64,13 @@ public final class TaskScheduler {
                 it.remove();
             }
         }
+        capturing = false;
+        tasks.addAll(pending);
+        pending.clear();
     }
+
+    private final List<Task> pending = new ArrayList<>();
+    private boolean capturing;
 
     public void cancelAll() {
         tasks.forEach(Task::cancel);
