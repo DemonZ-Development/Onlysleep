@@ -340,6 +340,16 @@ public class SleepManager {
         if (configManager.isShowBossBar()) {
             showBossBarForWorld(world);
         }
+        if (configManager.isShowBossBar() || configManager.isShowActionBar()) {
+            ScheduledTask uiTask = SchedulerAdapter.runTaskTimer(plugin, world, () -> {
+                if (!skipTasks.containsKey(world)) {
+                    removeBossBar(world);
+                    return;
+                }
+                updateSleepStatus(world);
+            }, 0L, 10L);
+            bossBarTasks.put(world, uiTask);
+        }
 
         ScheduledTask task = SchedulerAdapter.runTaskLater(plugin, world, () -> {
             skipNight(world);
@@ -735,16 +745,6 @@ public class SleepManager {
         }
 
         worldBossBars.put(world, bossBar);
-
-        ScheduledTask bossTask = SchedulerAdapter.runTaskTimer(plugin, world, () -> {
-            if (!skipTasks.containsKey(world)) {
-                removeBossBar(world);
-                return;
-            }
-            updateSleepStatus(world);
-        }, 0L, 10L);
-
-        bossBarTasks.put(world, bossTask);
     }
 
     private void removeBossBar(World world) {

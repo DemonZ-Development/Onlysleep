@@ -308,6 +308,16 @@ public class SleepManager {
         if (config.isShowBossBar()) {
             showBossBarForWorld(level);
         }
+        if (config.isShowBossBar() || config.isShowActionBar()) {
+            TaskScheduler.Task uiTask = scheduler.runTimer(1L, 10L, () -> {
+                if (!skipTasks.containsKey(level)) {
+                    removeBossBar(level);
+                    return;
+                }
+                updateSleepStatus(level);
+            });
+            worldBossBarTasks.put(level, uiTask);
+        }
 
         TaskScheduler.Task task = scheduler.runLater(config.getSkipDelayTicks(), () -> skipNight(level));
         skipTasks.put(level, task);
@@ -590,16 +600,6 @@ public class SleepManager {
         }
 
         worldBossBars.put(level, bossBar);
-
-        TaskScheduler.Task bossTask = scheduler.runTimer(1L, 10L, () -> {
-            if (!skipTasks.containsKey(level)) {
-                removeBossBar(level);
-                return;
-            }
-            updateSleepStatus(level);
-        });
-
-        worldBossBarTasks.put(level, bossTask);
     }
 
     private void removeBossBar(ServerLevel level) {
