@@ -5,9 +5,9 @@
 [HR]
 
 [size=4][color=#ffaa00]What is Onlysleep?[/color][/size]
-A clean, lightweight sleep plugin that does one thing well: skip the night when a player goes to bed. No bloat, no wall of config you'll never touch. Just drop it in, and it works.
+Onlysleep lets your server skip the night without waiting for every player to find a bed. One sleeper is enough by default, but you can set any threshold from 0 to 100 percent.
 
-One player sleeping is the default. If you want a different threshold, say half the server or everyone, you can set that too. Weather clears alongside the night. The whole thing is per-world, so a player sleeping in `world_nether` won't skip the overworld.
+Sleep counts are kept per world. A player sleeping in one world will not skip the night in another, and rain and thunder can be cleared independently.
 
 [HR]
 
@@ -77,7 +77,7 @@ One player sleeping is the default. If you want a different threshold, say half 
 [HR]
 
 [size=4][color=#ffaa00]Configuration[/color][/size]
-Defaults work fine. The main knob is `sleep-percentage` in `config.yml`:
+The default configuration is ready to use. The main setting is `sleep-percentage` in `config.yml`:
 [list]
 [*][b]0[/b] = one player sleeps, everyone wakes up
 [*][b]50[/b] = half the server needs to be in bed
@@ -112,8 +112,8 @@ Set `per-world-sleep: false` if you want global counting across all worlds.
 
 [center][size=4][color=#ffaa00]Sponsored By[/color][/size]
 [url='https://nexeu.zip'][img]https://whodoesntloveavatars.s3.fra.databucket.eu/assets/promo.png[/img][/url]
-[size=3]Looking for high-performance, budget-friendly game server hosting? Check out [url='https://nexeu.zip'][b]Nexeu Hosting[/b][/url]![/size][/center]
+[size=3]Server hosting for this project is sponsored by [url='https://nexeu.zip'][b]Nexeu Hosting[/b][/url].[/size][/center]
 
 [HR]
 
-[center][size=2][color=#888888]Developed by Demonz Development for the Minecraft community. | [email]demonzdevelopment@gmail.com[/email][/color][/size][/center]
+[center][size=2][color=#888888]Made by Demonz Development | [email]demonzdevelopment@gmail.com[/email][/color][/size][/center]

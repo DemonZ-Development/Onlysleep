@@ -4,12 +4,14 @@ on:
   push:
     tags:
       - 'v*'
+      - 'mod-v*'
 
 permissions:
   contents: write
 
 jobs:
   build:
+    if: ${{ !startsWith(github.ref_name, 'mod-') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -78,6 +80,78 @@ jobs:
           body_path: RELEASE_NOTES.md
           files: |
             build/libs/Onlysleep-${{ steps.version.outputs.VERSION }}.jar
+            fabric/build/libs/Onlysleep-Fabric-${{ steps.version.outputs.VERSION }}.jar
+            checksums-sha256.txt
+          draft: false
+          prerelease: false
+
+  build-fabric:
+    if: ${{ startsWith(github.ref_name, 'mod-v') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 25
+        uses: actions/setup-java@v6
+        with:
+          java-version: 25
+          distribution: temurin
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: Validate mod release version
+        id: version
+        shell: bash
+        run: |
+          FABRIC_VERSION=$(sed -n 's/^version = "\([^"]*\)"/\1/p' fabric/build.gradle.kts)
+          if [[ -z "$FABRIC_VERSION" ]]; then
+            echo "Could not read Fabric version"
+            exit 1
+          fi
+          if [[ "$GITHUB_REF_NAME" != "mod-v$FABRIC_VERSION" ]]; then
+            echo "Tag $GITHUB_REF_NAME does not match Fabric version mod-v$FABRIC_VERSION"
+            exit 1
+          fi
+          echo "VERSION=$FABRIC_VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Build Fabric mod with Gradle
+        run: ./gradlew :fabric:build --no-daemon -PpaperApiVersion=26.2.build.56-alpha -PpaperApiJvmVersion=25
+
+      - name: Extract Release Notes
+        run: |
+          python3 -c "
+          import re
+          version = '${{ steps.version.outputs.VERSION }}'
+          with open('CHANGELOG.md', 'r', encoding='utf-8') as f:
+              content = f.read()
+          pattern = r'(## \[' + re.escape(version) + r'\].*?)(?=\n## \[|\Z)'
+          match = re.search(pattern, content, re.DOTALL)
+          if match:
+              notes = match.group(1).strip()
+              notes = re.sub(r'\n---$', '', notes).strip()
+              with open('RELEASE_NOTES.md', 'w', encoding='utf-8') as out:
+                  out.write(notes)
+          else:
+              with open('RELEASE_NOTES.md', 'w', encoding='utf-8') as out:
+                  out.write('Release notes for version ' + version)
+          "
+
+      - name: Generate checksums
+        shell: bash
+        run: |
+          sha256sum \
+            "fabric/build/libs/Onlysleep-Fabric-${{ steps.version.outputs.VERSION }}.jar" \
+            > checksums-sha256.txt
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v3
+        with:
+          name: Onlysleep Fabric ${{ steps.version.outputs.VERSION }}
+          body_path: RELEASE_NOTES.md
+          files: |
             fabric/build/libs/Onlysleep-Fabric-${{ steps.version.outputs.VERSION }}.jar
             checksums-sha256.txt
           draft: false

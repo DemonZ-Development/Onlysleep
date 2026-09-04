@@ -4,22 +4,22 @@
 
 **One player sleeps. Everyone wakes up.**
 
-No complicated setup. No wall of config. Drop the JAR in, restart, and players can actually skip the night for once.
+Onlysleep lets your server skip the night without waiting for every player to find a bed. One sleeper is enough by default, but you can require any percentage from 0 to 100. Install the JAR, restart the server, and the default configuration is ready to use.
 
 ---
 
 ![Features](https://raw.githubusercontent.com/DemonZ-Development/Onlysleep/master/assets/modrinth/features-heading.png)
 
-- One-player sleep by default, or any percentage you want
-- Per-world sleep (each world tracks separately)
-- Weather skip: clear rain and thunder independently
-- Boss bar, action bar, progress bar, and title support
-- Sounds when someone starts sleeping and when night is skipped
-- AFK detection (built-in, plus EssentialsX and CMI)
-- Filters out spectators, creative, flying, and exempt players
-- Automatic gamerule management for `playersSleepingPercentage`
-- PlaceholderAPI: 12+ placeholders
-- Update checker and bStats (opt-out available)
+- One-player sleep by default, with configurable percentage thresholds
+- Separate sleep counts for each world
+- Independent controls for clearing rain and thunder
+- Boss bar, action bar, title, and progress-bar feedback
+- Configurable sounds for bed entry and successful night skips
+- Built-in AFK tracking, plus EssentialsX and CMI support
+- Filters for spectators, creative players, flying players, game modes, and exempt permissions
+- Automatic handling of the `playersSleepingPercentage` gamerule
+- PlaceholderAPI support for sleep, world, and status data
+- Optional update checks and anonymous bStats metrics
 
 ---
 
@@ -28,7 +28,7 @@ No complicated setup. No wall of config. Drop the JAR in, restart, and players c
 
 ![Installation Steps](https://raw.githubusercontent.com/DemonZ-Development/Onlysleep/master/assets/modrinth/installation-steps.png)
 
-**Requirements:** Minecraft 26.2 and Java 25+. Works on its own. PlaceholderAPI is optional.
+**Requirements:** Minecraft 26.2 and Java 25 or newer. Onlysleep works on its own; PlaceholderAPI is optional.
 
 ---
 
@@ -59,7 +59,7 @@ No complicated setup. No wall of config. Drop the JAR in, restart, and players c
 
 ![Configuration](https://raw.githubusercontent.com/DemonZ-Development/Onlysleep/master/assets/modrinth/config-preview.png)
 
-Defaults work fine. The main knob is `sleep-percentage` in `config.yml`:
+You can use the defaults as-is. The main setting is `sleep-percentage` in `config.yml`:
 
 - `0` = one player sleeps, everyone wakes up
 - `50` = half the server needs to be in bed
@@ -116,7 +116,7 @@ The compiled JAR is in `build/libs/`.
 
 [![bStats](https://bstats.org/signatures/bukkit/OnlySleep.svg)](https://bstats.org/plugin/bukkit/OnlySleep/31415)
 
-Anonymous stats only. No personal data. Opt out in `plugins/bStats/config.yml`.
+Onlysleep uses bStats for anonymous usage metrics. You can opt out in `plugins/bStats/config.yml`.
 
 ## Links
 
@@ -136,5 +136,5 @@ Anonymous stats only. No personal data. Opt out in `plugins/bStats/config.yml`.
     <img src="https://whodoesntloveavatars.s3.fra.databucket.eu/assets/promo.png" alt="Nexeu Sponsor" width="600px">
   </a>
   <br>
-  Looking for high-performance, budget-friendly game server hosting? Check out <a href="https://nexeu.zip"><b>Nexeu Hosting</b></a>!
+  Server hosting for this project is sponsored by <a href="https://nexeu.zip"><b>Nexeu Hosting</b></a>.
 </div>

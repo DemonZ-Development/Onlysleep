@@ -2,23 +2,23 @@
 
 **One player sleeps. Everyone wakes up.**
 
-A lightweight sleep plugin that does its job and gets out of the way. No complicated setup, no wall of config you'll never touch. Drop the JAR in, restart, and your players can actually skip the night.
+Onlysleep keeps night skipping simple. One player can skip the night by default, or you can choose the percentage that fits your server. Sleep is counted per world, so activity in one world does not affect another.
 
 ---
 
 ## Features
 
-- One-player sleep by default, or any percentage you want
-- Per-world sleep (each world tracks separately)
-- Weather skip: clear rain and thunder independently
-- Boss bar, action bar, progress bar, and title support
-- Sounds when someone starts sleeping and when night is skipped
-- AFK detection (built-in, plus EssentialsX and CMI)
-- Filters out spectators, creative, flying, and exempt players
-- Automatic gamerule management for `playersSleepingPercentage`
-- PlaceholderAPI: 12+ placeholders
-- Update checker and bStats (opt-out available)
-- Full Folia support with regionized scheduler
+- One-player sleep by default, with configurable percentage thresholds
+- Separate sleep counts for each world
+- Independent controls for clearing rain and thunder
+- Boss bar, action bar, title, and progress-bar feedback
+- Configurable sounds for bed entry and successful night skips
+- Built-in AFK tracking, plus EssentialsX and CMI support
+- Filters for spectators, creative players, flying players, game modes, and exempt permissions
+- Automatic handling of the `playersSleepingPercentage` gamerule
+- PlaceholderAPI support for sleep, world, and status data
+- Native Folia scheduling support
+- Optional update checks and anonymous bStats metrics
 
 ## Commands
 
@@ -54,11 +54,11 @@ A lightweight sleep plugin that does its job and gets out of the way. No complic
 4. Edit `plugins/Onlysleep/config.yml` if you want to tweak anything.
 5. Apply changes with `/onlysleep reload`.
 
-**Requirements:** Minecraft 26.2 and Java 25+. Works standalone. PlaceholderAPI is optional.
+**Requirements:** Minecraft 26.2 and Java 25 or newer. Onlysleep works on its own; PlaceholderAPI is optional.
 
 ## Configuration
 
-Defaults work fine. The main knob is `sleep-percentage` in `config.yml`:
+You can use the defaults as-is. The main setting is `sleep-percentage` in `config.yml`:
 
 - `0` = one player sleeps, everyone wakes up
 - `50` = half the server needs to be in bed
@@ -72,7 +72,7 @@ See [`config.yml`](src/main/resources/config.yml) for every option and [`message
 
 [![bStats](https://bstats.org/signatures/bukkit/OnlySleep.svg)](https://bstats.org/plugin/bukkit/OnlySleep/31415)
 
-Anonymous stats only. No personal data. Opt out in `plugins/bStats/config.yml`.
+Onlysleep uses bStats for anonymous usage metrics. You can opt out in `plugins/bStats/config.yml`.
 
 ## Links
 
@@ -87,5 +87,5 @@ Anonymous stats only. No personal data. Opt out in `plugins/bStats/config.yml`.
     <img src="https://whodoesntloveavatars.s3.fra.databucket.eu/assets/promo.png" alt="Nexeu Sponsor" width="600px">
   </a>
   <br>
-  Looking for high-performance, budget-friendly game server hosting? Check out <a href="https://nexeu.zip"><b>Nexeu Hosting</b></a>!
+  Server hosting for this project is sponsored by <a href="https://nexeu.zip"><b>Nexeu Hosting</b></a>.
 </div>
