@@ -521,7 +521,7 @@ public class SleepManager {
 
             Map<String, String> ph = new HashMap<>();
             ph.put("player", skippingPlayerNames.getOrDefault(level, "Players"));
-            bossBar.setName(config.getMessage("boss-bar.title", ph));
+            bossBar.setName(config.getRawMessage("boss-bar.title", ph));
         }
 
         if (!config.isShowActionBar()) return;
@@ -531,7 +531,7 @@ public class SleepManager {
             bar = config.buildProgressBar(current, total);
         }
 
-        MutableComponent actionMsg = config.getMessage("sleep.progress-bar", Map.of(
+        MutableComponent actionMsg = config.getRawMessage("sleep.progress-bar", Map.of(
             "bar", bar,
             "count", String.valueOf(current),
             "required", String.valueOf(total)
@@ -588,7 +588,7 @@ public class SleepManager {
 
         ServerBossEvent bossBar = new ServerBossEvent(
             UUID.randomUUID(),
-            config.getMessage("boss-bar.title", ph),
+            config.getRawMessage("boss-bar.title", ph),
             parseBarColor(config.getBossBarColor()),
             parseBarOverlay(config.getBossBarStyle())
         );

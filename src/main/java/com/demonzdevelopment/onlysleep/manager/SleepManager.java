@@ -558,7 +558,7 @@ public class SleepManager {
 
             Map<String, String> placeholders = new HashMap<>();
             placeholders.put("player", skippingPlayerNames.getOrDefault(world, "Players"));
-            bossBar.setTitle(configManager.getMessage("boss-bar.title", placeholders));
+            bossBar.setTitle(configManager.getRawMessage("boss-bar.title", placeholders));
         }
 
         if (configManager.isShowProgressBar() || configManager.isShowActionBar()) {
@@ -567,7 +567,7 @@ public class SleepManager {
                 bar = configManager.buildProgressBar(current, total);
             }
 
-            String actionMsg = configManager.getMessage("sleep.progress-bar", Map.of(
+            String actionMsg = configManager.getRawMessage("sleep.progress-bar", Map.of(
                 "bar", bar,
                 "count", String.valueOf(current),
                 "required", String.valueOf(total)
@@ -626,7 +626,10 @@ public class SleepManager {
         Set<UUID> players = sleepingPlayers.get(world);
         if (players != null && !players.isEmpty()) {
             Player p = Bukkit.getPlayer(players.iterator().next());
-            if (p != null) return p.getDisplayName();
+            if (p != null) {
+                if (p.getDisplayName() != null) return p.getDisplayName();
+                if (p.getName() != null) return p.getName();
+            }
         }
         return "Unknown";
     }
@@ -734,7 +737,7 @@ public class SleepManager {
         removeBossBar(world);
 
         BossBar bossBar = Bukkit.createBossBar(
-            configManager.getMessage("boss-bar.title", Map.of("player", skippingPlayerNames.getOrDefault(world, "Players"))),
+            configManager.getRawMessage("boss-bar.title", Map.of("player", skippingPlayerNames.getOrDefault(world, "Players"))),
             configManager.getBossBarColor(),
             configManager.getBossBarStyle()
         );

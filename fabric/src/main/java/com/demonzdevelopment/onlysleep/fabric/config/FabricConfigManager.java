@@ -132,6 +132,20 @@ public class FabricConfigManager {
         return LegacyText.of(result);
     }
 
+    public MutableComponent getRawMessage(String path, Map<String, String> placeholders) {
+        JsonElement element = get(path);
+        String raw = element != null && element.isJsonPrimitive() ? element.getAsString() : "";
+        if (raw.isEmpty()) {
+            return LegacyText.of("\u00a7cMessage not found: " + path);
+        }
+
+        String result = translateAmp(raw);
+        for (Map.Entry<String, String> entry : placeholders.entrySet()) {
+            result = result.replace("%" + entry.getKey() + "%", entry.getValue());
+        }
+        return LegacyText.of(result);
+    }
+
     public String buildProgressBar(double current, double max) {
         String symbol = getStringOr("ui.progress-bar.symbol", "\u25a0");
         int length = getInt("ui.progress-bar.length", 20);
