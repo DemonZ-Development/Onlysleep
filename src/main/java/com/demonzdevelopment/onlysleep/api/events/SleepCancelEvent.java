@@ -4,10 +4,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-/**
- * Fired when a player stops sleeping and causes a scheduled skip to be cancelled,
- * or when a player was removed from the sleeping set.
- */
+
+
+
+
 public class SleepCancelEvent extends Event {
 
     private static final HandlerList HANDLERS = new HandlerList();

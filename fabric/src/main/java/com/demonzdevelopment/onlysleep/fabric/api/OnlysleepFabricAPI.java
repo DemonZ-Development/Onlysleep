@@ -9,9 +9,9 @@ import net.minecraft.server.level.ServerPlayer;
 import java.util.Set;
 import java.util.UUID;
 
-/**
- * Fabric Developer API for Onlysleep (mirrors Bukkit OnlysleepAPI).
- */
+
+
+
 public final class OnlysleepFabricAPI {
 
     private OnlysleepFabricAPI() {}

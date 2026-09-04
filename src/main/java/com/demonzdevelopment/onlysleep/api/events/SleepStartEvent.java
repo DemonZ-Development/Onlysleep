@@ -5,13 +5,13 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-/**
- * Fired when a player is counted as sleeping by Onlysleep.
- * <p>
- * This is after {@link org.bukkit.event.player.PlayerBedEnterEvent} with result OK has been accepted
- * and the player has been added to the sleeping set. Cancel to prevent Onlysleep from counting
- * this player as sleeping (night will not be evaluated for this enter).
- */
+
+
+
+
+
+
+
 public class SleepStartEvent extends Event implements Cancellable {
 
     private static final HandlerList HANDLERS = new HandlerList();

@@ -5,10 +5,10 @@ import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 
-/**
- * Fabric equivalent of NightSkipEvent - cancellable before night is skipped.
- * Register a listener with {@code NightSkipEvent.EVENT.register(...)}.
- */
+
+
+
+
 public class NightSkipEvent {
     public interface Listener {
         void onNightSkip(NightSkipEvent event);
