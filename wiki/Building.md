@@ -125,9 +125,7 @@ Onlysleep/
 ├── gradlew / gradlew.bat         # Gradle wrapper scripts
 ├── CHANGELOG.md                  # Version history
 ├── README.md                     # Main README
-├── MODRINTH.md                   # Modrinth description
-├── SPIGOT.md                     # Spigot description
-├── HANGAR.md                     # Hangar description
+├── marketplace/                  # Marketplace descriptions (Hangar, Modrinth, Spigot)
 ├── wiki/                         # Wiki documentation
 ├── src/
 │   ├── main/
