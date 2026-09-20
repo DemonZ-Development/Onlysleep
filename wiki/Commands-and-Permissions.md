@@ -30,8 +30,8 @@ Displays plugin version information and current settings.
 
 **Output:**
 ```
-=== Onlysleep v1.4.1 ===
-Version: 1.4.1
+=== Onlysleep v1.4.2 ===
+Version: 1.4.2
 Author: Demonz Development
 Status: Enabled | Paper
 Sleep Required: 50%
@@ -51,8 +51,8 @@ Shows detailed plugin status including platform, version, and all major settings
 ```
 === Onlysleep Status ===
 Platform: Paper
-Minecraft: 26.2
-Version: 1.4.1
+Minecraft: 26.3
+Version: 1.4.2
 Sleep %: 0%
 Per-World: Yes
 Boss Bar: Enabled

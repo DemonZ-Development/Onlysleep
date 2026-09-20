@@ -2,11 +2,11 @@ plugins {
     id("net.fabricmc.fabric-loom") version "1.18.0-alpha.17"
 }
 
-version = "1.4.1"
+version = "1.4.2"
 base.archivesName = "Onlysleep-Fabric"
 
-val minecraftVersion = "26.2"
-val fabricApiVersion = "0.158.0+26.2"
+val minecraftVersion = "26.3"
+val fabricApiVersion = "0.161.0+26.3"
 
 dependencies {
     minecraft("com.mojang:minecraft:${minecraftVersion}")

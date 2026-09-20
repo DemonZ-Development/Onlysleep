@@ -2,6 +2,14 @@
 
 ---
 
+## [1.4.2] - 2026-09-20
+ 
+- update to minecraft 26.3 on paper and fabric
+- handle fabric clock manager changes in 26.3
+- bump dependencies, metadata, and ci workflows
+ 
+ ---
+
 ## [1.4.1] - 2026-08-30
 
 - Fabric API events are now dispatched and cancellable as documented.

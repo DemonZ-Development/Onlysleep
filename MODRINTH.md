@@ -28,7 +28,7 @@ Onlysleep lets your server skip the night without waiting for every player to fi
 
 ![Installation Steps](https://raw.githubusercontent.com/DemonZ-Development/Onlysleep/master/assets/modrinth/installation-steps.png)
 
-**Requirements:** Minecraft 26.2 and Java 25 or newer. Onlysleep works on its own; PlaceholderAPI is optional.
+**Requirements:** Minecraft 26.3 and Java 25 or newer. Onlysleep works on its own; PlaceholderAPI is optional.
 
 ---
 

@@ -182,7 +182,7 @@ The project uses GitHub Actions for continuous integration:
 
 | Dependency | Purpose |
 |------------|---------|
-| Paper API 26.2 | Bukkit/Paper server API |
+| Paper API 26.3 | Bukkit/Paper server API |
 | PlaceholderAPI | Optional placeholder expansion |
 | bStats | Anonymous usage metrics |
 | Adventure API | Modern component-based chat |

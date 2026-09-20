@@ -3,10 +3,10 @@ plugins {
     id("com.gradleup.shadow") version "9.5.0"
 }
 
-version = "1.4.1"
+version = "1.4.2"
 
 val paperApiVersion = providers.gradleProperty("paperApiVersion")
-    .orElse("26.2.build.56-alpha")
+    .orElse("26.3.build.19-alpha")
 val paperApiJvmVersion = providers.gradleProperty("paperApiJvmVersion")
     .map(String::toInt)
     .orElse(25)

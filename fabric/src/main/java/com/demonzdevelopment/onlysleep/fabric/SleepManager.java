@@ -110,9 +110,24 @@ public class SleepManager {
             .getOrThrow(WorldClocks.OVERWORLD);
     }
 
+    private long getTotalTicks(ServerLevel level, Holder<WorldClock> clock) {
+        try {
+            var instance = level.clockManager().getInstance(clock);
+            if (instance != null) {
+                return instance.totalTicks();
+            }
+        } catch (Throwable ignored) {}
+        try {
+            var clockManager = level.clockManager();
+            var method = clockManager.getClass().getMethod("getTotalTicks", Holder.class);
+            return (long) method.invoke(clockManager, clock);
+        } catch (Throwable ignored) {}
+        return 0L;
+    }
+
     public long dayTimeOf(ServerLevel level) {
         try {
-            long total = ((ServerClockManager) level.clockManager()).getTotalTicks(overworldClock(level));
+            long total = getTotalTicks(level, overworldClock(level));
             return Math.floorMod(total, DAY_LENGTH);
         } catch (Exception e) {
             return 18000L;
@@ -123,7 +138,7 @@ public class SleepManager {
         try {
             ServerClockManager clocks = (ServerClockManager) level.clockManager();
             Holder<WorldClock> clock = overworldClock(level);
-            long total = clocks.getTotalTicks(clock);
+            long total = getTotalTicks(level, clock);
             long currentPos = Math.floorMod(total, DAY_LENGTH);
             long delta = NightMath.distanceTo(currentPos, targetTickOfDay);
             clocks.addTicks(clock, (int) Math.min(Integer.MAX_VALUE, delta));

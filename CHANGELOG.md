@@ -4,6 +4,18 @@
 
 ---
 
+## [1.4.2] - 2026-09-20
+
+### Changed
+- bumped dependencies for minecraft 26.3 (paper and fabric)
+- updated fabric clock manager call for 26.3 changes with fallback
+- updated fabric.mod.json and ci workflows for 26.3
+
+### Fixed
+- suppressed removal warning for players_sleeping_percentage on paper 26.3
+
+---
+
 ## [1.4.1] - 2026-08-30
 
 Maintenance release for the Paper/Folia and Fabric 1.4 API line.

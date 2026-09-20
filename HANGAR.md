@@ -54,7 +54,7 @@ Onlysleep keeps night skipping simple. One player can skip the night by default,
 4. Edit `plugins/Onlysleep/config.yml` if you want to tweak anything.
 5. Apply changes with `/onlysleep reload`.
 
-**Requirements:** Minecraft 26.2 and Java 25 or newer. Onlysleep works on its own; PlaceholderAPI is optional.
+**Requirements:** Minecraft 26.3 and Java 25 or newer. Onlysleep works on its own; PlaceholderAPI is optional.
 
 ## Configuration
 

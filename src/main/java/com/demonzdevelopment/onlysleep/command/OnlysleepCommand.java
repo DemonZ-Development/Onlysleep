@@ -511,6 +511,7 @@ public class OnlysleepCommand implements CommandExecutor, TabCompleter {
                 sb.append("World: ").append(world.getName()).append(" (").append(world.getEnvironment()).append(") enabled=").append(configManager.isWorldEnabled(world.getName())).append("\n");
                 sb.append("  Time: ").append(world.getTime()).append(" isNight=").append(com.demonzdevelopment.onlysleep.manager.SleepManager.isNight(world.getTime())).append(" storm=").append(world.hasStorm()).append(" thunder=").append(world.isThundering()).append("\n");
                 try {
+                    @SuppressWarnings("removal")
                     Integer gamerule = world.getGameRuleValue(org.bukkit.GameRule.PLAYERS_SLEEPING_PERCENTAGE);
                     sb.append("  Gamerule PLAYERS_SLEEPING_PERCENTAGE: ").append(gamerule).append("\n");
                 } catch (Exception e) { sb.append("  Gamerule: error ").append(e.getMessage()).append("\n"); }

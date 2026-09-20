@@ -57,7 +57,7 @@ Sleep counts are kept per world. A player sleeping in one world will not skip th
 [size=4][color=#ffaa00]Requirements[/color][/size]
 [list]
 [*]Java 25+
-[*]Minecraft 26.2
+[*]Minecraft 26.3
 [*]Works standalone — [b]no dependencies required[/b] (PlaceholderAPI is optional)
 [/list]
 

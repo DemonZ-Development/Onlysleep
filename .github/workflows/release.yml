@@ -44,7 +44,7 @@ jobs:
           echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Build with Gradle
-        run: ./gradlew build --no-daemon -PpaperApiVersion=26.2.build.56-alpha -PpaperApiJvmVersion=25
+        run: ./gradlew build --no-daemon -PpaperApiVersion=26.3.build.19-alpha -PpaperApiJvmVersion=25
 
       - name: Extract Release Notes
         run: |
@@ -118,7 +118,7 @@ jobs:
           echo "VERSION=$FABRIC_VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Build Fabric mod with Gradle
-        run: ./gradlew :fabric:build --no-daemon -PpaperApiVersion=26.2.build.56-alpha -PpaperApiJvmVersion=25
+        run: ./gradlew :fabric:build --no-daemon -PpaperApiVersion=26.3.build.19-alpha -PpaperApiJvmVersion=25
 
       - name: Extract Release Notes
         run: |
