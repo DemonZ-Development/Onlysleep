@@ -120,7 +120,7 @@ Onlysleep uses bStats for anonymous usage metrics. You can opt out in `plugins/b
 
 ## Links
 
-- [Website](https://demonzdevelopment.online)
+- [Website](https://demonz.org)
 - [GitHub](https://github.com/DemonZ-Development/Onlysleep)
 - [Discord](https://discord.gg/qkvkEaPryF)
 - [Twitter / X](https://x.com/DemonZ_Dev)

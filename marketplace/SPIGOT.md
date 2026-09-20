@@ -97,7 +97,7 @@ Set `per-world-sleep: false` if you want global counting across all worlds.
 
 [size=4][color=#ffaa00]Links[/color][/size]
 [list]
-[*][url=https://demonzdevelopment.online]Website[/url]
+[*][url=https://demonz.org]Website[/url]
 [*][url=https://github.com/DemonZ-Development]GitHub[/url]
 [*][url=https://modrinth.com/organization/DemonZDevelopment]Modrinth[/url]
 [*][url=https://hangar.papermc.io/DemonzDevelopment/Onlysleep]Hangar[/url]

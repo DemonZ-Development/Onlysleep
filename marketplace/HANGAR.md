@@ -76,7 +76,7 @@ Onlysleep uses bStats for anonymous usage metrics. You can opt out in `plugins/b
 
 ## Links
 
-[Modrinth](https://modrinth.com/plugin/onlysleep) | [GitHub](https://github.com/DemonZ-Development/Onlysleep) | [Issues](https://github.com/DemonZ-Development/Onlysleep/issues) | [Discord](https://discord.gg/qkvkEaPryF) | [Website](https://demonzdevelopment.online) | [Twitter / X](https://x.com/DemonZ_Dev) | [YouTube](https://www.youtube.com/@DemonzDevelopment) | [Instagram](https://www.instagram.com/demonzdevelopement) | [Reddit](https://www.reddit.com/r/DemonZDevelopment/) | [demonzdevelopment@gmail.com](mailto:demonzdevelopment@gmail.com)
+[Modrinth](https://modrinth.com/plugin/onlysleep) | [GitHub](https://github.com/DemonZ-Development/Onlysleep) | [Issues](https://github.com/DemonZ-Development/Onlysleep/issues) | [Discord](https://discord.gg/qkvkEaPryF) | [Website](https://demonz.org) | [Twitter / X](https://x.com/DemonZ_Dev) | [YouTube](https://www.youtube.com/@DemonzDevelopment) | [Instagram](https://www.instagram.com/demonzdevelopement) | [Reddit](https://www.reddit.com/r/DemonZDevelopment/) | [demonzdevelopment@gmail.com](mailto:demonzdevelopment@gmail.com)
 
 ---
 

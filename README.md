@@ -155,7 +155,7 @@ This plugin uses [bStats](https://bstats.org/plugin/bukkit/OnlySleep/31415) to c
 
 ## Links
 
-- [Website](https://demonzdevelopment.online)
+- [Website](https://demonz.org)
 - [GitHub](https://github.com/DemonZ-Development/Onlysleep)
 - [Modrinth](https://modrinth.com/plugin/onlysleep)
 - [Discord](https://discord.gg/qkvkEaPryF)
